@@ -145,6 +145,43 @@
             font-size: 0.85rem;
             color: #a0aec0;
         }
+
+        /* --- Popup de Actualización --- */
+        #update-toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            z-index: 9999;
+            transform: translateY(150%);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        #update-toast.show {
+            transform: translateY(0);
+        }
+        
+        #update-toast button {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        
+        #update-toast button:hover {
+            opacity: 0.9;
+        }
     </style>
 </head>
 <body>
@@ -228,17 +265,48 @@
         <b>Fran Maestre</b> | Layer4 Solutions 2026
     </footer>
     
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('sw.js')
-        .then(reg => console.log('PWA lista para Layer4', reg))
-        .catch(err => console.log('Error al registrar PWA', err));
-    });
-  }
-</script>
+    <div id="update-toast">
+        <span>🚀 Nueva versión disponible</span>
+        <button id="btn-update">Actualizar</button>
+    </div>
+
+    <script>
+        let newWorker;
+    
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').then(reg => {
+                reg.addEventListener('updatefound', () => {
+                    newWorker = reg.installing;
+                    newWorker.addEventListener('statechange', () => {
+                        // Cuando el nuevo SW está instalado y esperando
+                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                            showUpdateToast();
+                        }
+                    });
+                });
+            });
+    
+            // Escuchar el cambio de controlador para recargar la página
+            let refreshing;
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                if (refreshing) return;
+                window.location.reload();
+                refreshing = true;
+            });
+        }
+    
+        function showUpdateToast() {
+            const toast = document.getElementById('update-toast');
+            toast.classList.add('show');
+            
+            document.getElementById('btn-update').addEventListener('click', () => {
+                newWorker.postMessage({ action: 'skipWaiting' });
+            });
+        }
+    </script>
 
 </body>
 
 </html>
+
 
