@@ -16,14 +16,21 @@ self.addEventListener('install', event => {
   );
 });
 
-// Estrategia: Carga desde caché, pero busca en la red si hay cambios
-self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request).then(response => {
-      return response || fetch(event.request);
+// 2. ACTIVACIÓN: AQUÍ ES DONDE LIMPIAS EL CACHÉ DE TUS COMPAÑEROS
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cache => {
+          // Si el caché guardado en el PC del compañero no es el v1.8, SE BORRA
+          if (cache !== CACHE_NAME) {
+            console.log('Borrando caché antigua:', cache);
+            return caches.delete(cache);
+          }
+        })
+      );
     })
   );
-
 });
 
 // Escuchar el mensaje para activar la nueva versión inmediatamente
@@ -39,6 +46,7 @@ self.addEventListener('message', event => {
     self.skipWaiting();
   }
 });
+
 
 
 
