@@ -245,9 +245,34 @@
         document.getElementById('btn-update').addEventListener('click', () => {
             newWorker.postMessage({ action: 'skipWaiting' });
         });
+
+        // ... (aquí va la lógica del popup que pegamos antes)
+
+        document.getElementById('btn-update').addEventListener('click', () => {
+            newWorker.postMessage({ action: 'skipWaiting' });
+        });
+
+        // --- PUNTO 3: DETECCIÓN DE ESTADO DE RED ---
+        function updateOnlineStatus() {
+            const status = document.getElementById('network-status');
+            const text = document.getElementById('status-text');
+            
+            if (navigator.onLine) {
+                status.className = 'online';
+                text.innerText = 'Online';
+            } else {
+                status.className = 'offline';
+                text.innerText = 'Modo Offline';
+            }
+        }
+
+        window.addEventListener('online', updateOnlineStatus);
+        window.addEventListener('offline', updateOnlineStatus);
+        updateOnlineStatus(); // Se ejecuta al cargar la página
     </script>
 </body>
 </html>
+
 
 
 
