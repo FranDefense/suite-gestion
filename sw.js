@@ -5,6 +5,7 @@ const assets = [
   'vozydatos_exp.html',
   'calculadoras.html',
   'changelog.html',
+  'manifest.json',
   'https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js'
 ];
 
@@ -31,5 +32,6 @@ self.addEventListener('message', event => {
     self.skipWaiting();
   }
 });
+
 
 
