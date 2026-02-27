@@ -171,7 +171,7 @@
 
     <div class="main-content">
         <div class="welcome-section">
-            <h1>Panel de Control <span style="font-size: 0.9rem; color: #a0aec0; font-weight: 400;">v1.6</span></h1>
+            <h1>Panel de Control <span style="font-size: 0.9rem; color: #a0aec0; font-weight: 400;">v1.9.1</span></h1>
             <p>Suite inteligente de herramientas para la gestión de activos y facturación de Layer4 Solutions.</p>
         </div>
 
@@ -215,7 +215,12 @@
     </div>
 
     <footer>
-        <b>Fran Maestre</b> | Layer4 Solutions 2026
+    <div style="margin-bottom: 10px;">
+        <b>Fran Maestre</b> | Layer4 Solutions 2026 | <b>v1.8.1</b>
+    </div>
+    <button onclick="limpiarCacheManual()" style="background: none; border: 1px solid #cbd5e1; color: #a0aec0; padding: 5px 10px; border-radius: 4px; font-size: 0.7rem; cursor: pointer; transition: 0.3s;" onmouseover="this.style.borderColor='#f56565'; this.style.color='#f56565'" onmouseout="this.style.borderColor='#cbd5e1'; this.style.color='#a0aec0'">
+        ⚙️ Forzar Limpieza de Caché Local
+    </button>
     </footer>
 
     <script>
@@ -269,9 +274,30 @@
         window.addEventListener('online', updateOnlineStatus);
         window.addEventListener('offline', updateOnlineStatus);
         updateOnlineStatus(); // Se ejecuta al cargar la página
+
+            async function limpiarCacheManual() {
+        if (confirm("¿Quieres limpiar la caché de la aplicación? Se borrarán los archivos temporales y la app se reiniciará para descargar la última versión de GitHub.")) {
+            // 1. Desregistrar todos los Service Workers
+            const registrations = await navigator.serviceWorker.getRegistrations();
+            for (let registration of registrations) {
+                await registration.unregister();
+            }
+            // 2. Borrar todas las memorias caché
+            const cacheNames = await caches.keys();
+            for (let name of cacheNames) {
+                await caches.delete(name);
+            }
+            // 3. Limpiar almacenamiento local (opcional, borra ajustes guardados)
+            // localStorage.clear(); 
+            
+            alert("Caché limpiada con éxito. La aplicación se va a reiniciar.");
+            window.location.reload(true);
+        }
+    }
     </script>
 </body>
 </html>
+
 
 
 
