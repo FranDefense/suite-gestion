@@ -227,7 +227,18 @@
     <footer>
         <b>Fran Maestre</b> | Layer4 Solutions 2026
     </footer>
+    
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js')
+        .then(reg => console.log('PWA lista para Layer4', reg))
+        .catch(err => console.log('Error al registrar PWA', err));
+    });
+  }
+</script>
 
 </body>
 
 </html>
+
