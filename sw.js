@@ -22,4 +22,12 @@ self.addEventListener('fetch', event => {
       return response || fetch(event.request);
     })
   );
+
+});
+
+// Escuchar el mensaje para activar la nueva versión inmediatamente
+self.addEventListener('message', event => {
+  if (event.data.action === 'skipWaiting') {
+    self.skipWaiting();
+  }
 });
