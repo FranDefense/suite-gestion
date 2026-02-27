@@ -33,5 +33,13 @@ self.addEventListener('message', event => {
   }
 });
 
+// Permite que la nueva versión se active en cuanto el usuario lo pida
+self.addEventListener('message', event => {
+  if (event.data.action === 'skipWaiting') {
+    self.skipWaiting();
+  }
+});
+
+
 
 
