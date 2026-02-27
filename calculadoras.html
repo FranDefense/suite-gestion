@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Layer4 Solutions - Facturación</title>
+    <style>
+        :root {
+            --primary: #0b2187;
+            --secondary: #4a5568;
+            --bg: #f7fafc;
+            --card-bg: #ffffff;
+            --text: #2d3748;
+            --imp-color: #10b981; /* Verde para Impuestos */
+            --dto-color: #f59e0b; /* Ámbar para Descuentos */
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            color: var(--text);
+        }
+
+        /* --- Menú Superior --- */
+        nav {
+            background: #ffffff;
+            padding: 0 2rem;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo { font-weight: 800; color: var(--primary); font-size: 1.2rem; }
+
+        .menu-links { display: flex; gap: 2rem; }
+        .menu-links a { text-decoration: none; color: var(--secondary); font-weight: 600; font-size: 0.9rem; }
+        .menu-links a:hover, .menu-links a.active { color: var(--primary); }
+
+        /* --- Tabs --- */
+        .tabs-container {
+            background: white;
+            display: flex;
+            justify-content: center;
+            border-bottom: 1px solid #edf2f7;
+        }
+
+        .tab-item {
+            padding: 1rem 2.5rem;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: #718096;
+            border-bottom: 3px solid transparent;
+            transition: 0.3s;
+        }
+
+        .tab-item.active-imp { color: var(--imp-color); border-bottom-color: var(--imp-color); }
+        .tab-item.active-dto { color: var(--dto-color); border-bottom-color: var(--dto-color); }
+
+        /* --- Contenido --- */
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 25px rgba(0,0,0,0.05);
+        }
+
+        h1 { margin-top: 0; font-size: 1.8rem; border-left: 4px solid var(--primary); padding-left: 1rem; margin-bottom: 1.5rem; }
+        h2 { font-size: 1.2rem; color: var(--secondary); margin-top: 2rem; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+
+        .tab-panel { display: none; animation: fadeIn 0.4s; }
+        .tab-panel.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* --- Estilos de Formularios --- */
+        .grid-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .field { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem; }
+        label { font-weight: 600; font-size: 0.9rem; color: var(--secondary); }
+        
+        select, input {
+            padding: 0.8rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(11,33,135,0.1); }
+
+        .result-box {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background: #f8fafc;
+            border-radius: 12px;
+            border-left: 5px solid var(--primary);
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        button {
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .btn-reset { background: #edf2f7; color: var(--secondary); }
+        .btn-reset:hover { background: #e2e8f0; }
+
+        footer {
+            background: #ffffff;
+            padding: 1.5rem;
+            text-align: center;
+            border-top: 1px solid #edf2f7;
+            font-size: 0.85rem;
+            color: #a0aec0;
+            margin-top: 3rem;
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">LAYER4 <span style="font-weight: 300;">SOLUTIONS</span></div>
+        <div class="menu-links">
+            <a href="index.html">Inicio</a>
+            <a href="consumos_v3.html">Consumos</a>
+            <a href="vozydatos_exp.html">Voz y Datos</a>
+            <a href="#" class="active">Facturación</a>
+            <a href="changelog.html">Changelog</a>
+        </div>
+    </nav>
+
+    <div class="tabs-container">
+        <div class="tab-item active-imp" onclick="showTab('imp')" id="tabImp">Impuestos (IVA/IGIC)</div>
+        <div class="tab-item" onclick="showTab('dto')" id="tabDto">Descuentos</div>
+    </div>
+
+    <div class="main-content">
+        <div id="panel-imp" class="tab-panel active">
+            <div class="card">
+                <h1>Cálculo de Impuestos</h1>
+                
+                <h2>1. Añadir impuesto</h2>
+                <div class="grid-form">
+                    <div class="field">
+                        <label>Tipo de impuesto</label>
+                        <select id="tipo1" onchange="cargarPorcentajes('tipo1','porcentaje1')"></select>
+                    </div>
+                    <div class="field">
+                        <label>Porcentaje (%)</label>
+                        <select id="porcentaje1"></select>
+                    </div>
+                    <div class="field" style="grid-column: span 2;">
+                        <label>Importe Base (€)</label>
+                        <input type="number" id="base1" placeholder="0.00" step="0.01">
+                    </div>
+                </div>
+                <div id="resultado1" class="result-box">Introduce una base para calcular.</div>
+
+                <h2 style="margin-top: 3rem;">2. Extraer impuesto (Base imponible)</h2>
+                <div class="grid-form">
+                    <div class="field">
+                        <label>Tipo de impuesto</label>
+                        <select id="tipo2" onchange="cargarPorcentajes('tipo2','porcentaje2')"></select>
+                    </div>
+                    <div class="field">
+                        <label>Porcentaje (%)</label>
+                        <select id="porcentaje2"></select>
+                    </div>
+                    <div class="field" style="grid-column: span 2;">
+                        <label>Importe Total (€)</label>
+                        <input type="number" id="total2" placeholder="0.00" step="0.01">
+                    </div>
+                </div>
+                <div id="resultado2" class="result-box">Introduce un total para extraer la base.</div>
+            </div>
+        </div>
+
+        <div id="panel-dto" class="tab-panel">
+            <div class="card">
+                <h1>Calculadora de Descuentos</h1>
+                
+                <div class="field">
+                    <label>¿Qué deseas calcular?</label>
+                    <select id="tipo" onchange="mostrarCampos()">
+                        <option value="descuento">Calcular el % de descuento aplicado</option>
+                        <option value="final">Calcular la cantidad final tras descuento</option>
+                        <option value="original">Calcular la cantidad original (antes del dto)</option>
+                    </select>
+                </div>
+
+                <div class="grid-form">
+                    <div id="campoOriginal" class="field">
+                        <label>Cantidad Original (€)</label>
+                        <input type="number" id="original" placeholder="0.00" oninput="calcular()">
+                    </div>
+                    <div id="campoFinal" class="field">
+                        <label>Cantidad Final (€)</label>
+                        <input type="number" id="final" placeholder="0.00" oninput="calcular()">
+                    </div>
+                    <div id="campoDescuento" class="field" style="display:none;">
+                        <label>Descuento (%)</label>
+                        <input type="number" id="descuento" placeholder="0" oninput="calcular()">
+                    </div>
+                </div>
+
+                <div id="resultado" class="result-box" style="font-weight: 800; text-align: center; color: var(--primary);">
+                    Introduce los valores...
+                </div>
+
+                <button class="btn-reset" id="btnReset" onclick="resetear()">Limpiar campos</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <b>Fran Maestre</b> | Layer4 Solutions 2026
+    </footer>
+
+    <script>
+        // --- LÓGICA DE NAVEGACIÓN ---
+        function showTab(tab) {
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            document.getElementById('tabImp').className = 'tab-item';
+            document.getElementById('tabDto').className = 'tab-item';
+
+            if (tab === 'imp') {
+                document.getElementById('panel-imp').classList.add('active');
+                document.getElementById('tabImp').classList.add('active-imp');
+            } else {
+                document.getElementById('panel-dto').classList.add('active');
+                document.getElementById('tabDto').classList.add('active-dto');
+            }
+        }
+
+        // --- LÓGICA DE IMPUESTOS (Tu código original) ---
+        const tiposImpuestos = {
+            "IVA": [21, 10, 4],
+            "IGIC": [7, 3, 0, 9.5, 15],
+            "IPSI": [4, 1, 0.5, 8, 10]
+        };
+
+        const formatoEuro = new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' });
+
+        function cargarPorcentajes(idTipo, idPorcentaje) {
+            const tipo = document.getElementById(idTipo);
+            const porcentaje = document.getElementById(idPorcentaje);
+            const tipoSeleccionado = tipo.value;
+            porcentaje.innerHTML = "";
+            tiposImpuestos[tipoSeleccionado].forEach(p => {
+                const option = document.createElement("option");
+                option.value = p;
+                option.text = p + "%";
+                porcentaje.add(option);
+            });
+            actualizarCalculo();
+        }
+
+        function cargarTipos() {
+            const selects = ['tipo1', 'tipo2'];
+            selects.forEach(id => {
+                const select = document.getElementById(id);
+                for (let tipo in tiposImpuestos) {
+                    const option = document.createElement("option");
+                    option.value = tipo;
+                    option.text = tipo;
+                    select.add(option);
+                }
+            });
+        }
+
+        function calcularAñadir() {
+            const base = parseFloat(document.getElementById("base1").value);
+            const porcentaje = parseFloat(document.getElementById("porcentaje1").value);
+            if (isNaN(base)) { document.getElementById("resultado1").innerHTML = "Introduce una base."; return; }
+            const impuesto = base * (porcentaje / 100);
+            const total = base + impuesto;
+            document.getElementById("resultado1").innerHTML = 
+                `<strong>Impuesto:</strong> ${formatoEuro.format(impuesto)}<br><strong>Total con impuesto:</strong> ${formatoEuro.format(total)}`;
+        }
+
+        function calcularExtraer() {
+            const total = parseFloat(document.getElementById("total2").value);
+            const porcentaje = parseFloat(document.getElementById("porcentaje2").value);
+            if (isNaN(total)) { document.getElementById("resultado2").innerHTML = "Introduce un total."; return; }
+            const base = total / (1 + porcentaje / 100);
+            const impuesto = total - base;
+            document.getElementById("resultado2").innerHTML = 
+                `<strong>Base imponible:</strong> ${formatoEuro.format(base)}<br><strong>Impuesto:</strong> ${formatoEuro.format(impuesto)}`;
+        }
+
+        function actualizarCalculo() { calcularAñadir(); calcularExtraer(); }
+
+        // --- LÓGICA DE DESCUENTOS (Tu código original) ---
+        const tipo = document.getElementById('tipo');
+        const original = document.getElementById('original');
+        const final = document.getElementById('final');
+        const descuento = document.getElementById('descuento');
+        const resultado = document.getElementById('resultado');
+
+        function mostrarCampos() {
+            const v = tipo.value;
+            document.getElementById('campoOriginal').style.display = (v === 'original') ? 'none' : 'flex';
+            document.getElementById('campoFinal').style.display = (v === 'final') ? 'none' : 'flex';
+            document.getElementById('campoDescuento').style.display = (v === 'descuento') ? 'none' : 'flex';
+            resultado.innerText = 'Esperando valores...';
+            resetear();
+        }
+
+        function calcular() {
+            const o = parseFloat(original.value);
+            const f = parseFloat(final.value);
+            const d = parseFloat(descuento.value);
+            let texto = '';
+
+            if (tipo.value === 'descuento') {
+                if (o > 0 && f >= 0) {
+                    const res = ((o - f) / o) * 100;
+                    texto = `Descuento aplicado: ${res.toFixed(2)} %`;
+                }
+            } else if (tipo.value === 'final') {
+                if (o > 0 && !isNaN(d)) {
+                    const res = o * (1 - d / 100);
+                    texto = `Cantidad final: ${res.toFixed(2)} €`;
+                }
+            } else if (tipo.value === 'original') {
+                if (f >= 0 && !isNaN(d) && d < 100) {
+                    const res = f / (1 - d / 100);
+                    texto = `Cantidad original: ${res.toFixed(2)} €`;
+                }
+            }
+            if(texto) resultado.innerText = texto;
+        }
+
+        function resetear() {
+            original.value = '';
+            final.value = '';
+            descuento.value = '';
+            if (tipo.value !== 'descuento') resultado.innerText = '';
+        }
+
+        // --- INICIALIZACIÓN ---
+        window.onload = function() {
+            // Impuestos
+            cargarTipos();
+            cargarPorcentajes('tipo1','porcentaje1');
+            cargarPorcentajes('tipo2','porcentaje2');
+            
+            document.getElementById("base1").addEventListener("input", calcularAñadir);
+            document.getElementById("total2").addEventListener("input", calcularExtraer);
+            document.getElementById("porcentaje1").addEventListener("change", calcularAñadir);
+            document.getElementById("porcentaje2").addEventListener("change", calcularExtraer);
+        };
+    </script>
+</body>
+</html>

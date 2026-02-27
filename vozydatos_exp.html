@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Vodafone Facturación - Layer4 Solutions</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <style>
+        :root {
+            --primary: #0b2187;
+            --secondary: #4a5568;
+            --bg: #f7fafc;
+            --card-bg: #ffffff;
+            --text: #2d3748;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            color: var(--text);
+        }
+
+        /* --- Menú Superior --- */
+        nav {
+            background: #ffffff;
+            padding: 0 2rem;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-weight: 800;
+            color: var(--primary);
+            font-size: 1.2rem;
+            letter-spacing: -0.5px;
+        }
+
+        .menu-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .menu-links a {
+            text-decoration: none;
+            color: var(--secondary);
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .menu-links a:hover, .menu-links a.active {
+            color: var(--primary);
+        }
+
+        /* --- Contenedor Principal --- */
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 25px rgba(0,0,0,0.05);
+        }
+
+        h1 { margin-top: 0; font-size: 1.8rem; border-left: 4px solid var(--primary); padding-left: 1rem; }
+
+        .upload-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .upload-box {
+            border: 2px dashed #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .upload-box:hover { border-color: var(--primary); background: #fff5f5; }
+
+        input[type="file"] { width: 100%; margin-top: 10px; }
+
+        .actions { display: flex; gap: 1rem; }
+
+        button {
+            flex: 1;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover { background: #6adcee; transform: translateY(-1px); }
+
+        .btn-export { background: #10b981; display: none; }
+        .btn-export:hover { background: #059669; }
+
+        #log { margin: 1.5rem 0; padding: 1rem; background: #edf2f7; border-radius: 8px; font-weight: 500; font-size: 0.9rem; }
+
+        /* --- Tabla --- */
+        table { width: 100%; border-collapse: collapse; margin-top: 2rem; }
+        th { text-align: left; padding: 1rem; background: #f8fafc; border-bottom: 2px solid #edf2f7; font-size: 0.8rem; text-transform: uppercase; color: #718096; }
+        td { padding: 1rem; border-bottom: 1px solid #edf2f7; vertical-align: top; }
+
+        /* --- Pie de página --- */
+        footer {
+            background: #ffffff;
+            padding: 1.5rem;
+            text-align: center;
+            border-top: 1px solid #edf2f7;
+            font-size: 0.85rem;
+            color: #a0aec0;
+            margin-top: 3rem;
+        }
+
+        footer b { color: var(--secondary); }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">LAYER4 <span style="font-weight: 300;">SOLUTIONS</span></div>
+        <div class="menu-links">
+            <a href="index.html">Inicio</a>
+            <a href="consumos_v3.html">Consumos</a>
+            <a href="vozydatos_exp.html" class="active">Cálculo VDF</a>
+            <a href="calculadoras.html">Facturación</a>
+            <a href="changelog.html">Changelog</a>
+        </div>
+    </nav>
+
+    <div class="main-content">
+        <div class="card">
+            <h1>Extractor de Consumos Vodafone</h1>
+            <p>Calcula automáticamente Voz, SMS, Datos y TV aplicando un margen del 10%.</p>
+            
+            <div class="upload-grid">
+                <div class="upload-box">
+                    <label><b>Base de Líneas (CSV)</b></label>
+                    <input type="file" id="fileCsv" accept=".csv">
+                </div>
+                <div class="upload-box">
+                    <label><b>Factura Vodafone (PDF)</b></label>
+                    <input type="file" id="filePdf" accept="application/pdf">
+                </div>
+            </div>
+
+            <div class="actions">
+                <button onclick="procesar()">Analizar Factura</button>
+                <button id="btnExport" class="btn-export" onclick="exportar()">Exportar para Excel</button>
+            </div>
+
+            <div id="log">Cargue los archivos para iniciar el análisis...</div>
+
+            <table id="resTable">
+                <thead>
+                    <tr>
+                        <th>Línea</th>
+                        <th>Total Consumo (+10%)</th>
+                        <th>Vista Previa Literales</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <footer>
+        <b>Fran Maestre</b> | Layer4 Solutions 2026
+    </footer>
+
+<script>
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+    let results = [];
+
+    const toNum = (s) => s ? parseFloat(s.replace(/\./g, '').replace(',', '.')) : 0;
+    const toFmt = (n) => n.toLocaleString('es-ES', { minimumFractionDigits: 4, maximumFractionDigits: 4 });
+
+    async function procesar() {
+        const csv = document.getElementById('fileCsv').files[0];
+        const pdf = document.getElementById('filePdf').files[0];
+        const log = document.getElementById('log');
+        const tbody = document.querySelector('#resTable tbody');
+
+        if (!csv || !pdf) return alert("Por favor, sube ambos archivos.");
+
+        log.innerText = "Procesando archivos...";
+        tbody.innerHTML = "";
+        results = [];
+
+        // 1. Leer Líneas
+        const lines = (await csv.text()).split(/\n/).map(l => l.trim().match(/\d{9}/)).filter(m => m).map(m => m[0]);
+
+        // 2. Extraer Texto PDF
+        const doc = await pdfjsLib.getDocument(await pdf.arrayBuffer()).promise;
+        let text = "";
+        for (let i = 1; i <= doc.numPages; i++) {
+            const page = await doc.getPage(i);
+            const content = await page.getTextContent();
+            text += content.items.map(it => it.str).join(" ") + " [P] ";
+        }
+
+        log.innerText = "Calculando con margen del 10%...";
+
+        lines.forEach(num => {
+            // Capturar Voz, SMS, Datos, TV (saltando Cuotas)
+            const reg = new RegExp(num + "(?:-\\d+)?\\s+.*?\\s+\\d+,\\d+\\s+(\\d+,\\d+)\\s+(\\d+,\\d+)\\s+(\\d+,\\d+)\\s+(\\d+,\\d+)", "g");
+            const m = reg.exec(text);
+
+            if (m) {
+                const totalNeto = toNum(m[1]) + toNum(m[2]) + toNum(m[3]) + toNum(m[4]);
+                const totalConDiez = totalNeto * 1.10;
+
+                if (totalConDiez > 0) {
+                    let details = [];
+                    const start = text.indexOf("Detalle Consumo línea " + num);
+                    if (start !== -1) {
+                        const block = text.substring(start, start + 18000);
+                        const regD = /(\d{1,2}-[A-Z][a-z]{2}\.?\s+\d{2}:\d{2}.*?(\d+,\d{4}))/g;
+                        let md;
+                        while ((md = regD.exec(block)) !== null) {
+                            if (md[2] !== "0,0000") {
+                                const ctx = block.substring(Math.max(0, md.index - 130), md.index);
+                                const parts = ctx.split(" ").filter(p => p.length > 1).slice(-12);
+                                details.push({
+                                    telDestino: parts.find(p => /^\d{9,}$/.test(p)) || "-",
+                                    desc: parts.join(" ").replace(/.*?(?=\d{9,})/, "").replace(/\d{9,}/, "").trim(),
+                                    fullRow: md[1],
+                                    impConDiez: toNum(md[2]) * 1.10
+                                });
+                            }
+                        }
+                    }
+
+                    results.push({ num, totalConDiez, details });
+                    const row = tbody.insertRow();
+                    row.innerHTML = `<td><b>${num}</b></td><td>${toFmt(totalConDiez)} €</td><td style="font-size:11px; color:#666;">${details.length} consumos con coste detectados.</td>`;
+                }
+            }
+        });
+
+        log.innerText = `Análisis finalizado: ${results.length} líneas encontradas.`;
+        document.getElementById('btnExport').style.display = results.length ? "block" : "none";
+    }
+
+    function exportar() {
+        let csv = "\ufeff";
+        results.forEach(res => {
+            // Cabecera por línea con el total al final
+            csv += `Nº Abonado;Teléfono;Descripción;Fecha;Hora;Dur./Vol;T.;${toFmt(res.totalConDiez).replace('.',',')}\n`;
+            
+            res.details.forEach(d => {
+                const parts = d.fullRow.split(" ");
+                const fecha = parts[0] || "";
+                const hora = parts[1] || "";
+                const durVol = parts[2] || "";
+                const tipo = parts[3] || "";
+                csv += `${res.num};${d.telDestino};${d.desc};${fecha};${hora};${durVol};${tipo};${toFmt(d.impConDiez).replace('.',',')}\n`;
+            });
+            csv += ";;;;;;;\n"; // Separador
+        });
+
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = `Consumos_Layer4_${new Date().getMonth()+1}_2026.csv`;
+        a.click();
+    }
+</script>
+</body>
+</html>

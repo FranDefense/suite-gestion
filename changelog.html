@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Layer4 Solutions - Historial de Cambios</title>
+    <style>
+        :root {
+            --primary: #0b2187;
+            --secondary: #4a5568;
+            --bg: #f7fafc;
+            --card-bg: #ffffff;
+            --text: #2d3748;
+            --accent-new: #10b981;
+            --accent-fix: #f56565;
+            --accent-upd: #4299e1;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            color: var(--text);
+        }
+
+        /* --- Menú Superior --- */
+        nav {
+            background: #ffffff;
+            padding: 0 2rem;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo { font-weight: 800; color: var(--primary); font-size: 1.2rem; }
+        .menu-links { display: flex; gap: 2rem; }
+        .menu-links a { text-decoration: none; color: var(--secondary); font-weight: 600; font-size: 0.9rem; }
+        .menu-links a:hover, .menu-links a.active { color: var(--primary); }
+
+        /* --- Contenido --- */
+        .main-content {
+            flex: 1;
+            padding: 3rem 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        h1 { font-size: 2rem; color: var(--primary); margin-bottom: 2rem; text-align: center; }
+
+        /* --- Timeline --- */
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #e2e8f0;
+        }
+
+        .change-entry {
+            position: relative;
+            padding-left: 60px;
+            margin-bottom: 3rem;
+        }
+
+        .version-dot {
+            position: absolute;
+            left: 11px;
+            top: 5px;
+            width: 20px;
+            height: 20px;
+            background: var(--primary);
+            border: 4px solid white;
+            border-radius: 50%;
+            box-shadow: 0 0 0 2px var(--primary);
+        }
+
+        .change-card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border: 1px solid #edf2f7;
+        }
+
+        .change-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #f7fafc;
+            padding-bottom: 10px;
+        }
+
+        .version-tag { font-weight: 800; font-size: 1.1rem; color: var(--primary); }
+        .date-tag { font-size: 0.85rem; color: #a0aec0; }
+
+        .change-list { list-style: none; padding: 0; margin: 0; }
+        .change-list li {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.95rem;
+        }
+
+        .badge {
+            font-size: 0.7rem;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            color: white;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .new { background: var(--accent-new); }
+        .fix { background: var(--accent-fix); }
+        .upd { background: var(--accent-upd); }
+
+        footer {
+            background: #ffffff;
+            padding: 1.5rem;
+            text-align: center;
+            border-top: 1px solid #edf2f7;
+            font-size: 0.85rem;
+            color: #a0aec0;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">LAYER4 <span style="font-weight: 300;">SOLUTIONS</span></div>
+        <div class="menu-links">
+            <a href="index.html">Inicio</a>
+            <a href="consumos_v3.html">Consumos</a>
+            <a href="vozydatos_exp.html">Cálculo VDF</a>
+            <a href="calculadoras.html">Facturación</a>
+            <a href="changelog.html" class="active">Changelog</a>
+        </div>
+    </nav>
+
+    <div class="main-content">
+        <h1>Historial de Cambios</h1>
+
+        <div class="timeline">
+
+            <div class="change-entry">
+                <div class="version-dot"></div>
+                <div class="change-card">
+                    <div class="change-header">
+                        <span class="version-tag">v1.5 - Consola de Ajustes</span>
+                        <span class="date-tag">Febrero 2026</span>
+                    </div>
+                    <ul class="change-list">
+                        <li><span class="badge new">Nuevo</span> Consola visual para restar GB manualmente (Nacional/Roaming) por línea antes del cálculo.</li>
+                        <li><span class="badge upd">Mejora</span> Normalización ultra-fuerte de datos (limpieza de decimales ocultos de Excel en teléfonos e ICCID).</li>
+                        <li><span class="badge new">Nuevo</span> Lanzadera (Index) con manual de uso rápido integrado.</li>
+                        <li><span class="badge new">Nuevo</span> Fusión de calculadoras de Impuestos y Descuentos en un solo módulo de "Facturación".</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="change-entry">
+                <div class="version-dot"></div>
+                <div class="change-card">
+                    <div class="change-header">
+                        <span class="version-tag">v1.4 - Soporte ICCID e Inteligencia de Datos</span>
+                        <span class="date-tag">Febrero 2026</span>
+                    </div>
+                    <ul class="change-list">
+                        <li><span class="badge new">Nuevo</span> Soporte opcional para carga de archivo de relación Línea-ICCID.</li>
+                        <li><span class="badge fix">Corregido</span> Detección de unidades de medida en Bytes (B) para Movistar (conversión a GB).</li>
+                        <li><span class="badge upd">Mejora</span> Soporte para tildes y variaciones en los encabezados de columnas (Línea/Linea).</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="change-entry">
+                <div class="version-dot"></div>
+                <div class="change-card">
+                    <div class="change-header">
+                        <span class="version-tag">v1.3 - Unificación de Suite</span>
+                        <span class="date-tag">Febrero 2026</span>
+                    </div>
+                    <ul class="change-list">
+                        <li><span class="badge upd">Mejora</span> Diseño visual unificado bajo la identidad corporativa 2026.</li>
+                        <li><span class="badge fix">Corregido</span> Aislamiento de procesos entre pestañas para evitar mezcla de resultados MVS/VDF.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="change-entry">
+                <div class="version-dot" style="background: #cbd5e1; box-shadow: 0 0 0 2px #cbd5e1;"></div>
+                <div class="change-card" style="opacity: 0.7;">
+                    <div class="change-header">
+                        <span class="version-tag">v1.0 - Lanzamiento</span>
+                        <span class="date-tag">Febrero 2026</span>
+                    </div>
+                    <ul class="change-list">
+                        <li><span class="badge new">Nuevo</span> Analizador básico de consumos Roaming.</li>
+                        <li><span class="badge new">Nuevo</span> Herramienta de desglose para PDF/Tráfico de Vodafone.</li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <footer><b>Fran Maestre</b> | Layer4 Solutions 2026</footer>
+
+</body>
+</html>

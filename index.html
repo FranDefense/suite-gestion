@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Layer4 Solutions - Panel de Herramientas</title>
+    <style>
+        :root {
+            --primary: #0b2187;
+            --secondary: #4a5568;
+            --bg: #f7fafc;
+            --card-bg: #ffffff;
+            --text: #2d3748;
+            --accent: #10b981;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            color: var(--text);
+            scroll-behavior: smooth;
+        }
+
+        /* --- Menú Superior --- */
+        nav {
+            background: #ffffff;
+            padding: 0 2rem;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo { font-weight: 800; color: var(--primary); font-size: 1.2rem; }
+
+        .menu-links { display: flex; gap: 2rem; }
+        .menu-links a { text-decoration: none; color: var(--secondary); font-weight: 600; font-size: 0.9rem; transition: 0.3s; }
+        .menu-links a:hover { color: var(--primary); }
+        .btn-help { color: var(--accent) !important; border: 1px solid var(--accent); padding: 5px 12px; border-radius: 6px; }
+        .btn-help:hover { background: var(--accent); color: white !important; }
+
+        /* --- Contenido Principal --- */
+        .main-content {
+            flex: 1;
+            padding: 4rem 2rem;
+            max-width: 1100px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .welcome-section { margin-bottom: 4rem; }
+        .welcome-section h1 { font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem; }
+        .welcome-section p { font-size: 1.1rem; color: var(--secondary); max-width: 600px; margin: 0 auto; }
+
+        /* --- Grid de Herramientas --- */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 5rem;
+        }
+
+        .tool-card {
+            background: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(11,33,135,0.1);
+        }
+
+        .icon-circle {
+            width: 70px;
+            height: 70px;
+            background: #f0f4ff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            color: var(--primary);
+        }
+
+        .tool-card h2 { margin: 0 0 1rem 0; font-size: 1.4rem; }
+        .tool-card p { font-size: 0.95rem; color: var(--secondary); line-height: 1.5; margin-bottom: 1.5rem; flex-grow: 1; }
+        .btn-enter { font-weight: 700; font-size: 0.9rem; color: var(--primary); }
+
+        /* --- Manual de Uso Rápido --- */
+        .manual-section {
+            text-align: left;
+            background: #ffffff;
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            margin-top: 2rem;
+            border: 1px solid #edf2f7;
+        }
+
+        .manual-section h2 { color: var(--primary); margin-top: 0; border-bottom: 2px solid #f0f4ff; padding-bottom: 10px; }
+        
+        .guide-item { margin-bottom: 2rem; }
+        .guide-item h3 { color: var(--secondary); font-size: 1.1rem; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+        .guide-item h3::before { content: '→'; color: var(--accent); font-weight: bold; }
+        
+        .guide-item ul { list-style: none; padding-left: 20px; }
+        .guide-item ul li { margin-bottom: 8px; font-size: 0.95rem; position: relative; }
+        .guide-item ul li::before { content: '•'; color: var(--primary); font-weight: bold; position: absolute; left: -15px; }
+
+        .tip-box {
+            background: #f0fdf4;
+            border-left: 4px solid var(--accent);
+            padding: 1rem;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            border-radius: 0 8px 8px 0;
+        }
+
+        footer {
+            background: #ffffff;
+            padding: 2rem;
+            text-align: center;
+            border-top: 1px solid #edf2f7;
+            font-size: 0.85rem;
+            color: #a0aec0;
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">LAYER4 <span style="font-weight: 300;">SOLUTIONS</span></div>
+        <div class="menu-links">
+            <a href="index.html" class="active">Inicio</a>
+            <a href="consumos_v3.html">Consumos</a>
+            <a href="vozydatos_exp.html">Cálculo VDF</a>
+            <a href="calculadoras.html">Facturación</a>
+            <a href="changelog.html">Changelog</a>
+            <a href="#manual" class="btn-help">Manual de Uso</a>
+        </div>
+    </nav>
+
+    <div class="main-content">
+        <div class="welcome-section">
+            <h1>Panel de Control</h1>
+            <p>Suite inteligente de herramientas para la gestión de activos y facturación de Layer4 Solutions.</p>
+        </div>
+
+        <div class="tools-grid">
+            <a href="consumos_v2.html" class="tool-card">
+                <div class="icon-circle">📶</div>
+                <h2>Consumos Roaming</h2>
+                <p>Analizador de tráfico Vodafone/Movistar con soporte ICCID y ajustes de descuento manual.</p>
+                <div class="btn-enter">Abrir módulo →</div>
+            </a>
+
+            <a href="vozydatos_exp.html" class="tool-card">
+                <div class="icon-circle">📊</div>
+                <h2>Cálculo VDF</h2>
+                <p>Procesador de ficheros de tráfico para desgloses detallados de costes Vodafone.</p>
+                <div class="btn-enter">Abrir módulo →</div>
+            </a>
+
+            <a href="calculadoras.html" class="tool-card">
+                <div class="icon-circle">💶</div>
+                <h2>Facturación</h2>
+                <p>Calculadora unificada de Impuestos (IVA/IGIC) y Descuentos Dinámicos.</p>
+                <div class="btn-enter">Abrir módulo →</div>
+            </a>
+        </div>
+
+        <div id="manual" class="manual-section">
+            <h2>Manual de Uso Rápido</h2>
+            
+            <div class="guide-item">
+                <h3>Módulo de Consumos Roaming</h3>
+                <ul>
+                    <li><b>Archivo 1 (Líneas):</b> Sube el listado maestro de teléfonos del cliente.</li>
+                    <li><b>Archivo 2 (Consumos):</b> Sube el Excel de tráfico de la operadora (VDF o MVS).</li>
+                    <li><b>Archivo 3 (ICCID):</b> Opcional. Permite cruzar teléfonos con su ICC correspondiente.</li>
+                    <li><b>Ajustes Manuales:</b> Usa el cajetín de ajustes antes de calcular para restar GB específicos a líneas que tengan bonos especiales o errores.</li>
+                </ul>
+                <div class="tip-box">
+                    <strong>Tip:</strong> El sistema detecta automáticamente si el consumo viene en Bytes (B), MB o GB y lo normaliza todo a Gigabytes para las alertas.
+                </div>
+            </div>
+
+            <div class="guide-item">
+                <h3>Módulo Cálculo VDF</h3>
+                <ul>
+                    <li>Diseñado para analizar los costes detallados de las líneas Vodafone.</li>
+                    <li>Sube el fichero de tráfico y el sistema aplicará los factores de corrección y desgloses por concepto.</li>
+                </ul>
+            </div>
+
+            <div class="guide-item">
+                <h3>Módulo Facturación</h3>
+                <ul>
+                    <li><b>Impuestos:</b> Selecciona el tipo (IVA, IGIC, IPSI) y elige si quieres "Añadir" el impuesto a una base o "Extraerlo" de un total.</li>
+                    <li><b>Descuentos:</b> Permite calcular el % aplicado, la cantidad final o el valor original con solo rellenar dos campos.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <b>Fran Maestre</b> | Layer4 Solutions 2026
+    </footer>
+
+</body>
+</html>
