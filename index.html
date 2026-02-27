@@ -2,243 +2,253 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Layer4 Solutions - Panel de Herramientas</title>
+    <title>Layer4 Solutions - Business Suite</title>
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0b2187">
     <style>
         :root {
             --primary: #0b2187;
-            --secondary: #4a5568;
-            --bg: #f7fafc;
-            --card-bg: #ffffff;
-            --text: #2d3748;
+            --primary-light: #1e3a8a;
+            --bg: #f8fafc;
+            --sidebar-width: 260px;
+            --text-light: #ffffff;
+            --text-dark: #2d3748;
             --accent: #10b981;
         }
 
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background: var(--bg);
+            font-family: 'Segoe UI', sans-serif;
             margin: 0;
             display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            color: var(--text);
-            scroll-behavior: smooth;
+            background: var(--bg);
+            height: 100vh;
+            overflow: hidden;
         }
 
-        /* --- Menú Superior --- */
-        nav {
-            background: #ffffff;
-            padding: 0 2rem;
+        /* --- Sidebar Lateral --- */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--primary);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+            box-shadow: 4px 0 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            padding: 2rem 1.5rem;
+            font-weight: 800;
+            font-size: 1.1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .sidebar-menu {
+            flex: 1;
+            padding: 1rem 0;
+            overflow-y: auto;
+        }
+
+        .menu-category {
+            padding: 1.5rem 1.5rem 0.5rem;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255,255,255,0.5);
+            font-weight: 700;
+        }
+
+        .menu-item {
+            padding: 0.8rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: rgba(255,255,255,0.8);
+            font-size: 0.95rem;
+            transition: 0.2s;
+        }
+
+        .menu-item:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        .sidebar-footer {
+            padding: 1rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            font-size: 0.75rem;
+            text-align: center;
+        }
+
+        /* --- Contenido Principal --- */
+        .main-wrapper {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: white;
             height: 60px;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            padding: 0 2rem;
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
         }
 
-        .logo { font-weight: 800; color: var(--primary); font-size: 1.2rem; }
-        .menu-links { display: flex; gap: 2rem; align-items: center; }
-        .menu-links a { text-decoration: none; color: var(--secondary); font-weight: 600; font-size: 0.9rem; transition: 0.3s; }
-        .menu-links a:hover { color: var(--primary); }
-        .btn-help { color: var(--accent) !important; border: 1px solid var(--accent); padding: 5px 12px; border-radius: 6px; }
-        .btn-help:hover { background: var(--accent); color: white !important; }
-
-        /* --- Contenido --- */
-        .main-content {
-            flex: 1;
-            padding: 4rem 2rem;
-            max-width: 1100px;
+        .container {
+            padding: 2rem;
+            max-width: 1000px;
             margin: 0 auto;
             width: 100%;
-            box-sizing: border-box;
-            text-align: center;
         }
 
-        .welcome-section { margin-bottom: 4rem; }
-        .welcome-section h1 { font-size: 2.5rem; color: var(--primary); margin-bottom: 0.5rem; }
-        .welcome-section p { font-size: 1.1rem; color: var(--secondary); max-width: 600px; margin: 0 auto; }
-
-        /* --- Grid de Herramientas --- */
-        .tools-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-bottom: 5rem;
-        }
-
-        .tool-card {
-            background: var(--card-bg);
-            padding: 2.5rem;
+        .status-badge {
+            font-size: 0.75rem;
+            padding: 4px 12px;
             border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            font-weight: 700;
+        }
+        .online { background: #dcfce7; color: #166534; }
+        .offline { background: #fee2e2; color: #991b1b; }
+
+        /* --- Cards de Bienvenida --- */
+        .welcome-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .card-mini {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: left;
+            border: 1px solid #edf2f7;
             text-decoration: none;
             color: inherit;
-            transition: all 0.3s ease;
-            border: 1px solid transparent;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
         }
-
-        .tool-card:hover {
-            transform: translateY(-10px);
-            border-color: var(--primary);
-            box-shadow: 0 20px 40px rgba(11,33,135,0.1);
-        }
-
-        .icon-circle {
-            width: 70px;
-            height: 70px;
-            background: #f0f4ff;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 1.5rem;
-            font-size: 1.8rem;
-            color: var(--primary);
-        }
-
-        .tool-card h2 { margin: 0 0 1rem 0; font-size: 1.4rem; }
-        .tool-card p { font-size: 0.95rem; color: var(--secondary); line-height: 1.5; margin-bottom: 1.5rem; flex-grow: 1; }
-        .btn-enter { font-weight: 700; font-size: 0.9rem; color: var(--primary); }
 
         /* --- Popup Actualización --- */
         #update-toast {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background: var(--primary);
+            background: #2d3748;
             color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            display: flex;
+            padding: 1rem;
+            border-radius: 8px;
+            display: none;
+            gap: 10px;
             align-items: center;
-            gap: 15px;
-            z-index: 9999;
-            transform: translateY(150%);
-            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
-        #update-toast.show { transform: translateY(0); }
-        #update-toast button { background: var(--accent); color: white; border: none; padding: 8px 15px; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 0.8rem; }
 
-        /* --- Manual --- */
-        .manual-section { text-align: left; background: #ffffff; padding: 3rem; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); margin-top: 2rem; border: 1px solid #edf2f7; }
-        .manual-section h2 { color: var(--primary); margin-top: 0; border-bottom: 2px solid #f0f4ff; padding-bottom: 10px; }
-        .guide-item { margin-bottom: 2rem; }
-        .guide-item h3 { color: var(--secondary); font-size: 1.1rem; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
-        .guide-item h3::before { content: '→'; color: var(--accent); font-weight: bold; }
-        
-        footer { background: #ffffff; padding: 2rem; text-align: center; border-top: 1px solid #edf2f7; font-size: 0.85rem; color: #a0aec0; }
-
-        /* --- Indicador de Estado de Red --- */
-        #network-status {
-            font-size: 0.75rem;
-            font-weight: 700;
-            padding: 4px 10px;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            transition: 0.3s;
+        .btn-clean {
+            background: none;
+            border: 1px solid rgba(255,255,255,0.3);
+            color: rgba(255,255,255,0.6);
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
         }
-        .online { background: #dcfce7; color: #166534; }
-        .offline { background: #fee2e2; color: #991b1b; }
-        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+        .btn-clean:hover { border-color: #f56565; color: #f56565; }
+
     </style>
 </head>
 <body>
 
-    <nav>
-        <div class="logo">LAYER4 <span style="font-weight: 300;">SOLUTIONS</span></div>
-        <div id="network-status" class="online">
-        <div class="status-dot"></div>
-        <span id="status-text">Online</span>
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            LAYER4 <span style="font-weight: 300;">SOLUTIONS</span>
         </div>
-        <div class="menu-links">
-            <a href="consumos_v3.html">Consumos</a>
-            <a href="vozydatos_exp.html">Cálculo VDF</a>
-            <a href="calculadoras.html">Facturación</a>
-            <a href="changelog.html">Changelog</a>
-            <a href="#manual" class="btn-help">Manual de Uso</a>
-        </div>
-    </nav>
+        
+        <nav class="sidebar-menu">
+            <div class="menu-category">At. Cliente</div>
+            <a href="consumos_v2.html" class="menu-item"><span>📶</span> Consumos Roaming</a>
+            
+            <div class="menu-category">Operaciones</div>
+            <a href="vozydatos_exp.html" class="menu-item"><span>📊</span> Cálculo VDF</a>
+            
+            <div class="menu-category">Facturación</div>
+            <a href="calculadoras.html" class="menu-item"><span>💶</span> Calculadoras</a>
+            
+            <div class="menu-category">Soporte</div>
+            <a href="changelog.html" class="menu-item"><span>📝</span> Changelog</a>
+            <a href="#manual" class="menu-item"><span>📖</span> Manual</a>
+        </nav>
 
-    <div class="main-content">
-        <div class="welcome-section">
-            <h1>Panel de Control <span style="font-size: 0.9rem; color: #a0aec0; font-weight: 400;">v1.9.1</span></h1>
-            <p>Suite inteligente de herramientas para la gestión de activos y facturación de Layer4 Solutions.</p>
+        <div class="sidebar-footer">
+            v1.8 | <button class="btn-clean" onclick="limpiarCacheManual()">Limpiar Caché</button>
         </div>
+    </aside>
 
-        <div class="tools-grid">
-            <a href="consumos_v2.html" class="tool-card">
-                <div class="icon-circle">📶</div>
-                <h2>Consumos Roaming</h2>
-                <p>Analizador de tráfico con soporte ICCID y consola de ajustes manuales en tiempo real.</p>
-                <div class="btn-enter">Abrir módulo →</div>
-            </a>
-            <a href="vozydatos_exp.html" class="tool-card">
-                <div class="icon-circle">📊</div>
-                <h2>Cálculo VDF</h2>
-                <p>Procesador específico para desgloses detallados de costes y tráfico Vodafone.</p>
-                <div class="btn-enter">Abrir módulo →</div>
-            </a>
-            <a href="calculadoras.html" class="tool-card">
-                <div class="icon-circle">💶</div>
-                <h2>Facturación</h2>
-                <p>Calculadora unificada de Impuestos (IVA/IGIC) y Descuentos Dinámicos.</p>
-                <div class="btn-enter">Abrir módulo →</div>
-            </a>
-        </div>
-
-        <div id="manual" class="manual-section">
-            <h2>Manual de Uso Rápido</h2>
-            <div class="guide-item">
-                <h3>Instalación como App</h3>
-                <p>En la barra de direcciones de Chrome/Edge verás un icono de <b>Instalar</b>. Al hacerlo, tendrás la suite con acceso directo desde tu escritorio con el icono redondo de Layer4.</p>
+    <main class="main-wrapper">
+        <header>
+            <div style="font-weight: 600; color: var(--secondary);">Panel de Control</div>
+            <div id="network-status" class="online">
+                <span class="status-dot"></span>
+                <span id="status-text">Online</span>
             </div>
-            <div class="guide-item">
-                <h3>Gestión de Consumos</h3>
-                <p>Sube la base de líneas y el fichero de tráfico. Si necesitas realizar una corrección de GB antes de calcular, usa la <b>Consola de Ajustes</b>.</p>
+        </header>
+
+        <div class="container">
+            <div style="text-align: left;">
+                <h1 style="margin-bottom: 0;">Bienvenido, Fran</h1>
+                <p style="color: var(--secondary);">Selecciona una herramienta para comenzar a trabajar.</p>
+            </div>
+
+            <div class="welcome-grid">
+                <a href="consumos_v2.html" class="card-mini">
+                    <h3 style="margin: 0 0 10px 0;">Control de Roaming</h3>
+                    <p style="font-size: 0.85rem; color: #718096; margin: 0;">Gestiona consumos nacionales y extranjeros con ajustes manuales.</p>
+                </a>
+                <a href="calculadoras.html" class="card-mini">
+                    <h3 style="margin: 0 0 10px 0;">Facturación Rápida</h3>
+                    <p style="font-size: 0.85rem; color: #718096; margin: 0;">Cálculo de IVA, IGIC y descuentos sobre bases imponibles.</p>
+                </a>
             </div>
         </div>
-    </div>
+    </main>
 
     <div id="update-toast">
         <span>🚀 Nueva versión disponible</span>
-        <button id="btn-update">Actualizar</button>
+        <button onclick="actualizarApp()" style="background: var(--accent); border:none; color:white; padding: 5px 10px; border-radius:4px; cursor:pointer;">Actualizar</button>
     </div>
-
-    <footer>
-    <div style="margin-bottom: 10px;">
-        <b>Fran Maestre</b> | Layer4 Solutions 2026 | <b>v1.8.1</b>
-    </div>
-    <button onclick="limpiarCacheManual()" style="background: none; border: 1px solid #cbd5e1; color: #a0aec0; padding: 5px 10px; border-radius: 4px; font-size: 0.7rem; cursor: pointer; transition: 0.3s;" onmouseover="this.style.borderColor='#f56565'; this.style.color='#f56565'" onmouseout="this.style.borderColor='#cbd5e1'; this.style.color='#a0aec0'">
-        ⚙️ Forzar Limpieza de Caché Local
-    </button>
-    </footer>
 
     <script>
-        // LÓGICA PWA + POPUP
-        let newWorker;
+        // Lógica de Red
+        function updateOnlineStatus() {
+            const status = document.getElementById('network-status');
+            const text = document.getElementById('status-text');
+            if (navigator.onLine) {
+                status.className = 'online'; text.innerText = 'Online';
+            } else {
+                status.className = 'offline'; text.innerText = 'Modo Offline';
+            }
+        }
+        window.addEventListener('online', updateOnlineStatus);
+        window.addEventListener('offline', updateOnlineStatus);
+        updateOnlineStatus();
 
+        // Lógica PWA v1.8
+        let newWorker;
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js').then(reg => {
+            navigator.serviceWorker.register('sw.js?v=' + Date.now()).then(reg => {
                 reg.addEventListener('updatefound', () => {
                     newWorker = reg.installing;
                     newWorker.addEventListener('statechange', () => {
                         if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                            document.getElementById('update-toast').classList.add('show');
+                            document.getElementById('update-toast').style.display = 'flex';
                         }
                     });
                 });
             });
-
             let refreshing;
             navigator.serviceWorker.addEventListener('controllerchange', () => {
                 if (refreshing) return;
@@ -247,59 +257,22 @@
             });
         }
 
-        document.getElementById('btn-update').addEventListener('click', () => {
+        function actualizarApp() {
             newWorker.postMessage({ action: 'skipWaiting' });
-        });
-
-        // ... (aquí va la lógica del popup que pegamos antes)
-
-        document.getElementById('btn-update').addEventListener('click', () => {
-            newWorker.postMessage({ action: 'skipWaiting' });
-        });
-
-        // --- PUNTO 3: DETECCIÓN DE ESTADO DE RED ---
-        function updateOnlineStatus() {
-            const status = document.getElementById('network-status');
-            const text = document.getElementById('status-text');
-            
-            if (navigator.onLine) {
-                status.className = 'online';
-                text.innerText = 'Online';
-            } else {
-                status.className = 'offline';
-                text.innerText = 'Modo Offline';
-            }
         }
 
-        window.addEventListener('online', updateOnlineStatus);
-        window.addEventListener('offline', updateOnlineStatus);
-        updateOnlineStatus(); // Se ejecuta al cargar la página
-
-            async function limpiarCacheManual() {
-        if (confirm("¿Quieres limpiar la caché de la aplicación? Se borrarán los archivos temporales y la app se reiniciará para descargar la última versión de GitHub.")) {
-            // 1. Desregistrar todos los Service Workers
-            const registrations = await navigator.serviceWorker.getRegistrations();
-            for (let registration of registrations) {
-                await registration.unregister();
+        async function limpiarCacheManual() {
+            if (confirm("¿Limpiar caché y reiniciar?")) {
+                const names = await caches.keys();
+                for (let n of names) await caches.delete(n);
+                const regs = await navigator.serviceWorker.getRegistrations();
+                for (let r of regs) await r.unregister();
+                window.location.reload(true);
             }
-            // 2. Borrar todas las memorias caché
-            const cacheNames = await caches.keys();
-            for (let name of cacheNames) {
-                await caches.delete(name);
-            }
-            // 3. Limpiar almacenamiento local (opcional, borra ajustes guardados)
-            // localStorage.clear(); 
-            
-            alert("Caché limpiada con éxito. La aplicación se va a reiniciar.");
-            window.location.reload(true);
         }
-    }
     </script>
 </body>
 </html>
-
-
-
 
 
 
