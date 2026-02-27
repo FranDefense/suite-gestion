@@ -31,15 +31,21 @@
             color: white;
             display: flex;
             flex-direction: column;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: 4px 0 10px rgba(0,0,0,0.1);
             z-index: 1000;
+        }
+
+        /* Clase para contraer el menú */
+        .sidebar.collapsed {
+            margin-left: -260px;
         }
 
         .sidebar-header {
             padding: 2rem 1.5rem;
             font-weight: 800;
             font-size: 1.1rem;
+            white-space: nowrap;
             border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
@@ -69,16 +75,12 @@
             transition: 0.2s;
         }
 
-        .menu-item:hover {
-            background: rgba(255,255,255,0.1);
-            color: white;
-        }
+        .menu-item:hover { background: rgba(255,255,255,0.1); color: white; }
 
         .sidebar-footer {
             padding: 1rem;
             border-top: 1px solid rgba(255,255,255,0.1);
             font-size: 0.75rem;
-            text-align: center;
         }
 
         /* --- Contenido Principal --- */
@@ -87,6 +89,7 @@
             overflow-y: auto;
             display: flex;
             flex-direction: column;
+            width: 100%;
         }
 
         header {
@@ -95,8 +98,19 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 2rem;
+            padding: 0 1.5rem;
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .toggle-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--primary);
+            padding: 5px;
+            display: flex;
+            align-items: center;
         }
 
         .container {
@@ -111,11 +125,15 @@
             padding: 4px 12px;
             border-radius: 20px;
             font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
         .online { background: #dcfce7; color: #166534; }
         .offline { background: #fee2e2; color: #991b1b; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
 
-        /* --- Cards de Bienvenida --- */
+        /* --- Cards --- */
         .welcome-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -127,50 +145,50 @@
             background: white;
             padding: 1.5rem;
             border-radius: 12px;
-            text-align: left;
             border: 1px solid #edf2f7;
             text-decoration: none;
             color: inherit;
+            transition: 0.2s;
         }
+        .card-mini:hover { border-color: var(--primary); transform: translateY(-3px); }
 
-        /* --- Popup Actualización --- */
+        /* --- Popup Actualización (Corregido) --- */
         #update-toast {
             position: fixed;
             bottom: 20px;
             right: 20px;
             background: #2d3748;
             color: white;
-            padding: 1rem;
-            border-radius: 8px;
-            display: none;
-            gap: 10px;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            display: none; /* Oculto por defecto */
             align-items: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            gap: 15px;
+            z-index: 10000;
+            animation: slideUp 0.5s ease-out;
         }
+        @keyframes slideUp { from { transform: translateY(100px); } to { transform: translateY(0); } }
 
+        .btn-update-confirm { background: var(--accent); border: none; color: white; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        
         .btn-clean {
-            background: none;
-            border: 1px solid rgba(255,255,255,0.3);
-            color: rgba(255,255,255,0.6);
-            cursor: pointer;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.7rem;
+            background: none; border: 1px solid rgba(255,255,255,0.3);
+            color: rgba(255,255,255,0.6); cursor: pointer; padding: 4px 8px;
+            border-radius: 4px; font-size: 0.7rem; margin-top: 10px;
         }
-        .btn-clean:hover { border-color: #f56565; color: #f56565; }
-
     </style>
 </head>
 <body>
 
-    <aside class="sidebar">
+    <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
             LAYER4 <span style="font-weight: 300;">SOLUTIONS</span>
         </div>
         
         <nav class="sidebar-menu">
             <div class="menu-category">At. Cliente</div>
-            <a href="consumos_v3.html" class="menu-item"><span>📶</span> Consumos Roaming</a>
+            <a href="consumos_v2.html" class="menu-item"><span>📶</span> Consumos Roaming</a>
             
             <div class="menu-category">Operaciones</div>
             <a href="vozydatos_exp.html" class="menu-item"><span>📊</span> Cálculo VDF</a>
@@ -184,45 +202,55 @@
         </nav>
 
         <div class="sidebar-footer">
-            v1.9.1 | <button class="btn-clean" onclick="limpiarCacheManual()">Limpiar Caché</button>
+            <div style="opacity: 0.6">v1.8.1</div>
+            <button class="btn-clean" onclick="limpiarCacheManual()">⚙️ Limpiar Caché</button>
         </div>
     </aside>
 
     <main class="main-wrapper">
         <header>
-            <div style="font-weight: 600; color: var(--secondary);">Panel de Control</div>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <button class="toggle-btn" onclick="toggleMenu()" title="Contraer/Expandir menú">☰</button>
+                <div style="font-weight: 600; color: var(--secondary);">Panel de Control</div>
+            </div>
+            
             <div id="network-status" class="online">
-                <span class="status-dot"></span>
+                <div class="status-dot"></div>
                 <span id="status-text">Online</span>
             </div>
         </header>
 
         <div class="container">
             <div style="text-align: left;">
-                <h1 style="margin-bottom: 0;">Bienvenido al Panel de Control</h1>
-                <p style="color: var(--secondary);">Selecciona una herramienta para comenzar a trabajar.</p>
+                <h1 style="margin-bottom: 0;">Hola de nuevo, Fran</h1>
+                <p style="color: var(--secondary);">Tu panel de gestión está listo y actualizado.</p>
             </div>
 
             <div class="welcome-grid">
-                <a href="consumos_v3.html" class="card-mini">
-                    <h3 style="margin: 0 0 10px 0;">Control de Roaming</h3>
-                    <p style="font-size: 0.85rem; color: #718096; margin: 0;">Gestiona consumos nacionales y extranjeros con ajustes manuales.</p>
+                <a href="consumos_v2.html" class="card-mini">
+                    <h3 style="margin: 0 0 10px 0;">Consumos Roaming</h3>
+                    <p style="font-size: 0.85rem; color: #718096; margin: 0;">Acceso directo al analizador de tráfico VDF/MVS.</p>
                 </a>
-                <a href="vozydatos_exp.html" class="card-mini">
-                    <h3 style="margin: 0 0 10px 0;">Herramientas fact.</h3>
-                    <p style="font-size: 0.85rem; color: #718096; margin: 0;">Cálculo de IVA, IGIC y descuentos sobre bases imponibles.</p>
+                <a href="calculadoras.html" class="card-mini">
+                    <h3 style="margin: 0 0 10px 0;">Calculadoras</h3>
+                    <p style="font-size: 0.85rem; color: #718096; margin: 0;">Herramientas fiscales y de descuentos rápidos.</p>
                 </a>
             </div>
         </div>
     </main>
 
     <div id="update-toast">
-        <span>🚀 Nueva versión disponible</span>
-        <button onclick="actualizarApp()" style="background: var(--accent); border:none; color:white; padding: 5px 10px; border-radius:4px; cursor:pointer;">Actualizar</button>
+        <span>🚀 Nueva versión disponible (v1.8.1)</span>
+        <button class="btn-update-confirm" onclick="actualizarApp()">Actualizar ahora</button>
     </div>
 
     <script>
-        // Lógica de Red
+        // --- FUNCIÓN COLAPSAR MENÚ ---
+        function toggleMenu() {
+            document.getElementById('sidebar').classList.toggle('collapsed');
+        }
+
+        // --- LÓGICA DE RED ---
         function updateOnlineStatus() {
             const status = document.getElementById('network-status');
             const text = document.getElementById('status-text');
@@ -236,19 +264,22 @@
         window.addEventListener('offline', updateOnlineStatus);
         updateOnlineStatus();
 
-        // Lógica PWA v1.8
+        // --- LÓGICA PWA v1.8.1 ---
         let newWorker;
         if ('serviceWorker' in navigator) {
+            // El ?v=Date.now() evita que el navegador use un sw.js viejo de su propia caché
             navigator.serviceWorker.register('sw.js?v=' + Date.now()).then(reg => {
                 reg.addEventListener('updatefound', () => {
                     newWorker = reg.installing;
                     newWorker.addEventListener('statechange', () => {
+                        // IMPORTANTE: Solo mostramos el toast si el SW está instalado Y ya había uno controlando la página
                         if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
                             document.getElementById('update-toast').style.display = 'flex';
                         }
                     });
                 });
             });
+
             let refreshing;
             navigator.serviceWorker.addEventListener('controllerchange', () => {
                 if (refreshing) return;
@@ -258,11 +289,13 @@
         }
 
         function actualizarApp() {
-            newWorker.postMessage({ action: 'skipWaiting' });
+            if (newWorker) {
+                newWorker.postMessage({ action: 'skipWaiting' });
+            }
         }
 
         async function limpiarCacheManual() {
-            if (confirm("¿Limpiar caché y reiniciar?")) {
+            if (confirm("¿Quieres forzar la limpieza total de caché? La app se reiniciará.")) {
                 const names = await caches.keys();
                 for (let n of names) await caches.delete(n);
                 const regs = await navigator.serviceWorker.getRegistrations();
@@ -273,6 +306,7 @@
     </script>
 </body>
 </html>
+
 
 
 
