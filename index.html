@@ -135,12 +135,31 @@
         .guide-item h3::before { content: '→'; color: var(--accent); font-weight: bold; }
         
         footer { background: #ffffff; padding: 2rem; text-align: center; border-top: 1px solid #edf2f7; font-size: 0.85rem; color: #a0aec0; }
+
+        /* --- Indicador de Estado de Red --- */
+        #network-status {
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: 0.3s;
+        }
+        .online { background: #dcfce7; color: #166534; }
+        .offline { background: #fee2e2; color: #991b1b; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
     </style>
 </head>
 <body>
 
     <nav>
         <div class="logo">LAYER4 <span style="font-weight: 300;">SOLUTIONS</span></div>
+        <div id="network-status" class="online">
+        <div class="status-dot"></div>
+        <span id="status-text">Online</span>
+        </div>
         <div class="menu-links">
             <a href="consumos_v2.html">Consumos Roaming</a>
             <a href="vozydatos_exp.html">Cálculo VDF</a>
@@ -229,6 +248,7 @@
     </script>
 </body>
 </html>
+
 
 
 
