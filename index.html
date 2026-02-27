@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Layer4 Solutions - Panel de Herramientas</title>
     <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0b2187">
     <style>
         :root {
             --primary: #0b2187;
@@ -40,14 +41,13 @@
         }
 
         .logo { font-weight: 800; color: var(--primary); font-size: 1.2rem; }
-
-        .menu-links { display: flex; gap: 2rem; }
+        .menu-links { display: flex; gap: 2rem; align-items: center; }
         .menu-links a { text-decoration: none; color: var(--secondary); font-weight: 600; font-size: 0.9rem; transition: 0.3s; }
         .menu-links a:hover { color: var(--primary); }
         .btn-help { color: var(--accent) !important; border: 1px solid var(--accent); padding: 5px 12px; border-radius: 6px; }
         .btn-help:hover { background: var(--accent); color: white !important; }
 
-        /* --- Contenido Principal --- */
+        /* --- Contenido --- */
         .main-content {
             flex: 1;
             padding: 4rem 2rem;
@@ -59,7 +59,7 @@
         }
 
         .welcome-section { margin-bottom: 4rem; }
-        .welcome-section h1 { font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem; }
+        .welcome-section h1 { font-size: 2.5rem; color: var(--primary); margin-bottom: 0.5rem; }
         .welcome-section p { font-size: 1.1rem; color: var(--secondary); max-width: 600px; margin: 0 auto; }
 
         /* --- Grid de Herramientas --- */
@@ -107,46 +107,7 @@
         .tool-card p { font-size: 0.95rem; color: var(--secondary); line-height: 1.5; margin-bottom: 1.5rem; flex-grow: 1; }
         .btn-enter { font-weight: 700; font-size: 0.9rem; color: var(--primary); }
 
-        /* --- Manual de Uso Rápido --- */
-        .manual-section {
-            text-align: left;
-            background: #ffffff;
-            padding: 3rem;
-            border-radius: 20px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
-            margin-top: 2rem;
-            border: 1px solid #edf2f7;
-        }
-
-        .manual-section h2 { color: var(--primary); margin-top: 0; border-bottom: 2px solid #f0f4ff; padding-bottom: 10px; }
-        
-        .guide-item { margin-bottom: 2rem; }
-        .guide-item h3 { color: var(--secondary); font-size: 1.1rem; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
-        .guide-item h3::before { content: '→'; color: var(--accent); font-weight: bold; }
-        
-        .guide-item ul { list-style: none; padding-left: 20px; }
-        .guide-item ul li { margin-bottom: 8px; font-size: 0.95rem; position: relative; }
-        .guide-item ul li::before { content: '•'; color: var(--primary); font-weight: bold; position: absolute; left: -15px; }
-
-        .tip-box {
-            background: #f0fdf4;
-            border-left: 4px solid var(--accent);
-            padding: 1rem;
-            margin-top: 10px;
-            font-size: 0.9rem;
-            border-radius: 0 8px 8px 0;
-        }
-
-        footer {
-            background: #ffffff;
-            padding: 2rem;
-            text-align: center;
-            border-top: 1px solid #edf2f7;
-            font-size: 0.85rem;
-            color: #a0aec0;
-        }
-
-        /* --- Popup de Actualización --- */
+        /* --- Popup Actualización --- */
         #update-toast {
             position: fixed;
             bottom: 20px;
@@ -163,25 +124,17 @@
             transform: translateY(150%);
             transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
+        #update-toast.show { transform: translateY(0); }
+        #update-toast button { background: var(--accent); color: white; border: none; padding: 8px 15px; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 0.8rem; }
+
+        /* --- Manual --- */
+        .manual-section { text-align: left; background: #ffffff; padding: 3rem; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); margin-top: 2rem; border: 1px solid #edf2f7; }
+        .manual-section h2 { color: var(--primary); margin-top: 0; border-bottom: 2px solid #f0f4ff; padding-bottom: 10px; }
+        .guide-item { margin-bottom: 2rem; }
+        .guide-item h3 { color: var(--secondary); font-size: 1.1rem; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+        .guide-item h3::before { content: '→'; color: var(--accent); font-weight: bold; }
         
-        #update-toast.show {
-            transform: translateY(0);
-        }
-        
-        #update-toast button {
-            background: var(--accent);
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 6px;
-            font-weight: 700;
-            cursor: pointer;
-            font-size: 0.8rem;
-        }
-        
-        #update-toast button:hover {
-            opacity: 0.9;
-        }
+        footer { background: #ffffff; padding: 2rem; text-align: center; border-top: 1px solid #edf2f7; font-size: 0.85rem; color: #a0aec0; }
     </style>
 </head>
 <body>
@@ -189,8 +142,7 @@
     <nav>
         <div class="logo">LAYER4 <span style="font-weight: 300;">SOLUTIONS</span></div>
         <div class="menu-links">
-            <a href="index.html" class="active">Inicio</a>
-            <a href="consumos_v3.html">Consumos</a>
+            <a href="consumos_v2.html">Consumos Roaming</a>
             <a href="vozydatos_exp.html">Cálculo VDF</a>
             <a href="calculadoras.html">Facturación</a>
             <a href="changelog.html">Changelog</a>
@@ -200,7 +152,7 @@
 
     <div class="main-content">
         <div class="welcome-section">
-            <h1>Panel de Control</h1>
+            <h1>Panel de Control <span style="font-size: 0.9rem; color: #a0aec0; font-weight: 400;">v1.6</span></h1>
             <p>Suite inteligente de herramientas para la gestión de activos y facturación de Layer4 Solutions.</p>
         </div>
 
@@ -208,17 +160,15 @@
             <a href="consumos_v2.html" class="tool-card">
                 <div class="icon-circle">📶</div>
                 <h2>Consumos Roaming</h2>
-                <p>Analizador de tráfico Vodafone/Movistar con soporte ICCID y ajustes de descuento manual.</p>
+                <p>Analizador de tráfico con soporte ICCID y consola de ajustes manuales en tiempo real.</p>
                 <div class="btn-enter">Abrir módulo →</div>
             </a>
-
             <a href="vozydatos_exp.html" class="tool-card">
                 <div class="icon-circle">📊</div>
                 <h2>Cálculo VDF</h2>
-                <p>Procesador de ficheros de tráfico para desgloses detallados de costes Vodafone.</p>
+                <p>Procesador específico para desgloses detallados de costes y tráfico Vodafone.</p>
                 <div class="btn-enter">Abrir módulo →</div>
             </a>
-
             <a href="calculadoras.html" class="tool-card">
                 <div class="icon-circle">💶</div>
                 <h2>Facturación</h2>
@@ -229,64 +179,42 @@
 
         <div id="manual" class="manual-section">
             <h2>Manual de Uso Rápido</h2>
-            
             <div class="guide-item">
-                <h3>Módulo de Consumos Roaming</h3>
-                <ul>
-                    <li><b>Archivo 1 (Líneas):</b> Sube el listado maestro de teléfonos del cliente.</li>
-                    <li><b>Archivo 2 (Consumos):</b> Sube el Excel de tráfico de la operadora (VDF o MVS).</li>
-                    <li><b>Archivo 3 (ICCID):</b> Opcional. Permite cruzar teléfonos con su ICC correspondiente.</li>
-                    <li><b>Ajustes Manuales:</b> Usa el cajetín de ajustes antes de calcular para restar GB específicos a líneas que tengan bonos especiales o errores.</li>
-                </ul>
-                <div class="tip-box">
-                    <strong>Tip:</strong> El sistema detecta automáticamente si el consumo viene en Bytes (B), MB o GB y lo normaliza todo a Gigabytes para las alertas.
-                </div>
+                <h3>Instalación como App</h3>
+                <p>En la barra de direcciones de Chrome/Edge verás un icono de <b>Instalar</b>. Al hacerlo, tendrás la suite con acceso directo desde tu escritorio con el icono redondo de Layer4.</p>
             </div>
-
             <div class="guide-item">
-                <h3>Módulo Cálculo VDF</h3>
-                <ul>
-                    <li>Diseñado para analizar los costes detallados de las líneas Vodafone.</li>
-                    <li>Sube el fichero de tráfico y el sistema aplicará los factores de corrección y desgloses por concepto.</li>
-                </ul>
-            </div>
-
-            <div class="guide-item">
-                <h3>Módulo Facturación</h3>
-                <ul>
-                    <li><b>Impuestos:</b> Selecciona el tipo (IVA, IGIC, IPSI) y elige si quieres "Añadir" el impuesto a una base o "Extraerlo" de un total.</li>
-                    <li><b>Descuentos:</b> Permite calcular el % aplicado, la cantidad final o el valor original con solo rellenar dos campos.</li>
-                </ul>
+                <h3>Gestión de Consumos</h3>
+                <p>Sube la base de líneas y el fichero de tráfico. Si necesitas realizar una corrección de GB antes de calcular, usa la <b>Consola de Ajustes</b>.</p>
             </div>
         </div>
     </div>
 
-    <footer>
-        <b>Fran Maestre</b> | Layer4 Solutions 2026
-    </footer>
-    
     <div id="update-toast">
         <span>🚀 Nueva versión disponible</span>
         <button id="btn-update">Actualizar</button>
     </div>
 
+    <footer>
+        <b>Fran Maestre</b> | Layer4 Solutions 2026
+    </footer>
+
     <script>
+        // LÓGICA PWA + POPUP
         let newWorker;
-    
+
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('sw.js').then(reg => {
                 reg.addEventListener('updatefound', () => {
                     newWorker = reg.installing;
                     newWorker.addEventListener('statechange', () => {
-                        // Cuando el nuevo SW está instalado y esperando
                         if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                            showUpdateToast();
+                            document.getElementById('update-toast').classList.add('show');
                         }
                     });
                 });
             });
-    
-            // Escuchar el cambio de controlador para recargar la página
+
             let refreshing;
             navigator.serviceWorker.addEventListener('controllerchange', () => {
                 if (refreshing) return;
@@ -294,19 +222,13 @@
                 refreshing = true;
             });
         }
-    
-        function showUpdateToast() {
-            const toast = document.getElementById('update-toast');
-            toast.classList.add('show');
-            
-            document.getElementById('btn-update').addEventListener('click', () => {
-                newWorker.postMessage({ action: 'skipWaiting' });
-            });
-        }
+
+        document.getElementById('btn-update').addEventListener('click', () => {
+            newWorker.postMessage({ action: 'skipWaiting' });
+        });
     </script>
-
 </body>
-
 </html>
+
 
 
