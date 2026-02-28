@@ -142,6 +142,36 @@
             padding: 1rem; border-radius: 12px; display: none; align-items: center; gap: 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 10000;
         }
+
+        /* --- Manual de Uso Rápido --- */
+        .manual-section {
+            text-align: left;
+            background: #ffffff;
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            margin-top: 2rem;
+            border: 1px solid #edf2f7;
+        }
+
+        .manual-section h2 { color: var(--primary); margin-top: 0; border-bottom: 2px solid #f0f4ff; padding-bottom: 10px; }
+        
+        .guide-item { margin-bottom: 2rem; }
+        .guide-item h3 { color: var(--secondary); font-size: 1.1rem; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+        .guide-item h3::before { content: '→'; color: var(--accent); font-weight: bold; }
+        
+        .guide-item ul { list-style: none; padding-left: 20px; }
+        .guide-item ul li { margin-bottom: 8px; font-size: 0.95rem; position: relative; }
+        .guide-item ul li::before { content: '•'; color: var(--primary); font-weight: bold; position: absolute; left: -15px; }
+
+        .tip-box {
+            background: #f0fdf4;
+            border-left: 4px solid var(--accent);
+            padding: 1rem;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            border-radius: 0 8px 8px 0;
+        }
     </style>
 </head>
 <body>
@@ -175,14 +205,36 @@
                 <span id="status-text">Online</span>
             </div>
         </header>
-        <div class="container">
-            <h1>Bienvenido, Fran</h1>
-            <p style="color: var(--secondary);">Panel v1.9 - Sistema de navegación dinámica.</p>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 20px;">
-                <div style="background: white; padding: 20px; border-radius: 12px; border: 1px solid #eee;">
-                    <h3>Diseño Adaptativo</h3>
-                    <p>Ahora el contenido se expande automáticamente al ocultar el menú.</p>
+        <div id="manual" class="manual-section">
+            <h2>Manual de Uso Rápido</h2>
+            
+            <div class="guide-item">
+                <h3>Módulo de Consumos Roaming</h3>
+                <ul>
+                    <li><b>Archivo 1 (Líneas):</b> Sube el listado maestro de teléfonos del cliente.</li>
+                    <li><b>Archivo 2 (Consumos):</b> Sube el Excel de tráfico de la operadora (VDF o MVS).</li>
+                    <li><b>Archivo 3 (ICCID):</b> Opcional. Permite cruzar teléfonos con su ICC correspondiente.</li>
+                    <li><b>Ajustes Manuales:</b> Usa el cajetín de ajustes antes de calcular para restar GB específicos a líneas que tengan bonos especiales o errores.</li>
+                </ul>
+                <div class="tip-box">
+                    <strong>Tip:</strong> El sistema detecta automáticamente si el consumo viene en Bytes (B), MB o GB y lo normaliza todo a Gigabytes para las alertas.
                 </div>
+            </div>
+
+            <div class="guide-item">
+                <h3>Módulo Cálculo VDF</h3>
+                <ul>
+                    <li>Diseñado para analizar los costes detallados de las líneas Vodafone.</li>
+                    <li>Sube el fichero de tráfico y el sistema aplicará los factores de corrección y desgloses por concepto.</li>
+                </ul>
+            </div>
+
+            <div class="guide-item">
+                <h3>Módulo Facturación</h3>
+                <ul>
+                    <li><b>Impuestos:</b> Selecciona el tipo (IVA, IGIC, IPSI) y elige si quieres "Añadir" el impuesto a una base o "Extraerlo" de un total.</li>
+                    <li><b>Descuentos:</b> Permite calcular el % aplicado, la cantidad final o el valor original con solo rellenar dos campos.</li>
+                </ul>
             </div>
         </div>
     </main>
@@ -287,6 +339,7 @@
     </script>
 </body>
 </html>
+
 
 
 
