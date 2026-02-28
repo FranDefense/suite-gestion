@@ -187,19 +187,32 @@
         window.addEventListener('offline', updateOnlineStatus);
         updateOnlineStatus();
 
-        // Lógica PWA v1.9
+                // --- LÓGICA PWA v1.8 (CORREGIDA) ---
         let newWorker;
+        
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js?v=' + Date.now()).then(reg => {
+            // Registramos el archivo tal cual, sin el Date.now()
+            navigator.serviceWorker.register('sw.js').then(reg => {
+                
+                // 1. Si ya hay un trabajador esperando (porque no se actualizó la última vez)
+                if (reg.waiting) {
+                    newWorker = reg.waiting;
+                    showUpdateToast();
+                }
+        
+                // 2. Si se detecta un trabajador nuevo instalándose
                 reg.addEventListener('updatefound', () => {
                     newWorker = reg.installing;
                     newWorker.addEventListener('statechange', () => {
+                        // Solo mostrar si el estado es 'installed' y ya hay un controlador previo
                         if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                            document.getElementById('update-toast').style.display = 'flex';
+                            showUpdateToast();
                         }
                     });
                 });
             });
+        
+            // Refresco automático cuando el nuevo service worker toma el control
             let refreshing;
             navigator.serviceWorker.addEventListener('controllerchange', () => {
                 if (refreshing) return;
@@ -207,19 +220,21 @@
                 refreshing = true;
             });
         }
-        function actualizarApp() { if (newWorker) newWorker.postMessage({ action: 'skipWaiting' }); }
-        async function limpiarCacheManual() {
-            if (confirm("¿Limpiar caché?")) {
-                const names = await caches.keys();
-                for (let n of names) await caches.delete(n);
-                const regs = await navigator.serviceWorker.getRegistrations();
-                for (let r of regs) await r.unregister();
-                window.location.reload(true);
+        
+        function showUpdateToast() {
+            const toast = document.getElementById('update-toast');
+            if (toast) toast.style.display = 'flex';
+        }
+        
+        function actualizarApp() {
+            if (newWorker) {
+                newWorker.postMessage({ action: 'skipWaiting' });
             }
         }
     </script>
 </body>
 </html>
+
 
 
 
