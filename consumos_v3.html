@@ -2,347 +2,497 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Layer4 Solutions - Consumos v1.8</title>
-    <link rel="manifest" href="manifest.json">
+    <title>Layer4 Solutions - Gestión de Consumos</title>
     <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
     <style>
         :root {
             --primary: #0b2187;
-            --primary-dark: #051456;
-            --bg: #f8fafc;
-            --sidebar-width: 260px;
-            --text-dark: #2d3748;
-            --accent: #10b981;
+            --secondary: #4a5568;
+            --bg: #f7fafc;
+            --card-bg: #ffffff;
+            --text: #2d3748;
             --vdf-color: #E60000;
             --mvs-color: #019DF4;
         }
 
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; background: var(--bg); height: 100vh; overflow: hidden; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            color: var(--text);
+        }
 
-        /* --- SIDEBAR --- */
-        .sidebar { width: var(--sidebar-width); background: var(--primary); color: white; display: flex; flex-direction: column; transition: margin-left 0.4s cubic-bezier(0.4, 0, 0.2, 1); position: relative; z-index: 1000; flex-shrink: 0; }
-        .sidebar.collapsed { margin-left: calc(var(--sidebar-width) * -1); }
-        .sidebar-handle { position: absolute; right: -25px; top: 50%; transform: translateY(-50%); width: 25px; height: 70px; background: var(--primary); display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 0 8px 8px 0; box-shadow: 4px 0 10px rgba(0,0,0,0.1); }
-        .sidebar-handle span { font-size: 14px; transition: transform 0.4s; }
-        .sidebar.collapsed .sidebar-handle span { transform: rotate(180deg); }
-        
-        .sidebar-header { padding: 2rem 1.5rem; font-weight: 800; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .sidebar-menu { flex: 1; padding: 1rem 0; overflow-y: auto; }
-        .menu-category { padding: 1.5rem 1.5rem 0.5rem; font-size: 0.7rem; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1px; }
-        .menu-item { padding: 0.8rem 1.5rem; display: flex; align-items: center; gap: 12px; text-decoration: none; color: rgba(255,255,255,0.8); transition: 0.2s; }
-        .menu-item:hover, .menu-item.active { background: rgba(255,255,255,0.1); color: white; }
-        
-        .sidebar-footer { padding: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.75rem; margin-top: auto; }
-        .btn-clean { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; opacity: 0.6; cursor: pointer; width: 100%; border-radius: 4px; padding: 5px; margin-top: 10px; transition: 0.3s; }
-        .btn-clean:hover { background: #f56565; opacity: 1; }
+        nav {
+            background: #ffffff;
+            padding: 0 2rem;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
 
-        /* --- MAIN CONTENT --- */
-        .main-wrapper { flex-grow: 1; display: flex; flex-direction: column; overflow-y: auto; min-width: 0; transition: all 0.4s; }
-        header { background: white; height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .container { padding: 2rem; max-width: 1200px; margin: 0 auto; width: 100%; box-sizing: border-box; }
+        .logo { font-weight: 800; color: var(--primary); font-size: 1.2rem; }
+        .menu-links { display: flex; gap: 2rem; }
+        .menu-links a { text-decoration: none; color: var(--secondary); font-weight: 600; font-size: 0.9rem; }
+        .menu-links a:hover, .menu-links a.active { color: var(--primary); }
 
-        /* --- TABS --- */
-        .tabs-container { background: white; display: flex; border-bottom: 1px solid #edf2f7; margin-bottom: 2rem; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .tab-item { flex: 1; text-align: center; padding: 1rem; cursor: pointer; font-weight: 700; color: #718096; transition: 0.3s; }
-        .tab-item.active-vdf { color: white; background: var(--vdf-color); }
-        .tab-item.active-mvs { color: white; background: var(--mvs-color); }
+        .tabs-container {
+            background: white;
+            display: flex;
+            justify-content: center;
+            border-bottom: 1px solid #edf2f7;
+        }
 
-        /* --- CARDS & TABLES --- */
-        .card { background: white; padding: 2rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 2rem; }
-        .file-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
-        .upload-box { border: 2px dashed #e2e8f0; padding: 1.5rem; border-radius: 10px; text-align: center; }
-        .ajustes-box { background: #f1f5f9; padding: 1.2rem; border-radius: 10px; margin: 15px 0; text-align: left;}
-        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-top: 1.5rem; }
-        .kpi-card { background: #fff; padding: 1rem; border-radius: 10px; text-align: center; border-top: 4px solid #cbd5e1; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        
-        table { width: 100%; border-collapse: collapse; margin-top: 1.5rem; background: white; }
-        th { text-align: left; padding: 12px; background: #f8fafc; font-size: 0.75rem; color: #718096; text-transform: uppercase; }
-        td { padding: 12px; border-bottom: 1px solid #edf2f7; font-size: 0.85rem; }
-        .row-alarm { background: #fff5f5; color: #c53030; font-weight: bold; }
+        .tab-item {
+            padding: 1rem 2.5rem;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: #718096;
+            border-bottom: 3px solid transparent;
+            transition: 0.3s;
+        }
 
-        /* --- STATUS & POPUP --- */
-        #network-status { font-size: 0.75rem; font-weight: 700; padding: 4px 12px; border-radius: 20px; display: flex; align-items: center; gap: 6px; }
-        .online { background: #dcfce7; color: #166534; }
-        .offline { background: #fee2e2; color: #991b1b; }
-        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
-        
-        #update-toast { position: fixed; bottom: 20px; right: 20px; background: #2d3748; color: white; padding: 1rem 1.5rem; border-radius: 12px; display: none; align-items: center; gap: 15px; z-index: 10000; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-        
+        .tab-item.active-vdf { color: var(--vdf-color); border-bottom-color: var(--vdf-color); }
+        .tab-item.active-mvs { color: var(--mvs-color); border-bottom-color: var(--mvs-color); }
+
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
         .dashboard-container { display: none; }
-        .dashboard-container.active { display: block; }
-        button { cursor: pointer; border: none; border-radius: 6px; padding: 10px 20px; font-weight: 700; color: white; transition: 0.3s; }
-        button:hover { opacity: 0.9; transform: translateY(-1px); }
+        .dashboard-container.active { display: block; animation: fadeIn 0.4s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .card { background: var(--card-bg); padding: 2.5rem; border-radius: 16px; box-shadow: 0 4px 25px rgba(0,0,0,0.05); margin-bottom: 2rem; }
+        h1 { margin-top: 0; font-size: 1.8rem; border-left: 4px solid var(--primary); padding-left: 1rem; }
+
+        .file-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .upload-box {
+            border: 2px dashed #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            background: #fff;
+        }
+        .upload-box label { display: block; margin-bottom: 8px; font-weight: 700; font-size: 0.85rem; color: var(--secondary); }
+
+        /* --- Estilos Ajustes Manuales --- */
+        .ajustes-box {
+            background: #f1f5f9;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 1px solid #e2e8f0;
+        }
+        .ajustes-form {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+            margin-bottom: 15px;
+        }
+        .ajustes-form input {
+            padding: 8px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            width: 140px;
+        }
+        .btn-add { background: var(--secondary); color: white; padding: 8px 15px; font-size: 0.8rem; border-radius: 6px; border: none; cursor: pointer; }
+        .lista-ajustes {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .badge-ajuste {
+            background: white;
+            border: 1px solid #cbd5e1;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-del { color: red; cursor: pointer; font-weight: bold; border: none; background: none; }
+
+        .actions { display: flex; gap: 1rem; justify-content: center; margin-bottom: 1rem; }
+
+        button { padding: 1rem 2rem; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.3s; color: white; }
+        .btn-vdf { background: var(--vdf-color); }
+        .btn-mvs { background: var(--mvs-color); }
+        .btn-success { background: #10b981; display: none; }
+
+        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
+        .kpi-card { background: #f8fafc; padding: 1.5rem; border-radius: 12px; text-align: center; border-top: 4px solid #e2e8f0; }
+        .kpi-card h3 { margin: 0; font-size: 0.75rem; color: #718096; text-transform: uppercase; }
+        .kpi-card span { font-size: 1.5rem; font-weight: 800; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 2rem; background: white; }
+        th { text-align: left; padding: 1rem; background: #f8fafc; border-bottom: 2px solid #edf2f7; font-size: 0.8rem; color: #718096; text-transform: uppercase; }
+        td { padding: 1rem; border-bottom: 1px solid #edf2f7; font-size: 0.9rem; }
+        .row-alarm { background-color: #fff5f5; border-left: 5px solid red; }
+        .alarm-badge { background: red; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; }
+
+        footer { background: #ffffff; padding: 1.5rem; text-align: center; border-top: 1px solid #edf2f7; font-size: 0.85rem; color: #a0aec0; margin-top: 3rem; }
     </style>
 </head>
 <body>
 
-    <aside class="sidebar" id="sidebar">
-        <div class="sidebar-handle" onclick="toggleMenu()"><span>❮</span></div>
-        <div class="sidebar-header">LAYER4 <span style="font-weight: 300;">SOLUTIONS</span></div>
-        <nav class="sidebar-menu">
-            <div class="menu-category">At. Cliente</div>
-            <a href="consumos_v3.html" class="menu-item active"><span>📶</span> Consumos Roaming</a>
-            <div class="menu-category">Operaciones</div>
-            <a href="vozydatos_exp.html" class="menu-item"><span>📊</span> Cálculo VDF</a>
-            <div class="menu-category">Facturación</div>
-            <a href="calculadoras.html" class="menu-item"><span>💶</span> Calculadoras</a>
-            <div class="menu-category">Soporte</div>
-            <a href="changelog.html" class="menu-item"><span>📝</span> Changelog</a>
-        </nav>
-        <div class="sidebar-footer">
-            <div style="opacity: 0.5">Versión: v1.8</div>
-            <button class="btn-clean" onclick="limpiarCacheManual()">⚙️ Limpiar Caché</button>
+    <nav>
+        <div class="logo">LAYER4 <span style="font-weight: 300;">SOLUTIONS</span></div>
+        <div class="menu-links">
+            <a href="index.html">Inicio</a>
+            <a href="#" class="active">Consumos</a>
+            <a href="vozydatos_exp.html">Cálculo VDF</a>
+            <a href="calculadoras.html">Facturación</a>
+            <a href="changelog.html">Changelog</a>
         </div>
-    </aside>
+    </nav>
 
-    <main class="main-wrapper">
-        <header>
-            <div style="font-weight: 700; color: var(--primary);">CONTROL DE CONSUMOS</div>
-            <div id="network-status" class="online"><div class="status-dot"></div><span id="status-text">Online</span></div>
-        </header>
-
-        <div class="container">
-            <div class="tabs-container">
-                <div class="tab-item active-vdf" onclick="showTab('vdf')" id="tabVdf">Vodafone (VDF)</div>
-                <div class="tab-item" onclick="showTab('mvs')" id="tabMvs">Movistar (MVS)</div>
-            </div>
-
-            <div id="vdf-dash" class="dashboard-container active">
-                <div class="card">
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <h2>Analizador Vodafone</h2>
-                        <span id="status_vdf" style="color:var(--accent); font-weight:700;"></span>
-                    </div>
-                    <div class="file-grid">
-                        <div class="upload-box">
-                            <label style="display:block; margin-bottom:5px; font-weight:700;">Base de Líneas (Excel)</label>
-                            <input type="file" id="vdf_lineas" accept=".xlsx, .xls">
-                        </div>
-                        <div class="upload-box">
-                            <label style="display:block; margin-bottom:5px; font-weight:700;">Consumos Roaming (Excel)</label>
-                            <input type="file" id="vdf_consumos" accept=".xlsx, .xls">
-                        </div>
-                    </div>
-
-                    <div class="ajustes-box">
-                        <h4 style="margin-top:0;">🔧 Consola de Ajustes Manuales</h4>
-                        <div style="display:flex; gap:10px;">
-                            <input type="text" id="adj_iccid" placeholder="ICCID..." style="padding:8px; border-radius:5px; border:1px solid #cbd5e1; flex:2;">
-                            <input type="number" id="adj_val" placeholder="GB +/-" style="padding:8px; border-radius:5px; border:1px solid #cbd5e1; flex:1;">
-                            <button onclick="agregarAjuste()" style="background:var(--primary); padding:8px 15px;">Aplicar</button>
-                        </div>
-                        <div id="ajustes_lista" style="font-size:0.8rem; margin-top:10px; color:var(--secondary);"></div>
-                    </div>
-
-                    <div style="display:flex; gap:10px;">
-                        <button style="background:var(--vdf-color); flex:2;" onclick="procesarVDF()">PROCESAR DATOS VDF</button>
-                        <button id="btnExportVDF" style="background:#1e293b; flex:1; display:none;" onclick="exportarExcel('VDF')">Exportar Resultado</button>
-                    </div>
-
-                    <div id="kpis_vdf" class="kpi-grid" style="display:none">
-                        <div class="kpi-card" style="border-top-color: var(--vdf-color)"><div>Total Nacional</div><b id="kv_n">0</b></div>
-                        <div class="kpi-card" style="border-top-color: orange"><div>Total Roaming</div><b id="kv_r">0</b></div>
-                        <div class="kpi-card" style="border-top-color: var(--primary)"><div>Total General</div><b id="kv_t">0</b></div>
-                        <div class="kpi-card" style="border-top-color: red"><div>Alertas</div><b id="kv_a">0</b></div>
-                    </div>
-                    <div id="tabla_vdf_res"></div>
-                </div>
-            </div>
-
-            <div id="mvs-dash" class="dashboard-container">
-                <div class="card">
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <h2>Analizador Movistar</h2>
-                        <span id="status_mvs" style="color:var(--accent); font-weight:700;"></span>
-                    </div>
-                    <div class="file-grid">
-                        <div class="upload-box"><label style="display:block; margin-bottom:5px; font-weight:700;">Base Líneas</label><input type="file" id="mvs_lineas"></div>
-                        <div class="upload-box"><label style="display:block; margin-bottom:5px; font-weight:700;">Consumos</label><input type="file" id="mvs_consumos"></div>
-                    </div>
-                    <div style="display:flex; gap:10px;">
-                        <button style="background:var(--mvs-color); flex:2;" onclick="procesarMVS()">PROCESAR DATOS MVS</button>
-                        <button id="btnExportMVS" style="background:#1e293b; flex:1; display:none;" onclick="exportarExcel('MVS')">Exportar Resultado</button>
-                    </div>
-                    <div id="kpis_mvs" class="kpi-grid" style="display:none">
-                        <div class="kpi-card" style="border-top-color: var(--mvs-color)"><div>Total Tráfico</div><b id="km_t">0</b></div>
-                        <div class="kpi-card" style="border-top-color: orange"><div>Total Roaming</div><b id="km_r">0</b></div>
-                        <div class="kpi-card" style="border-top-color: var(--primary)"><div>Importe Total</div><b id="km_i">0</b></div>
-                        <div class="kpi-card" style="border-top-color: red"><div>Alertas</div><b id="km_a">0</b></div>
-                    </div>
-                    <div id="tabla_mvs_res"></div>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <div id="update-toast">
-        <span>🚀 Nueva versión disponible (v1.8)</span>
-        <button onclick="actualizarApp()" style="background:var(--accent); border:none; color:white; padding: 8px 15px; border-radius:6px; cursor:pointer; font-weight:bold;">Actualizar</button>
+    <div class="tabs-container">
+        <div class="tab-item active-vdf" onclick="showTab('vdf')" id="tabVdf">Vodafone (VDF)</div>
+        <div class="tab-item" onclick="showTab('mvs')" id="tabMvs">Movistar (MVS)</div>
     </div>
 
-    <script>
-        // --- NAVEGACIÓN Y UI ---
-        function toggleMenu() { document.getElementById('sidebar').classList.toggle('collapsed'); }
-        function showTab(tab) {
-            document.querySelectorAll('.dashboard-container').forEach(d => d.classList.remove('active'));
-            document.getElementById('tabVdf').className = 'tab-item';
-            document.getElementById('tabMvs').className = 'tab-item';
-            if(tab === 'vdf') {
-                document.getElementById('vdf-dash').classList.add('active');
-                document.getElementById('tabVdf').classList.add('active-vdf');
-            } else {
-                document.getElementById('mvs-dash').classList.add('active');
-                document.getElementById('tabMvs').classList.add('active-mvs');
+    <div class="main-content">
+        
+        <div id="vdf-dash" class="dashboard-container active">
+            <div class="card">
+                <h1>Analizador Vodafone</h1>
+                <div class="file-grid">
+                    <div class="upload-box"><label>1. Líneas</label><input type="file" id="vdf_lineas"></div>
+                    <div class="upload-box"><label>2. Consumos</label><input type="file" id="vdf_consumos"></div>
+                    <div class="upload-box"><label>3. ICC (Opcional)</label><input type="file" id="vdf_iccid"></div>
+                </div>
+
+                <div class="ajustes-box">
+                    <div style="font-weight: 700; font-size: 0.85rem; color: var(--secondary); margin-bottom: 10px;">Ajustes de Descuento Manual (GB)</div>
+                    <div class="ajustes-form">
+                        <div><label style="font-size:10px; display:block">Línea</label><input type="text" id="vdf_adj_tel" placeholder="600000000"></div>
+                        <div><label style="font-size:10px; display:block">Restar Nac.</label><input type="number" id="vdf_adj_n" placeholder="0.0"></div>
+                        <div><label style="font-size:10px; display:block">Restar Roa.</label><input type="number" id="vdf_adj_r" placeholder="0.0"></div>
+                        <button class="btn-add" onclick="agregarAjuste('VDF')">Añadir Ajuste</button>
+                    </div>
+                    <div id="vdf_adj_lista" class="lista-ajustes"></div>
+                </div>
+
+                <div class="actions">
+                    <button class="btn-vdf" onclick="procesarVDF()">Calcular VDF</button>
+                    <button id="btnExportVDF" class="btn-success" onclick="descargarExcel('VDF')">Exportar Excel</button>
+                </div>
+
+                <div id="status_vdf" style="text-align:center; margin: 10px 0;"></div>
+                <div id="kpis_vdf" class="kpi-grid" style="display:none">
+                    <div class="kpi-card" style="border-top-color: var(--vdf-color)"><h3>Nacional</h3><span id="kv_n">0</span></div>
+                    <div class="kpi-card" style="border-top-color: var(--vdf-color)"><h3>Roaming</h3><span id="kv_r">0</span></div>
+                    <div class="kpi-card" style="border-top-color: var(--vdf-color)"><h3>Total</h3><span id="kv_t">0</span></div>
+                    <div class="kpi-card" style="border-top-color: red"><h3>Alertas</h3><span id="kv_a">0</span></div>
+                </div>
+                <div id="tabla_vdf_res"></div>
+            </div>
+        </div>
+
+        <div id="mvs-dash" class="dashboard-container">
+            <div class="card">
+                <h1>Analizador Movistar</h1>
+                <div class="file-grid">
+                    <div class="upload-box"><label>1. Líneas</label><input type="file" id="mvs_lineas"></div>
+                    <div class="upload-box"><label>2. Consumos</label><input type="file" id="mvs_consumos"></div>
+                    <div class="upload-box"><label>3. ICC (Opcional)</label><input type="file" id="mvs_iccid"></div>
+                </div>
+
+                <div class="ajustes-box">
+                    <div style="font-weight: 700; font-size: 0.85rem; color: var(--secondary); margin-bottom: 10px;">Ajustes de Descuento Manual (GB)</div>
+                    <div class="ajustes-form">
+                        <div><label style="font-size:10px; display:block">Línea</label><input type="text" id="mvs_adj_tel" placeholder="600000000"></div>
+                        <div><label style="font-size:10px; display:block">Restar Nac.</label><input type="number" id="mvs_adj_n" placeholder="0.0"></div>
+                        <div><label style="font-size:10px; display:block">Restar Roa.</label><input type="number" id="mvs_adj_r" placeholder="0.0"></div>
+                        <button class="btn-add" onclick="agregarAjuste('MVS')">Añadir Ajuste</button>
+                    </div>
+                    <div id="mvs_adj_lista" class="lista-ajustes"></div>
+                </div>
+
+                <div class="actions">
+                    <button class="btn-mvs" onclick="procesarMVS()">Calcular MVS</button>
+                    <button id="btnExportMVS" class="btn-success" onclick="descargarExcel('MVS')">Exportar Excel</button>
+                </div>
+
+                <div id="status_mvs" style="text-align:center; margin: 10px 0;"></div>
+                <div id="kpis_mvs" class="kpi-grid" style="display:none">
+                    <div class="kpi-card" style="border-top-color: var(--mvs-color)"><h3>Total GB</h3><span id="km_t">0</span></div>
+                    <div class="kpi-card" style="border-top-color: var(--mvs-color)"><h3>Roaming</h3><span id="km_r">0</span></div>
+                    <div class="kpi-card" style="border-top-color: var(--mvs-color)"><h3>Importe</h3><span id="km_i">0</span></div>
+                    <div class="kpi-card" style="border-top-color: red"><h3>Alertas</h3><span id="km_a">0</span></div>
+                </div>
+                <div id="tabla_mvs_res"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <footer><b>Fran Maestre</b> | Layer4 Solutions 2026</footer>
+
+<script>
+    // --- LÓGICA DE AJUSTES DINÁMICOS ---
+    let AJUSTES_USUARIO = {}; // Objeto que guardará { 'telefono': {n: GB, r: GB} }
+
+    function agregarAjuste(op) {
+        const id = op.toLowerCase();
+        const tel = cleanKey(document.getElementById(id + '_adj_tel').value);
+        const nac = parseFloat(document.getElementById(id + '_adj_n').value) || 0;
+        const roa = parseFloat(document.getElementById(id + '_adj_r').value) || 0;
+
+        if(!tel) return alert("Introduce un número de línea");
+
+        AJUSTES_USUARIO[tel] = { n: nac, r: roa };
+        
+        // Limpiar inputs
+        document.getElementById(id + '_adj_tel').value = "";
+        document.getElementById(id + '_adj_n').value = "";
+        document.getElementById(id + '_adj_r').value = "";
+
+        dibujarListaAjustes(op);
+    }
+
+    function eliminarAjuste(op, tel) {
+        delete AJUSTES_USUARIO[tel];
+        dibujarListaAjustes(op);
+    }
+
+    function dibujarListaAjustes(op) {
+        const container = document.getElementById(op.toLowerCase() + '_adj_lista');
+        container.innerHTML = "";
+        for (const [tel, vals] of Object.entries(AJUSTES_USUARIO)) {
+            container.innerHTML += `
+                <div class="badge-ajuste">
+                    <b>${tel}</b> (N: -${vals.n} / R: -${vals.r}) 
+                    <button class="btn-del" onclick="eliminarAjuste('${op}', '${tel}')">×</button>
+                </div>`;
+        }
+    }
+
+    function aplicarRestas(tel, n, r) {
+        let finalN = n, finalR = r;
+        const key = cleanKey(tel);
+        if(AJUSTES_USUARIO[key]) {
+            finalN = Math.max(0, n - (AJUSTES_USUARIO[key].n || 0));
+            finalR = Math.max(0, r - (AJUSTES_USUARIO[key].r || 0));
+        }
+        return { n: finalN, r: finalR };
+    }
+
+    // --- NAVEGACIÓN ---
+    function showTab(tab) {
+        document.querySelectorAll('.dashboard-container').forEach(d => d.classList.remove('active'));
+        document.getElementById('tabVdf').className = 'tab-item';
+        document.getElementById('tabMvs').className = 'tab-item';
+        if(tab === 'vdf') {
+            document.getElementById('vdf-dash').classList.add('active');
+            document.getElementById('tabVdf').classList.add('active-vdf');
+        } else {
+            document.getElementById('mvs-dash').classList.add('active');
+            document.getElementById('tabMvs').classList.add('active-mvs');
+        }
+    }
+
+    // --- UTILS ---
+    function cleanKey(v) {
+        if (!v) return "";
+        let s = String(v).split('.')[0];
+        return s.replace(/\D/g, "");
+    }
+
+    function removeAccents(str) {
+        return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    }
+
+    async function leerMapaICC(file) {
+        if(!file) return null;
+        const wb = await leerExcel(file);
+        const data = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
+        const mapa = {};
+        data.forEach(r => {
+            const keys = Object.keys(r);
+            const colTel = keys.find(k => {
+                const norm = removeAccents(k.toLowerCase());
+                return norm.includes("tel") || norm.includes("linea");
+            });
+            const colIcc = keys.find(k => k.toLowerCase().includes("icc"));
+            if (colTel && colIcc) {
+                const tel = cleanKey(r[colTel]);
+                const icc = String(r[colIcc] || "").trim();
+                if (tel && icc) mapa[tel] = icc;
             }
-        }
+        });
+        return mapa;
+    }
 
-        // --- ESTADO DE RED ---
-        function updateOnlineStatus() {
-            const status = document.getElementById('network-status');
-            const text = document.getElementById('status-text');
-            if (navigator.onLine) { status.className = 'online'; text.innerText = 'Online'; }
-            else { status.className = 'offline'; text.innerText = 'Modo Offline'; }
-        }
-        window.addEventListener('online', updateOnlineStatus);
-        window.addEventListener('offline', updateOnlineStatus);
-        updateOnlineStatus();
+    function leerExcel(f) { return new Promise(res => { const r = new FileReader(); r.onload = e => res(XLSX.read(new Uint8Array(e.target.result), {type:'array'})); r.readAsArrayBuffer(f); }); }
 
-        // --- LÓGICA PWA v1.8 ---
-        let newWorker;
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js?v=' + Date.now()).then(reg => {
-                if (reg.waiting) { newWorker = reg.waiting; showUpdateToast(); }
-                reg.addEventListener('updatefound', () => {
-                    newWorker = reg.installing;
-                    newWorker.addEventListener('statechange', () => {
-                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) { showUpdateToast(); }
-                    });
+    // --- PROCESOS ---
+    let resVDF = [], resMVS = [];
+
+    async function procesarVDF() {
+        const fl = document.getElementById('vdf_lineas').files[0];
+        const fc = document.getElementById('vdf_consumos').files[0];
+        const fi = document.getElementById('vdf_iccid').files[0];
+        if(!fl || !fc) return alert("Sube líneas y consumos.");
+
+        document.getElementById('status_vdf').innerText = "Procesando...";
+        const mapaIcc = await leerMapaICC(fi);
+        const wbL = await leerExcel(fl);
+        const inv = XLSX.utils.sheet_to_json(wbL.Sheets[wbL.SheetNames[0]]);
+        const listaInv = inv.map(r => cleanKey(r[Object.keys(r)[0]])).filter(x => x);
+
+        const wbC = await leerExcel(fc);
+        const consRaw = XLSX.utils.sheet_to_json(wbC.Sheets[wbC.SheetNames[0]], wbC.SheetNames[0]==="DATOS"?{range:3}:{});
+        
+        const acc = {};
+        consRaw.forEach(r => {
+            const keys = Object.keys(r);
+            const tel = cleanKey(r[keys.find(k => k.toLowerCase().includes("tele"))]);
+            const tipo = r[keys.find(k => k.toLowerCase().includes("roaming"))];
+            const vol = parseFloat(r[keys.find(k => k.toLowerCase().includes("vol"))]) || 0;
+            if(!acc[tel]) acc[tel] = {n:0, r:0};
+            const gb = (vol/1024/1024)*1.10;
+            if(tipo === "N") acc[tel].n += gb; else acc[tel].r += gb;
+        });
+
+        resVDF = listaInv.map(t => {
+            const c = acc[t] || {n:0, r:0};
+            const aj = aplicarRestas(t, c.n, c.r);
+            return { Linea: t, ICCID: mapaIcc?.[t] || "---", Nacional: aj.n, Roaming: aj.r, Total: aj.n+aj.r, Alerta: aj.r > 80 };
+        });
+
+        dibujarTabla('VDF', !!mapaIcc);
+    }
+
+    async function procesarMVS() {
+        const fl = document.getElementById('mvs_lineas').files[0];
+        const fc = document.getElementById('mvs_consumos').files[0];
+        const fi = document.getElementById('mvs_iccid').files[0];
+        if(!fl || !fc) return alert("Sube líneas y consumos.");
+
+        document.getElementById('status_mvs').innerText = "Procesando...";
+        const mapaIcc = await leerMapaICC(fi);
+        const wbL = await leerExcel(fl);
+        const invRaw = XLSX.utils.sheet_to_json(wbL.Sheets[wbL.SheetNames[0]]);
+        const listaInv = invRaw.map(r => {
+            const v = Object.values(r).find(x => cleanKey(x).length >= 9);
+            return cleanKey(v);
+        }).filter(x => x);
+
+        const wbC = await leerExcel(fc);
+        const sh = wbC.Sheets[wbC.SheetNames.find(n => n.toUpperCase().includes("TRÁFICO"))];
+        const data = XLSX.utils.sheet_to_json(sh, {header: 1});
+
+        let hRow = -1, cL=-1, cT=-1, cV=-1, cI=-1;
+        for(let i=0; i<30; i++) {
+            const row = (data[i]||[]).join("|").toUpperCase();
+            if(row.includes("TIPO TRÁFICO")) {
+                hRow = i;
+                data[i].forEach((v, idx) => {
+                    const s = removeAccents(String(v).toUpperCase());
+                    if(s.includes("LINEA")) cL=idx;
+                    if(s.includes("TIPO")) cT=idx;
+                    if(s.includes("CANTIDAD")) cV=idx;
+                    if(s.includes("IMPORTE")) cI=idx;
                 });
-            });
-            let refreshing;
-            navigator.serviceWorker.addEventListener('controllerchange', () => {
-                if (refreshing) return;
-                window.location.reload();
-                refreshing = true;
-            });
-        }
-        function showUpdateToast() { document.getElementById('update-toast').style.display = 'flex'; }
-        function actualizarApp() { if (newWorker) newWorker.postMessage({ action: 'skipWaiting' }); }
-        async function limpiarCacheManual() {
-            if (confirm("¿Limpiar toda la caché?")) {
-                const names = await caches.keys();
-                for (let n of names) await caches.delete(n);
-                const regs = await navigator.serviceWorker.getRegistrations();
-                for (let r of regs) await r.unregister();
-                window.location.reload(true);
+                break;
             }
         }
 
-        // --- LÓGICA DE NEGOCIO (EXCEL) ---
-        let ajustes = {};
-        function agregarAjuste() {
-            const id = document.getElementById('adj_iccid').value.trim();
-            const val = parseFloat(document.getElementById('adj_val').value);
-            if(id && !isNaN(val)) {
-                ajustes[id] = (ajustes[id] || 0) + val;
-                document.getElementById('ajustes_lista').innerHTML += `<div>ID: ${id} | ${val > 0 ? '+':''}${val} GB</div>`;
-                document.getElementById('adj_iccid').value = ""; document.getElementById('adj_val').value = "";
-            }
+        const acc = {};
+        for(let i=hRow+1; i<data.length; i++) {
+            const row = data[i];
+            const tel = cleanKey(row[cL]);
+            if(!tel) continue;
+            if(!acc[tel]) acc[tel] = {n:0, r:0, i:0};
+            const tipo = String(row[cT]||"");
+            acc[tel].i += parseMvsImp(row[cI]);
+            const volGB = parseMvsVol(row[cV]);
+            if(tipo.includes("EN UE")) acc[tel].r += volGB;
+            else if(tipo.includes("CORP PREMIUM")) acc[tel].n += volGB;
         }
 
-        async function procesarVDF() {
-            const fLin = document.getElementById('vdf_lineas').files[0];
-            const fCon = document.getElementById('vdf_consumos').files[0];
-            if(!fLin || !fCon) return alert("Sube ambos archivos VDF");
-            
-            const dLin = await readExcel(fLin);
-            const dCon = await readExcel(fCon);
-            
-            let mapLin = {};
-            dLin.forEach(r => { if(r.ICCID) mapLin[String(r.ICCID).trim()] = r.CUENTA || 'Sin Cuenta'; });
+        resMVS = listaInv.map(t => {
+            const c = acc[t] || {n:0, r:0, i:0};
+            const aj = aplicarRestas(t, c.n, c.r);
+            return { Linea: t, ICCID: mapaIcc?.[t] || "---", Nacional: aj.n, Roaming: aj.r, Total: aj.n+aj.r, Importe: c.i, Alerta: aj.r > 100 };
+        });
 
-            let res = {};
-            dCon.forEach(r => {
-                let id = String(r.ICCID || '').trim();
-                if(!id) return;
-                if(!res[id]) res[id] = { iccid: id, cuenta: mapLin[id] || 'Desconocido', n: 0, r: 0 };
-                res[id].n += parseFloat(r['Consumo Nacional (GB)'] || 0);
-                res[id].r += parseFloat(r['Consumo Roaming (GB)'] || 0);
-            });
+        dibujarTabla('MVS', !!mapaIcc);
+    }
 
-            dibujarTabla(Object.values(res), true);
-        }
+    function dibujarTabla(op, conIcc) {
+        const esVdf = (op === 'VDF');
+        const data = esVdf ? resVDF : resMVS;
+        const container = document.getElementById(esVdf ? 'tabla_vdf_res' : 'tabla_mvs_res');
+        const kpiGrid = document.getElementById(esVdf ? 'kpis_vdf' : 'kpis_mvs');
+        
+        let tN=0, tR=0, tI=0, al=0;
+        let html = `<table><thead><tr><th>Línea</th>${conIcc?'<th>ICCID</th>':''}<th>Nacional</th><th>Roaming</th><th>Total</th>${!esVdf?'<th>Importe</th>':''}</tr></thead><tbody>`;
 
-        async function procesarMVS() {
-            const fLin = document.getElementById('mvs_lineas').files[0];
-            const fCon = document.getElementById('mvs_consumos').files[0];
-            if(!fLin || !fCon) return alert("Sube ambos archivos MVS");
-            
-            const dLin = await readExcel(fLin);
-            const dCon = await readExcel(fCon);
-            
-            let mapLin = {};
-            dLin.forEach(r => { if(r.ICCID) mapLin[String(r.ICCID).trim()] = r.CUENTA || 'S/C'; });
+        data.forEach(r => {
+            tN+=r.Nacional; tR+=r.Roaming; if(!esVdf) tI+=r.Importe; if(r.Alerta) al++;
+            html += `<tr class="${r.Alerta?'row-alarm':''}">
+                <td><b>${r.Linea}</b> ${r.Alerta?'<span class="alarm-badge">ALERTA</span>':''}</td>
+                ${conIcc?`<td>${r.ICCID}</td>`:''}
+                <td>${r.Nacional.toFixed(3)}</td>
+                <td><strong>${r.Roaming.toFixed(3)}</strong></td>
+                <td>${r.Total.toFixed(3)}</td>
+                ${!esVdf?`<td>${r.Importe.toFixed(2)}€</td>`:''}
+            </tr>`;
+        });
 
-            let res = {};
-            dCon.forEach(r => {
-                let id = String(r.ICCID || '').trim();
-                if(!id) return;
-                if(!res[id]) res[id] = { iccid: id, cuenta: mapLin[id] || 'Desc', t: 0, r: 0, i: 0 };
-                res[id].t += parseMvsVol(r['Volumen Total']);
-                res[id].r += parseMvsVol(r['Volumen Roaming']);
-                res[id].i += parseFloat(r['Importe'] || 0);
-            });
+        container.innerHTML = html + "</tbody></table>";
+        kpiGrid.style.display = "grid";
+        document.getElementById(esVdf?'kv_n':'km_t').innerText = (esVdf?tN:(tN+tR)).toFixed(2) + " GB";
+        document.getElementById(esVdf?'kv_r':'km_r').innerText = tR.toFixed(2) + " GB";
+        document.getElementById(esVdf?'kv_t':'km_i').innerText = esVdf ? (tN+tR).toFixed(2)+" GB" : tI.toFixed(2)+" €";
+        document.getElementById(esVdf?'kv_a':'km_a').innerText = al;
+        document.getElementById(esVdf?'btnExportVDF':'btnExportMVS').style.display = "inline-block";
+        document.getElementById(esVdf?'status_vdf':'status_mvs').innerText = "✔ Procesado";
+    }
 
-            dibujarTabla(Object.values(res), false);
-        }
-
-        function readExcel(file) {
-            return new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    const wb = XLSX.read(e.target.result, {type: 'binary'});
-                    resolve(XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]));
-                };
-                reader.readAsBinaryString(file);
-            });
-        }
-
-        function parseMvsVol(s) {
-            if(!s) return 0;
-            let str = String(s).toUpperCase().trim();
-            let v = parseFloat(str.replace(",", "."));
-            if(str.includes("GB")) return v;
-            if(str.includes("MB")) return v/1024;
-            return v;
-        }
-
-        function dibujarTabla(data, esVdf) {
-            const container = document.getElementById(esVdf ? 'tabla_vdf_res' : 'tabla_mvs_res');
-            const kpiGrid = document.getElementById(esVdf ? 'kpis_vdf' : 'kpis_mvs');
-            let html = `<table><thead><tr><th>Cuenta</th><th>ICCID</th><th>${esVdf?'Nacional':'Total'}</th><th>Roaming</th>${esVdf?'<th>Total</th>':'<th>Importe</th>'}</tr></thead><tbody>`;
-            
-            let tN=0, tR=0, tT=0, tI=0, al=0;
-            data.forEach(row => {
-                let adj = ajustes[row.iccid] || 0;
-                let rVal = row.r + adj;
-                let total = esVdf ? (row.n + rVal) : row.t;
-                let alarm = rVal > 40 ? 'class="row-alarm"' : '';
-                if(rVal > 40) al++;
-                
-                html += `<tr ${alarm}><td>${row.cuenta}</td><td>${row.iccid}</td><td>${(esVdf?row.n:row.t).toFixed(2)}</td><td>${rVal.toFixed(2)}</td><td>${(esVdf?total:row.i).toFixed(2)}</td></tr>`;
-                tN += (row.n || 0); tR += rVal; tT += total; tI += (row.i || 0);
-            });
-
-            html += "</tbody></table>";
-            container.innerHTML = html;
-            kpiGrid.style.display = "grid";
-            document.getElementById(esVdf?'kv_n':'km_t').innerText = (esVdf?tN:tT).toFixed(2) + " GB";
-            document.getElementById(esVdf?'kv_r':'km_r').innerText = tR.toFixed(2) + " GB";
-            document.getElementById(esVdf?'kv_t':'km_i').innerText = esVdf ? tT.toFixed(2)+" GB" : tI.toFixed(2)+" €";
-            document.getElementById(esVdf?'kv_a':'km_a').innerText = al;
-            document.getElementById(esVdf?'btnExportVDF':'btnExportMVS').style.display = "block";
-        }
-    </script>
+    function parseMvsVol(s) {
+        if(!s) return 0;
+        let str = String(s).toUpperCase().trim();
+        let v = parseFloat(str.replace(",", "."));
+        if(str.includes("GB")) return v;
+        if(str.includes("MB")) return v/1024;
+        if(str.includes("KB")) return v/(1024*1024);
+        if(str.endsWith("B")) return v/(1024*1024*1024);
+        return v;
+    }
+    function parseMvsImp(s) { return parseFloat(String(s||"0").replace("€","").replace(",",".")) || 0; }
+    function descargarExcel(op) {
+        const data = (op === 'VDF') ? resVDF : resMVS;
+        const ws = XLSX.utils.json_to_sheet(data);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Consumos");
+        XLSX.writeFile(wb, `Reporte_${op}_Layer4.xlsx`);
+    }
+</script>
 </body>
 </html>
