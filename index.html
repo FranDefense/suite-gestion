@@ -36,6 +36,30 @@
             flex-shrink: 0; /* Evita que el menú se encoja */
         }
 
+        .sidebar-footer {
+            padding: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            margin-top: auto; /* ESTO empuja el footer al fondo de la barra */
+            text-align: center;
+        }
+        
+        .btn-clean {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            padding: 8px;
+            width: 100%;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        
+        .btn-clean:hover {
+            background: #f56565; /* Rojo al pasar el ratón para indicar 'acción fuerte' */
+            border-color: #f56565;
+        }
+
         /* ESTADO COLAPSADO: Ahora usamos margen negativo para desplazar el layout */
         .sidebar.collapsed {
             margin-left: calc(var(--sidebar-width) * -1);
@@ -231,9 +255,39 @@
                 newWorker.postMessage({ action: 'skipWaiting' });
             }
         }
+
+        async function limpiarCacheManual() {
+            const confirmacion = confirm("¿Quieres forzar la limpieza de caché? Se borrarán los archivos y la app se reiniciará para bajar la v1.8.1 limpia.");
+            
+            if (confirmacion) {
+                try {
+                    // 1. Borrar todas las memorias caché
+                    const cacheNames = await caches.keys();
+                    await Promise.all(
+                        cacheNames.map(name => caches.delete(name))
+                    );
+        
+                    // 2. Desregistrar Service Workers
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    for (let registration of registrations) {
+                        await registration.unregister();
+                    }
+        
+                    console.log("Caché eliminada correctamente.");
+                    alert("Aplicación reseteada. Se va a recargar ahora.");
+                    
+                    // 3. Recarga forzada desde el servidor
+                    window.location.reload(true);
+                } catch (error) {
+                    console.error("Error al limpiar caché:", error);
+                    alert("Hubo un error al limpiar. Inténtalo de nuevo.");
+                }
+            }
+        }
     </script>
 </body>
 </html>
+
 
 
 
