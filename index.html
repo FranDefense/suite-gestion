@@ -2,356 +2,385 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Layer4 Solutions - Business Suite</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Layer4 Solutions - Business Suite v1.9</title>
     <link rel="manifest" href="manifest.json">
     <style>
         :root {
             --primary: #0b2187;
-            --primary-dark: #051456;
+            --primary-light: #1e3a8a;
             --bg: #f8fafc;
-            --sidebar-width: 260px;
             --text-dark: #2d3748;
+            --secondary: #64748b;
             --accent: #10b981;
+            --white: #ffffff;
         }
 
         body {
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             margin: 0;
-            display: flex; /* Layout flexible */
             background: var(--bg);
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        /* --- Sidebar Lateral --- */
-        .sidebar {
-            width: var(--sidebar-width);
-            background: var(--primary);
-            color: white;
+            color: var(--text-dark);
             display: flex;
             flex-direction: column;
-            transition: margin-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            z-index: 1000;
-            flex-shrink: 0; /* Evita que el menú se encoja */
+            min-height: 100vh;
         }
 
-        .sidebar-footer {
-            padding: 1.5rem;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            margin-top: auto; /* ESTO empuja el footer al fondo de la barra */
-            text-align: center;
-        }
-        
-        .btn-clean {
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
+        /* --- NAVEGACIÓN SUPERIOR --- */
+        nav {
+            background: var(--primary);
             color: white;
-            padding: 8px;
-            width: 100%;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            cursor: pointer;
+            height: 65px;
+            display: flex;
+            align-items: center;
+            padding: 0 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            font-weight: 800;
+            font-size: 1.2rem;
+            margin-right: 3rem;
+            letter-spacing: 1px;
+            cursor: default;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        .nav-item {
+            position: relative;
+            height: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-link {
+            padding: 0 1.2rem;
+            text-decoration: none;
+            color: rgba(255,255,255,0.8);
+            font-weight: 600;
+            font-size: 0.9rem;
+            height: 100%;
+            display: flex;
+            align-items: center;
             transition: 0.3s;
         }
-        
-        .btn-clean:hover {
-            background: #f56565; /* Rojo al pasar el ratón para indicar 'acción fuerte' */
-            border-color: #f56565;
+
+        .nav-item:hover > .nav-link {
+            color: white;
+            background: rgba(255,255,255,0.1);
         }
 
-        /* ESTADO COLAPSADO: Ahora usamos margen negativo para desplazar el layout */
-        .sidebar.collapsed {
-            margin-left: calc(var(--sidebar-width) * -1);
-        }
-
-        /* --- Pestaña Flotante --- */
-        .sidebar-handle {
+        /* --- DESPLEGABLES (DROPDOWNS) --- */
+        .dropdown {
             position: absolute;
-            right: -25px; 
-            top: 50%;
-            transform: translateY(-50%);
-            width: 25px;
-            height: 70px;
-            background: var(--primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            border-radius: 0 8px 8px 0;
-            box-shadow: 4px 0 10px rgba(0,0,0,0.1);
-            z-index: 1001;
-        }
-
-        .sidebar-handle span {
-            font-size: 14px;
-            transition: transform 0.4s;
-        }
-
-        .sidebar.collapsed .sidebar-handle span {
-            transform: rotate(180deg);
-        }
-
-        /* --- Contenido Principal --- */
-        .main-wrapper {
-            flex-grow: 1; /* Esto hace que ocupe todo el espacio sobrante */
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-            min-width: 0; /* Evita desbordamientos en flex */
-            transition: all 0.4s ease;
-        }
-
-        header {
+            top: 65px;
+            left: 0;
             background: white;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 2rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            min-width: 220px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            border-radius: 0 0 8px 8px;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
         }
 
-        /* --- Elementos de red y status --- */
+        .nav-item:hover .dropdown {
+            display: flex;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        .dropdown-item {
+            padding: 14px 20px;
+            text-decoration: none;
+            color: var(--text-dark);
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: 0.2s;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .dropdown-item:last-child { border-bottom: none; }
+
+        .dropdown-item:hover {
+            background: #f8fafc;
+            color: var(--primary);
+            padding-left: 25px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- INDICADOR DE RED --- */
+        .status-container {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+        }
+
         #network-status {
             font-size: 0.75rem;
             font-weight: 700;
-            padding: 4px 12px;
+            padding: 6px 14px;
             border-radius: 20px;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
+            transition: 0.3s;
         }
         .online { background: #dcfce7; color: #166534; }
         .offline { background: #fee2e2; color: #991b1b; }
         .status-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
 
-        .container { padding: 2.5rem; max-width: 1000px; margin: 0 auto; width: 100%; box-sizing: border-box; }
-
-        /* --- Cards y Estilos de menú (igual que antes) --- */
-        .sidebar-header { padding: 2rem 1.5rem; font-weight: 800; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .menu-category { padding: 1.5rem 1.5rem 0.5rem; font-size: 0.7rem; color: rgba(255,255,255,0.4); text-transform: uppercase; }
-        .menu-item { padding: 0.8rem 1.5rem; display: flex; align-items: center; gap: 12px; text-decoration: none; color: rgba(255,255,255,0.8); transition: 0.2s; }
-        .menu-item:hover { background: rgba(255,255,255,0.1); color: white; }
-        .sidebar-footer { padding: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.75rem; }
-        .btn-clean { background: none; border: 1px solid rgba(255,255,255,0.2); color: white; opacity: 0.6; cursor: pointer; width: 100%; border-radius: 4px; padding: 5px; margin-top: 10px;}
-
-        /* --- Popup Actualización --- */
-        #update-toast {
-            position: fixed; bottom: 20px; right: 20px; background: #2d3748; color: white;
-            padding: 1rem; border-radius: 12px; display: none; align-items: center; gap: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 10000;
+        /* --- CONTENIDO PRINCIPAL --- */
+        .container {
+            flex: 1;
+            padding: 3rem 2rem;
+            max-width: 1100px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
         }
 
-        /* --- Manual de Uso Rápido --- */
-        .manual-section {
-            text-align: left;
-            background: #ffffff;
-            padding: 3rem;
-            border-radius: 20px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
-            margin-top: 2rem;
+        .welcome-card {
+            background: white;
+            padding: 3.5rem 2rem;
+            border-radius: 24px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.04);
+            text-align: center;
             border: 1px solid #edf2f7;
         }
 
-        .manual-section h2 { color: var(--primary); margin-top: 0; border-bottom: 2px solid #f0f4ff; padding-bottom: 10px; }
-        
-        .guide-item { margin-bottom: 2rem; }
-        .guide-item h3 { color: var(--secondary); font-size: 1.1rem; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
-        .guide-item h3::before { content: '→'; color: var(--accent); font-weight: bold; }
-        
-        .guide-item ul { list-style: none; padding-left: 20px; }
-        .guide-item ul li { margin-bottom: 8px; font-size: 0.95rem; position: relative; }
-        .guide-item ul li::before { content: '•'; color: var(--primary); font-weight: bold; position: absolute; left: -15px; }
+        h1 { font-size: 2.8rem; margin-top: 0; margin-bottom: 0.5rem; color: var(--primary); }
+        .subtitle { color: var(--secondary); font-size: 1.2rem; margin-bottom: 3rem; }
 
-        .tip-box {
-            background: #f0fdf4;
-            border-left: 4px solid var(--accent);
-            padding: 1rem;
-            margin-top: 10px;
-            font-size: 0.9rem;
-            border-radius: 0 8px 8px 0;
+        .grid-apps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            text-align: left;
+        }
+
+        .app-card {
+            padding: 1.5rem;
+            background: #fff;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .app-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(11, 33, 135, 0.08);
+        }
+
+        .app-card h3 { margin: 0; color: var(--primary); display: flex; align-items: center; gap: 10px; }
+        .app-card p { margin: 0; font-size: 0.9rem; color: var(--secondary); line-height: 1.4; }
+
+        /* --- FOOTER & MANTENIMIENTO --- */
+        footer { margin-top: auto; padding: 2rem; text-align: center; }
+        
+        .btn-clean {
+            background: white; border: 1px solid #cbd5e1;
+            color: #94a3b8; padding: 8px 16px; border-radius: 8px;
+            font-size: 0.75rem; cursor: pointer; transition: 0.3s;
+            font-weight: 600;
+        }
+        .btn-clean:hover { color: #f56565; border-color: #f56565; background: #fff5f5; }
+
+        /* --- POPUP ACTUALIZACIÓN --- */
+        #update-toast {
+            position: fixed; bottom: 30px; right: 30px; background: #1e293b; color: white;
+            padding: 1.2rem 1.8rem; border-radius: 16px; display: none; align-items: center; gap: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4); z-index: 10001;
+            animation: slideIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes slideIn { from { transform: translateY(100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        .btn-update-now {
+            background: var(--accent); border: none; color: white; padding: 10px 20px;
+            border-radius: 8px; cursor: pointer; font-weight: 800; font-size: 0.9rem;
         }
     </style>
 </head>
 <body>
 
-    <aside class="sidebar" id="sidebar">
-        <div class="sidebar-handle" onclick="toggleMenu()">
-            <span id="arrow-icon">❮</span>
-        </div>
-        <div class="sidebar-header">LAYER4 <span style="font-weight: 300;">SOLUTIONS</span></div>
-        <nav class="sidebar-menu">
-            <div class="menu-category">At. Cliente</div>
-            <a href="atencion_cliente.html" class="menu-item"><span>📶</span> Plantillas Correo</a>
-            <div class="menu-category">Operaciones</div>
-            <a href="consumos_v3.html" class="menu-item"><span>📶</span> Consumos Roaming</a>
-            <div class="menu-category">Facturación</div>
-            <a href="vozydatos_exp.html" class="menu-item"><span>📊</span> Cálculo VDF</a>
-            <a href="calculadoras.html" class="menu-item"><span>💶</span> Calculadoras</a>
-            <div class="menu-category">Soporte</div>
-            <a href="changelog.html" class="menu-item"><span>📝</span> Changelog</a>
-        </nav>
-        <div class="sidebar-footer">
-            <div style="opacity: 0.5">Versión: v2.0</div>
-            <button class="btn-clean" onclick="limpiarCacheManual()">⚙️ Limpiar Caché</button>
-        </div>
-    </aside>
+    <nav>
+        <div class="logo">LAYER4 <span style="font-weight: 300;">SOLUTIONS</span></div>
+        
+        <ul class="nav-links">
+            <li class="nav-item"><a href="index.html" class="nav-link">Inicio</a></li>
+            
+            <li class="nav-item">
+                <a href="#" class="nav-link">At. Cliente ▾</a>
+                <div class="dropdown">
+                    <a href="atencion_cliente.html" class="dropdown-item">Gestor y Correo</a>
+                </div>
+            </li>
 
-    <main class="main-wrapper">
-        <header>
-            <div style="font-weight: 700; color: var(--primary);">INTRANET CORPORATIVA v2.0</div>
+            <li class="nav-item">
+                <a href="#" class="nav-link">Operaciones ▾</a>
+                <div class="dropdown">
+                    <a href="consumos_v3.html" class="dropdown-item">Consumos Roaming</a>
+                </div>
+            </li>
+
+            <li class="nav-item">
+                <a href="#" class="nav-link">Facturación ▾</a>
+                <div class="dropdown">
+                    <a href="vozydatos_exp.html" class="dropdown-item">Vodafone (PDF)</a>
+                    <a href="calculadoras.html" class="dropdown-item">Herramientas precios</a>
+                </div>
+            </li>
+
+            <li class="nav-item"><a href="changelog.html" class="nav-link">Changelog</a></li>
+        </ul>
+
+        <div class="status-container">
             <div id="network-status" class="online">
                 <div class="status-dot"></div>
                 <span id="status-text">Online</span>
             </div>
-        </header>
-        <div id="manual" class="manual-section">
-            <h2>Manual de Uso Rápido</h2>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="welcome-card">
+            <h1>Hola</h1>
+            <p class="subtitle">Bienvenido a la Suite de Herramientas de Layer4 Solutions.</p>
             
-            <div class="guide-item">
-                <h3>Módulo de Consumos Roaming</h3>
-                <ul>
-                    <li><b>Archivo 1 (Líneas):</b> Sube el listado maestro de teléfonos del cliente.</li>
-                    <li><b>Archivo 2 (Consumos):</b> Sube el Excel de tráfico de la operadora (VDF o MVS).</li>
-                    <li><b>Archivo 3 (ICCID):</b> Opcional. Permite cruzar teléfonos con su ICC correspondiente.</li>
-                    <li><b>Ajustes Manuales:</b> Usa el cajetín de ajustes antes de calcular para restar GB específicos a líneas que tengan bonos especiales o errores.</li>
-                </ul>
-                <div class="tip-box">
-                    <strong>Tip:</strong> El sistema detecta automáticamente si el consumo viene en Bytes (B), MB o GB y lo normaliza todo a Gigabytes para las alertas.
-                </div>
+            <div class="grid-apps">
+                <a href="atencion_cliente.html" class="app-card">
+                    <h3><span>📧</span> Gestor de Correo</h3>
+                    <p>Genera plantillas rápidas para WhatsApp y correos electrónicos con asuntos personalizados.</p>
+                </a>
+                <a href="consumos_v3.html" class="app-card">
+                    <h3><span>📶</span> Control de Consumos</h3>
+                    <p>Analizador masivo de tráfico para líneas Vodafone y Movistar.</p>
+                </a>
+                <a href="vozydatos_exp.html" class="app-card">
+                    <h3><span>📊</span> Extractor Factura VDF</h3>
+                    <p>Convierte desgloses de facturas PDF a formato Excel editable.</p>
+                </a>
             </div>
 
-            <div class="guide-item">
-                <h3>Módulo Cálculo VDF</h3>
-                <ul>
-                    <li>Diseñado para analizar los costes detallados de las líneas Vodafone.</li>
-                    <li>Sube el fichero de tráfico y el sistema aplicará los factores de corrección y desgloses por concepto.</li>
-                </ul>
-            </div>
-
-            <div class="guide-item">
-                <h3>Módulo Facturación</h3>
-                <ul>
-                    <li><b>Impuestos:</b> Selecciona el tipo (IVA, IGIC, IPSI) y elige si quieres "Añadir" el impuesto a una base o "Extraerlo" de un total.</li>
-                    <li><b>Descuentos:</b> Permite calcular el % aplicado, la cantidad final o el valor original con solo rellenar dos campos.</li>
-                </ul>
+            <div style="margin-top: 4rem;">
+                <button class="btn-clean" onclick="limpiarCacheManual()">⚙️ MANTENIMIENTO: LIMPIAR CACHÉ LOCAL</button>
             </div>
         </div>
     </main>
 
+    <footer>
+        <div style="font-size: 0.8rem; color: #94a3b8;">
+            &copy; Fran Maestre | Layer4 Solutions 2026 | v2.0.0
+        </div>
+    </footer>
+
     <div id="update-toast">
-        <span>🚀 Nueva versión v1.9</span>
-        <button onclick="actualizarApp()" style="background: var(--accent); border:none; color:white; padding: 8px 15px; border-radius:6px; cursor:pointer; font-weight:bold;">Actualizar</button>
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+            <span style="font-weight: 800; font-size: 1rem;">🚀 Actualización disponible</span>
+            <span style="font-size: 0.8rem; opacity: 0.8;">Hay una nueva versión de la suite lista.</span>
+        </div>
+        <button class="btn-update-now" onclick="actualizarApp()">ACTUALIZAR</button>
     </div>
 
     <script>
-        function toggleMenu() {
-            document.getElementById('sidebar').classList.toggle('collapsed');
-        }
-
-        // Lógica de Red
+        // --- GESTIÓN DE ESTADO DE RED ---
         function updateOnlineStatus() {
             const status = document.getElementById('network-status');
             const text = document.getElementById('status-text');
             if (navigator.onLine) {
-                status.className = 'online'; text.innerText = 'Online';
+                status.className = 'online';
+                text.innerText = 'Online';
             } else {
-                status.className = 'offline'; text.innerText = 'Modo Offline';
+                status.className = 'offline';
+                text.innerText = 'Modo Offline';
             }
         }
         window.addEventListener('online', updateOnlineStatus);
         window.addEventListener('offline', updateOnlineStatus);
         updateOnlineStatus();
 
-                // --- LÓGICA PWA v1.8 (CORREGIDA) ---
+        // --- LÓGICA PWA (Service Worker y Actualización) ---
         let newWorker;
-        
+
         if ('serviceWorker' in navigator) {
-            // Registramos el archivo tal cual, sin el Date.now()
+            // Registramos el sw sin timestamp para evitar bucles, el navegador ya gestiona el cambio de archivo
             navigator.serviceWorker.register('sw.js').then(reg => {
                 
-                // 1. Si ya hay un trabajador esperando (porque no se actualizó la última vez)
+                // Comprobamos si hay una actualización esperando de una sesión anterior
                 if (reg.waiting) {
                     newWorker = reg.waiting;
                     showUpdateToast();
                 }
-        
-                // 2. Si se detecta un trabajador nuevo instalándose
+
                 reg.addEventListener('updatefound', () => {
                     newWorker = reg.installing;
                     newWorker.addEventListener('statechange', () => {
-                        // Solo mostrar si el estado es 'installed' y ya hay un controlador previo
+                        // Solo mostramos el aviso cuando el nuevo SW está instalado
                         if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
                             showUpdateToast();
                         }
                     });
                 });
             });
-        
-            // Refresco automático cuando el nuevo service worker toma el control
-            let refreshing;
+
+            // Escuchar el cambio de controlador para recargar la página
+            let refreshing = false;
             navigator.serviceWorker.addEventListener('controllerchange', () => {
                 if (refreshing) return;
                 window.location.reload();
                 refreshing = true;
             });
         }
-        
+
         function showUpdateToast() {
-            const toast = document.getElementById('update-toast');
-            if (toast) toast.style.display = 'flex';
+            document.getElementById('update-toast').style.display = 'flex';
         }
-        
+
         function actualizarApp() {
             if (newWorker) {
                 newWorker.postMessage({ action: 'skipWaiting' });
             }
         }
 
+        // --- LIMPIEZA MANUAL DE EMERGENCIA ---
         async function limpiarCacheManual() {
-            const confirmacion = confirm("¿Quieres forzar la limpieza de caché? Se borrarán los archivos y la app se reiniciará para bajar la v1.8.1 limpia.");
-            
-            if (confirmacion) {
+            if (confirm("Esta acción borrará todos los archivos guardados localmente y forzará la descarga de la última versión desde GitHub. ¿Continuar?")) {
                 try {
-                    // 1. Borrar todas las memorias caché
                     const cacheNames = await caches.keys();
-                    await Promise.all(
-                        cacheNames.map(name => caches.delete(name))
-                    );
-        
-                    // 2. Desregistrar Service Workers
+                    await Promise.all(cacheNames.map(name => caches.delete(name)));
+                    
                     const registrations = await navigator.serviceWorker.getRegistrations();
                     for (let registration of registrations) {
                         await registration.unregister();
                     }
-        
-                    console.log("Caché eliminada correctamente.");
-                    alert("Aplicación reseteada. Se va a recargar ahora.");
                     
-                    // 3. Recarga forzada desde el servidor
+                    alert("Caché limpiada. La aplicación se reiniciará.");
                     window.location.reload(true);
-                } catch (error) {
-                    console.error("Error al limpiar caché:", error);
-                    alert("Hubo un error al limpiar. Inténtalo de nuevo.");
+                } catch (err) {
+                    alert("Error al limpiar la caché: " + err);
                 }
             }
         }
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
