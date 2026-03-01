@@ -195,6 +195,34 @@
             color: #a0aec0;
             margin-top: 2rem;
         }
+
+        /* --- ESTILOS DE ETIQUETAS (CHANGELOG) --- */
+        .badge {
+            padding: 3px 8px;
+            border-radius: 4px;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-right: 10px;
+            display: inline-block;
+        }
+        
+        .new { background-color: var(--accent-new); }
+        .fix { background-color: var(--accent-fix); }
+        .upd { background-color: var(--accent-upd); }
+        
+        /* También asegúrate de que el historial tenga este estilo para que no se vea pegado */
+        .change-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .change-list li {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+        }
     </style>
 </head>
 <body>
@@ -419,6 +447,7 @@
 </body>
 
 </html>
+
 
 
 
