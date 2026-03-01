@@ -198,12 +198,33 @@
 
     <nav>
         <div class="logo">LAYER4 <span style="font-weight: 300;">SOLUTIONS</span></div>
-        <div class="menu-links">
-            <a href="index.html">Inicio</a>
-            <a href="consumos_v3.html">Consumos</a>
-            <a href="vozydatos_exp.html">Cálculo VDF</a>
-            <a href="calculadoras.html">Facturación</a>
-            <a href="changelog.html" class="active">Changelog</a>
+        <ul class="nav-links">
+            <li class="nav-item"><a href="index.html" class="nav-link">Inicio</a></li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">At. Cliente ▾</a>
+                <div class="dropdown">
+                    <a href="atencion_cliente.html" class="dropdown-item">Gestor y Correo</a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">Operaciones ▾</a>
+                <div class="dropdown">
+                    <a href="consumos_v3.html" class="dropdown-item">Consumos Roaming</a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">Facturación ▾</a>
+                <div class="dropdown">
+                    <a href="vozydatos_exp.html" class="dropdown-item">Vodafone (PDF)</a>
+                    <a href="calculadoras.html" class="dropdown-item">Herramientas precios</a>
+                </div>
+            </li>
+            <li class="nav-item"><a href="changelog.html" class="nav-link">Changelog</a></li>
+        </ul>
+        <div class="status-container">
+            <div id="network-status" class="online">
+                <div class="status-dot"></div><span id="status-text">Online</span>
+            </div>
         </div>
     </nav>
 
@@ -352,9 +373,50 @@
 
     <footer><b>Fran Maestre</b> | Layer4 Solutions 2026</footer>
 
+    <script>
+    // --- LOGICA RED ---
+        function updateOnlineStatus() {
+            const s = document.getElementById('network-status');
+            const t = document.getElementById('status-text');
+            if (navigator.onLine) { s.className = 'online'; t.innerText = 'Online'; }
+            else { s.className = 'offline'; t.innerText = 'Modo Offline'; }
+        }
+        window.addEventListener('online', updateOnlineStatus);
+        window.addEventListener('offline', updateOnlineStatus);
+        updateOnlineStatus();
+        
+        // --- LOGICA PWA ---
+        let newWorker;
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').then(reg => {
+                if (reg.waiting) { newWorker = reg.waiting; showUpdateToast(); }
+                reg.addEventListener('updatefound', () => {
+                    newWorker = reg.installing;
+                    newWorker.addEventListener('statechange', () => {
+                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                            showUpdateToast();
+                        }
+                    });
+                });
+            });
+            let refreshing = false;
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                if (refreshing) return;
+                window.location.reload();
+                refreshing = true;
+            });
+        }
+        function showUpdateToast() { 
+            const toast = document.getElementById('update-toast');
+            if(toast) toast.style.display = 'flex'; 
+        }
+        function actualizarApp() { if (newWorker) newWorker.postMessage({ action: 'skipWaiting' }); }
+
+    </script>
 </body>
 
 </html>
+
 
 
 
