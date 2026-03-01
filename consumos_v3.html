@@ -7,12 +7,14 @@
     <style>
         :root {
             --primary: #0b2187;
-            --secondary: #4a5568;
-            --bg: #f7fafc;
+            --primary-light: #1e3a8a;
+            --bg: #f8fafc;
             --card-bg: #ffffff;
             --text: #2d3748;
             --vdf-color: #E60000;
             --mvs-color: #019DF4;
+            --accent: #10b981;
+            --white: #ffffff;
         }
 
         body {
@@ -25,23 +27,76 @@
             color: var(--text);
         }
 
+        /* --- NUEVA NAVEGACIÓN SUPERIOR v1.9 --- */
         nav {
-            background: #ffffff;
-            padding: 0 2rem;
-            height: 60px;
+            background: var(--primary);
+            color: white;
+            height: 65px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            padding: 0 2rem;
             position: sticky;
             top: 0;
             z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
-
-        .logo { font-weight: 800; color: var(--primary); font-size: 1.2rem; }
-        .menu-links { display: flex; gap: 2rem; }
-        .menu-links a { text-decoration: none; color: var(--secondary); font-weight: 600; font-size: 0.9rem; }
-        .menu-links a:hover, .menu-links a.active { color: var(--primary); }
+        
+        .logo { font-weight: 800; font-size: 1.1rem; margin-right: 2.5rem; letter-spacing: 1px; }
+        
+        .nav-links { display: flex; list-style: none; margin: 0; padding: 0; height: 100%; }
+        
+        .nav-item { position: relative; height: 100%; display: flex; align-items: center; }
+        
+        .nav-link {
+            padding: 0 1.2rem;
+            text-decoration: none;
+            color: rgba(255,255,255,0.8);
+            font-weight: 600;
+            font-size: 0.85rem;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            transition: 0.3s;
+        }
+        
+        .nav-item:hover > .nav-link { color: white; background: rgba(255,255,255,0.1); }
+        
+        /* --- DROPDOWNS --- */
+        .dropdown {
+            position: absolute;
+            top: 65px;
+            left: 0;
+            background: white;
+            min-width: 200px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            border-radius: 0 0 8px 8px;
+            display: none;
+            flex-direction: column;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .nav-item:hover .dropdown { display: flex; animation: fadeIn 0.2s ease-out; }
+        
+        .dropdown-item {
+            padding: 12px 20px;
+            text-decoration: none;
+            color: var(--text-dark);
+            font-size: 0.8rem;
+            font-weight: 500;
+            border-bottom: 1px solid #f1f5f9;
+            transition: 0.2s;
+        }
+        
+        .dropdown-item:hover { background: #f8fafc; color: var(--primary); padding-left: 25px; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* --- STATUS INDICATOR --- */
+        .status-container { margin-left: auto; display: flex; align-items: center; }
+        #network-status { font-size: 0.7rem; font-weight: 700; padding: 5px 12px; border-radius: 20px; display: flex; align-items: center; gap: 6px; }
+        .online { background: #dcfce7; color: #166534; }
+        .offline { background: #fee2e2; color: #991b1b; }
+        .status-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
 
         .tabs-container {
             background: white;
@@ -160,15 +215,35 @@
 
     <nav>
         <div class="logo">LAYER4 <span style="font-weight: 300;">SOLUTIONS</span></div>
-        <div class="menu-links">
-            <a href="index.html">Inicio</a>
-            <a href="#" class="active">Consumos</a>
-            <a href="vozydatos_exp.html">Cálculo VDF</a>
-            <a href="calculadoras.html">Facturación</a>
-            <a href="changelog.html">Changelog</a>
+        <ul class="nav-links">
+            <li class="nav-item"><a href="index.html" class="nav-link">Inicio</a></li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">At. Cliente ▾</a>
+                <div class="dropdown">
+                    <a href="atencion_cliente.html" class="dropdown-item">Gestor y Correo</a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">Operaciones ▾</a>
+                <div class="dropdown">
+                    <a href="consumos_v3.html" class="dropdown-item">Consumos Roaming</a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">Facturación ▾</a>
+                <div class="dropdown">
+                    <a href="vozydatos_exp.html" class="dropdown-item">Vodafone (PDF)</a>
+                    <a href="calculadoras.html" class="dropdown-item">Herramientas precios</a>
+                </div>
+            </li>
+            <li class="nav-item"><a href="changelog.html" class="nav-link">Changelog</a></li>
+        </ul>
+        <div class="status-container">
+            <div id="network-status" class="online">
+                <div class="status-dot"></div><span id="status-text">Online</span>
+            </div>
         </div>
     </nav>
-
     <div class="tabs-container">
         <div class="tab-item active-vdf" onclick="showTab('vdf')" id="tabVdf">Vodafone (VDF)</div>
         <div class="tab-item" onclick="showTab('mvs')" id="tabMvs">Movistar (MVS)</div>
@@ -493,6 +568,45 @@
         XLSX.utils.book_append_sheet(wb, ws, "Consumos");
         XLSX.writeFile(wb, `Reporte_${op}_Layer4.xlsx`);
     }
-</script>
+
+        // --- LOGICA RED ---
+    function updateOnlineStatus() {
+        const s = document.getElementById('network-status');
+        const t = document.getElementById('status-text');
+        if (navigator.onLine) { s.className = 'online'; t.innerText = 'Online'; }
+        else { s.className = 'offline'; t.innerText = 'Modo Offline'; }
+    }
+    window.addEventListener('online', updateOnlineStatus);
+    window.addEventListener('offline', updateOnlineStatus);
+    updateOnlineStatus();
+    
+    // --- LOGICA PWA ---
+    let newWorker;
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js').then(reg => {
+            if (reg.waiting) { newWorker = reg.waiting; showUpdateToast(); }
+            reg.addEventListener('updatefound', () => {
+                newWorker = reg.installing;
+                newWorker.addEventListener('statechange', () => {
+                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                        showUpdateToast();
+                    }
+                });
+            });
+        });
+        let refreshing = false;
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+            if (refreshing) return;
+            window.location.reload();
+            refreshing = true;
+        });
+    }
+    function showUpdateToast() { 
+        const toast = document.getElementById('update-toast');
+        if(toast) toast.style.display = 'flex'; 
+    }
+    function actualizarApp() { if (newWorker) newWorker.postMessage({ action: 'skipWaiting' }); }
+    </script>
 </body>
+
 </html>
