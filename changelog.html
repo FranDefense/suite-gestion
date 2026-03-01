@@ -6,44 +6,93 @@
     <style>
         :root {
             --primary: #0b2187;
-            --secondary: #4a5568;
-            --bg: #f7fafc;
-            --card-bg: #ffffff;
-            --text: #2d3748;
-            --accent-new: #10b981;
-            --accent-fix: #f56565;
-            --accent-upd: #4299e1;
+            --primary-light: #1e3a8a;
+            --bg: #f8fafc;
+            --text-dark: #2d3748;
+            --accent: #10b981;
+            --white: #ffffff;
         }
-
+        
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background: var(--bg);
+            font-family: 'Segoe UI', system-ui, sans-serif;
             margin: 0;
+            background: var(--bg);
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-            color: var(--text);
         }
-
-        /* --- Menú Superior --- */
+        
+        /* --- NUEVA NAVEGACIÓN SUPERIOR v1.9 --- */
         nav {
-            background: #ffffff;
-            padding: 0 2rem;
-            height: 60px;
+            background: var(--primary);
+            color: white;
+            height: 65px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            padding: 0 2rem;
             position: sticky;
             top: 0;
             z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
-
-        .logo { font-weight: 800; color: var(--primary); font-size: 1.2rem; }
-        .menu-links { display: flex; gap: 2rem; }
-        .menu-links a { text-decoration: none; color: var(--secondary); font-weight: 600; font-size: 0.9rem; }
-        .menu-links a:hover, .menu-links a.active { color: var(--primary); }
-
+        
+        .logo { font-weight: 800; font-size: 1.1rem; margin-right: 2.5rem; letter-spacing: 1px; }
+        
+        .nav-links { display: flex; list-style: none; margin: 0; padding: 0; height: 100%; }
+        
+        .nav-item { position: relative; height: 100%; display: flex; align-items: center; }
+        
+        .nav-link {
+            padding: 0 1.2rem;
+            text-decoration: none;
+            color: rgba(255,255,255,0.8);
+            font-weight: 600;
+            font-size: 0.85rem;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            transition: 0.3s;
+        }
+        
+        .nav-item:hover > .nav-link { color: white; background: rgba(255,255,255,0.1); }
+        
+        /* --- DROPDOWNS --- */
+        .dropdown {
+            position: absolute;
+            top: 65px;
+            left: 0;
+            background: white;
+            min-width: 200px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            border-radius: 0 0 8px 8px;
+            display: none;
+            flex-direction: column;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .nav-item:hover .dropdown { display: flex; animation: fadeIn 0.2s ease-out; }
+        
+        .dropdown-item {
+            padding: 12px 20px;
+            text-decoration: none;
+            color: var(--text-dark);
+            font-size: 0.8rem;
+            font-weight: 500;
+            border-bottom: 1px solid #f1f5f9;
+            transition: 0.2s;
+        }
+        
+        .dropdown-item:hover { background: #f8fafc; color: var(--primary); padding-left: 25px; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* --- STATUS INDICATOR --- */
+        .status-container { margin-left: auto; display: flex; align-items: center; }
+        #network-status { font-size: 0.7rem; font-weight: 700; padding: 5px 12px; border-radius: 20px; display: flex; align-items: center; gap: 6px; }
+        .online { background: #dcfce7; color: #166534; }
+        .offline { background: #fee2e2; color: #991b1b; }
+        .status-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+        
         /* --- Contenido --- */
         .main-content {
             flex: 1;
@@ -306,6 +355,7 @@
 </body>
 
 </html>
+
 
 
 
