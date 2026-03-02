@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Simulador de Terminales - Layer4 v2.0</title>
+    <link rel="manifest" href="manifest.json">
+    <style>
+        :root {
+            --primary: #0b2187;
+            --bg: #f8fafc;
+            --text: #2d3748;
+            --accent: #10b981;
+            --ios-color: #000000;
+            --android-color: #3DDC84;
+            --samsung-color: #034EA2;
+            --xiaomi-color: #FF6700;
+        }
+
+        body { font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; background: var(--bg); display: flex; flex-direction: column; min-height: 100vh; color: var(--text); }
+
+        /* --- NAVEGACIÓN v1.9 --- */
+        nav { background: var(--primary); color: white; height: 65px; display: flex; align-items: center; padding: 0 2rem; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .logo { font-weight: 800; font-size: 1.1rem; margin-right: 2.5rem; letter-spacing: 1px; }
+        .nav-links { display: flex; list-style: none; margin: 0; padding: 0; height: 100%; }
+        .nav-item { position: relative; height: 100%; display: flex; align-items: center; }
+        .nav-link { padding: 0 1.2rem; text-decoration: none; color: rgba(255,255,255,0.8); font-weight: 600; font-size: 0.85rem; height: 100%; display: flex; align-items: center; }
+        .nav-item:hover > .nav-link { color: white; background: rgba(255,255,255,0.1); }
+        .dropdown { position: absolute; top: 65px; left: 0; background: white; min-width: 200px; box-shadow: 0 8px 20px rgba(0,0,0,0.15); display: none; flex-direction: column; border: 1px solid #e2e8f0; border-radius: 0 0 8px 8px; }
+        .nav-item:hover .dropdown { display: flex; }
+        .dropdown-item { padding: 12px 20px; text-decoration: none; color: var(--text); font-size: 0.8rem; border-bottom: 1px solid #f1f5f9; }
+        .dropdown-item:hover { background: #f8fafc; color: var(--primary); }
+
+        /* --- CONTENIDO --- */
+        .main-content { flex: 1; padding: 2rem; display: flex; flex-direction: column; align-items: center; }
+        
+        /* Selector de Marcas */
+        .selector-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 2rem; width: 100%; max-width: 800px; }
+        .brand-card { 
+            padding: 15px; border-radius: 12px; cursor: pointer; font-weight: 700; 
+            text-align: center; transition: 0.3s; border: 2px solid #e2e8f0; background: white; font-size: 0.85rem;
+        }
+        .brand-card:hover { transform: translateY(-3px); }
+        .brand-card.active { border-color: var(--primary); box-shadow: 0 4px 12px rgba(0,0,0,0.1); background: #f0f4ff; }
+
+        /* Simulador */
+        .simulator-layout { display: grid; grid-template-columns: 320px 1fr; gap: 3rem; width: 100%; max-width: 1100px; }
+
+        .phone-case { 
+            width: 310px; height: 620px; background: #000; border-radius: 45px; 
+            padding: 12px; box-shadow: 0 30px 60px rgba(0,0,0,0.3); position: relative; border: 4px solid #444;
+        }
+        .phone-screen { 
+            background: #fff; width: 100%; height: 100%; border-radius: 35px; 
+            overflow: hidden; display: flex; flex-direction: column; position: relative;
+        }
+        .screen-content { flex: 1; overflow-y: auto; padding-top: 10px; }
+        .status-bar { height: 35px; padding: 0 25px; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; font-weight: 700; }
+
+        /* Elementos del menú del móvil */
+        .menu-row { padding: 16px 20px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .menu-row:hover { background: #f8f9fa; }
+        .menu-row span { font-size: 0.9rem; font-weight: 500; }
+        .menu-arrow { color: #ccc; font-size: 0.8rem; }
+
+        /* Guía de Pasos (Derecha) */
+        .guide-panel { background: white; padding: 2rem; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .step-box { background: #f1f5f9; padding: 15px; border-radius: 12px; margin-bottom: 15px; border-left: 5px solid var(--primary); animation: fadeIn 0.4s ease; }
+        .troubleshoot-badge { background: #fee2e2; color: #b91c1c; padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 800; }
+
+        #network-status { margin-left: auto; font-size: 0.7rem; font-weight: 700; padding: 5px 12px; border-radius: 20px; display: flex; align-items: center; gap: 6px; }
+        .online { background: #dcfce7; color: #166534; }
+        .offline { background: #fee2e2; color: #991b1b; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">LAYER4 <span style="font-weight: 300;">SOLUTIONS</span></div>
+        <ul class="nav-links">
+            <li class="nav-item"><a href="index.html" class="nav-link">Inicio</a></li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">At. Cliente ▾</a>
+                <div class="dropdown">
+                    <a href="atencion_cliente.html" class="dropdown-item">Gestor y Correo</a>
+                    <a href="guias_terminales.html" class="dropdown-item">Simulador Terminales</a>
+                </div>
+            </li>
+            <li class="nav-item"><a href="changelog.html" class="nav-link">Changelog</a></li>
+        </ul>
+        <div id="network-status" class="online"><div style="width:7px;height:7px;border-radius:50%;background:currentColor"></div><span id="status-text">Online</span></div>
+    </nav>
+
+    <div class="main-content">
+        <h1 style="color: var(--primary);">Simulador Soporte Técnico</h1>
+        <p>Selecciona la marca del terminal del cliente para iniciar la guía paso a paso.</p>
+
+        <div class="selector-grid">
+            <div class="brand-card active" onclick="selectBrand('ios')"> iPhone</div>
+            <div class="brand-card" onclick="selectBrand('samsung')">📱 Samsung</div>
+            <div class="brand-card" onclick="selectBrand('xiaomi')">🟠 Xiaomi</div>
+            <div class="brand-card" onclick="selectBrand('android')">🤖 Android Stock</div>
+        </div>
+
+        <div class="simulator-layout">
+            <div class="phone-case">
+                <div class="phone-screen">
+                    <div class="status-bar">
+                        <span id="phone-time">12:00</span>
+                        <span>📶 🔋</span>
+                    </div>
+                    <div id="screen-title" style="padding: 15px 20px 5px; font-weight: 800; font-size: 1.2rem;">Menú</div>
+                    <div class="screen-content" id="phone-menu">
+                        </div>
+                </div>
+            </div>
+
+            <div class="guide-panel">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3 style="margin:0">Guía de Resolución</h3>
+                    <button onclick="resetSim()" style="background:none; border:1px solid #ccc; padding:5px 10px; border-radius:5px; cursor:pointer; font-size: 0.7rem;">🔄 Reiniciar</button>
+                </div>
+                <div id="guide-steps">
+                    <p style="color: #94a3b8;">Navega por el terminal de la izquierda para ver las instrucciones aquí.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentBrand = 'ios';
+        
+        // BASE DE DATOS MULTIMARCA
+        const db = {
+            ios: {
+                start: [
+                    { label: "⚙️ Ajustes", next: "ajustes" },
+                    { label: "🆘 Guía de Errores", next: "errors", isError: true }
+                ],
+                ajustes: [
+                    { label: "📶 Datos móviles", next: "datos", step: "Dile al cliente que entre en 'Datos móviles'" },
+                    { label: "✈️ Modo Avión", toggle: true, step: "Pide que active y desactive el Modo Avión para refrescar red." }
+                ],
+                datos: [
+                    { label: "📍 Red de datos móviles", next: "apn", step: "Selecciona 'Red de datos móviles' para ver los APN" },
+                    { label: "Roaming de datos", toggle: true, step: "Asegúrate de que el Roaming esté ACTIVADO (en verde)." }
+                ],
+                apn: [
+                    { label: "Punto de acceso: internet", final: true, step: "Verifica que en Punto de acceso ponga 'internet'." }
+                ]
+            },
+            samsung: {
+                start: [{ label: "⚙️ Ajustes", next: "ajustes" }, { label: "🆘 Guía de Errores", next: "errors", isError: true }],
+                ajustes: [{ label: "🌐 Conexiones", next: "conexiones", step: "Entra en 'Conexiones' (primera opción)." }],
+                conexiones: [{ label: "📶 Redes móviles", next: "redes", step: "Selecciona 'Redes móviles'." }],
+                redes: [{ label: "📍 Nombres de punto de acceso", next: "apn", step: "Pulsa en 'Nombres de punto de acceso'." }],
+                apn: [{ label: "internet (VDF)", final: true, step: "Asegúrate de que el APN seleccionado sea 'internet'." }]
+            },
+            xiaomi: {
+                start: [{ label: "⚙️ Ajustes", next: "ajustes" }, { label: "🆘 Guía de Errores", next: "errors", isError: true }],
+                ajustes: [{ label: "📶 Tarjetas SIM y redes móviles", next: "redes", step: "Busca 'Tarjetas SIM y redes móviles'." }],
+                redes: [{ label: "SIM 1 (Layer4)", next: "sim", step: "Pulsa sobre la tarjeta SIM activa." }],
+                sim: [{ label: "📍 Nombres de puntos de acceso", next: "apn", step: "Entra en 'Nombres de puntos de acceso' (APN)." }],
+                apn: [{ label: "Nuevo APN (+)", final: true, step: "Si no aparece, dale a 'Nuevo APN' y escribe 'internet'." }]
+            },
+            errors: {
+                start: [
+                    { label: "❌ No tiene internet", next: "err_no_data", step: "Iniciando diagnóstico de datos..." },
+                    { label: "❌ No puede llamar", next: "err_no_voice", step: "Verificando estado de línea de voz..." },
+                    { label: "❌ Fallo en el Extranjero", next: "err_roaming", step: "Revisando configuración de Roaming..." }
+                ],
+                err_no_data: [
+                    { label: "Comprobar APN", next: "go_apn", step: "El primer paso es verificar si el APN es 'internet'." },
+                    { label: "Límite de datos", step: "Verifica en el terminal si tiene un límite de datos activado en Ajustes." }
+                ],
+                err_roaming: [
+                    { label: "Selección de Red", step: "Dile que desactive 'Selección automática' y elija un operador local manualmente." },
+                    { label: "Activar Itinerancia", step: "Crucial: El interruptor de 'Itinerancia de datos' debe estar encendido." }
+                ]
+            }
+        };
+
+        function selectBrand(brand) {
+            currentBrand = brand;
+            document.querySelectorAll('.brand-card').forEach(c => c.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            resetSim();
+        }
+
+        function resetSim() {
+            document.getElementById('guide-steps').innerHTML = '<p style="color: #94a3b8;">Iniciando guía...</p>';
+            renderMenu('start');
+        }
+
+        function renderMenu(key) {
+            // Si el key es de errores, usamos la DB de errores independientemente de la marca
+            const source = (key.startsWith('err_') || key === 'errors') ? db.errors : db[currentBrand];
+            const menu = source[key];
+            const container = document.getElementById('phone-menu');
+            container.innerHTML = "";
+
+            menu.forEach(item => {
+                const div = document.createElement('div');
+                div.className = "menu-row";
+                const icon = item.isError ? '⚠️ ' : '';
+                div.innerHTML = `<span>${icon}${item.label}</span> <span class="menu-arrow">${item.toggle ? '🔘' : '❯'}</span>`;
+                
+                div.onclick = () => {
+                    if (item.step) {
+                        const guide = document.getElementById('guide-steps');
+                        const isFirst = guide.innerText.includes('Iniciando');
+                        if (isFirst) guide.innerHTML = "";
+                        
+                        const badge = item.isError ? '<span class="troubleshoot-badge">ERROR</span> ' : '';
+                        guide.innerHTML += `<div class="step-box">${badge}${item.step}</div>`;
+                        guide.scrollTop = guide.scrollHeight;
+                    }
+                    if (item.next) {
+                        if (item.next === "go_apn") renderMenu("ajustes"); // Salto inteligente
+                        else renderMenu(item.next);
+                    }
+                };
+                container.appendChild(div);
+            });
+        }
+
+        // Reloj en tiempo real para el móvil
+        setInterval(() => {
+            const now = new Date();
+            document.getElementById('phone-time').innerText = now.getHours() + ":" + String(now.getMinutes()).padStart(2, '0');
+        }, 1000);
+
+        resetSim();
+    </script>
+</body>
+</html>
