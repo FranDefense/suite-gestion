@@ -2,6 +2,7 @@ const CACHE_NAME = 'layer4-v2.0'; // Cambia esto para forzar actualización
 const assets = [
   'index.html',
   'atencion_cliente.html',
+  'guia_terminales.html',
   'consumos_v3.html',
   'vozydatos_exp.html',
   'calculadoras.html',
@@ -47,6 +48,7 @@ self.addEventListener('message', event => {
     self.skipWaiting();
   }
 });
+
 
 
 
