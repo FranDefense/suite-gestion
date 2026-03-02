@@ -167,14 +167,42 @@
 
     <nav>
         <div class="logo">LAYER4 <span style="font-weight: 300;">SOLUTIONS</span></div>
-        <div class="menu-links">
-            <a href="index.html">Inicio</a>
-            <a href="consumos_v3.html">Consumos</a>
-            <a href="vozydatos_exp.html">Cálculo VDF</a>
-            <a href="atencion_cliente.html" class="active">At. Cliente</a>
-            <a href="changelog.html">Changelog</a>
+        
+        <ul class="nav-links">
+            <li class="nav-item"><a href="index.html" class="nav-link">Inicio</a></li>
+            
+            <li class="nav-item">
+                <a href="#" class="nav-link">At. Cliente ▾</a>
+                <div class="dropdown">
+                    <a href="atencion_cliente.html" class="dropdown-item">Gestor y Correo</a>
+                    <a href="guias_terminales.html" class="dropdown-item">Conf. Terminales</a>
+                </div>
+            </li>
+
+            <li class="nav-item">
+                <a href="#" class="nav-link">Operaciones ▾</a>
+                <div class="dropdown">
+                    <a href="consumos_v3.html" class="dropdown-item">Consumos Roaming</a>
+                </div>
+            </li>
+
+            <li class="nav-item">
+                <a href="#" class="nav-link">Facturación ▾</a>
+                <div class="dropdown">
+                    <a href="vozydatos_exp.html" class="dropdown-item">Vodafone (PDF)</a>
+                    <a href="calculadoras.html" class="dropdown-item">Herramientas precios</a>
+                </div>
+            </li>
+
+            <li class="nav-item"><a href="changelog.html" class="nav-link">Changelog</a></li>
+        </ul>
+
+        <div class="status-container">
+            <div id="network-status" class="online">
+                <div class="status-dot"></div>
+                <span id="status-text">Online</span>
+            </div>
         </div>
-        <div id="network-status" class="online"><div class="status-dot"></div><span id="status-text">Online</span></div>
     </nav>
 
     <div class="main-content">
@@ -316,3 +344,4 @@
 </body>
 
 </html>
+
