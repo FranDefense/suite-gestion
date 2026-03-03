@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Simulador de Terminales - Layer4 v2.0</title>
+    <title>Simulador de Terminales - Layer4 v2.3</title>
     <link rel="manifest" href="manifest.json">
     <style>
         :root {
@@ -10,10 +10,7 @@
             --bg: #f8fafc;
             --text: #2d3748;
             --accent: #10b981;
-            --ios-color: #000000;
-            --android-color: #3DDC84;
-            --samsung-color: #034EA2;
-            --xiaomi-color: #FF6700;
+            --white: #ffffff;
         }
 
         body { font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; background: var(--bg); display: flex; flex-direction: column; min-height: 100vh; color: var(--text); }
@@ -33,16 +30,14 @@
         /* --- CONTENIDO --- */
         .main-content { flex: 1; padding: 2rem; display: flex; flex-direction: column; align-items: center; }
         
-        /* Selector de Marcas */
         .selector-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 2rem; width: 100%; max-width: 800px; }
         .brand-card { 
             padding: 15px; border-radius: 12px; cursor: pointer; font-weight: 700; 
             text-align: center; transition: 0.3s; border: 2px solid #e2e8f0; background: white; font-size: 0.85rem;
         }
-        .brand-card:hover { transform: translateY(-3px); }
-        .brand-card.active { border-color: var(--primary); box-shadow: 0 4px 12px rgba(0,0,0,0.1); background: #f0f4ff; }
+        .brand-card.active { border-color: var(--primary); background: #f0f4ff; color: var(--primary); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
 
-        /* Simulador */
+        /* --- SIMULADOR --- */
         .simulator-layout { display: grid; grid-template-columns: 320px 1fr; gap: 3rem; width: 100%; max-width: 1100px; }
 
         .phone-case { 
@@ -52,25 +47,45 @@
         .phone-screen { 
             background: #fff; width: 100%; height: 100%; border-radius: 35px; 
             overflow: hidden; display: flex; flex-direction: column; position: relative;
+            background-image: url('logo_layer4.png'); /* Asegúrate de tener el logo en la carpeta */
+            background-repeat: no-repeat;
+            background-position: center 35%;
+            background-size: 160px;
+            transition: background 0.3s;
         }
-        .screen-content { flex: 1; overflow-y: auto; padding-top: 10px; }
-        .status-bar { height: 35px; padding: 0 25px; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; font-weight: 700; }
+        
+        /* Cabecera del móvil */
+        .phone-header { 
+            height: 45px; display: flex; align-items: center; justify-content: space-between; 
+            padding: 5px 20px 0; z-index: 20; color: #333; font-weight: 700; font-size: 0.75rem;
+        }
+        .back-nav { color: var(--primary); cursor: pointer; display: none; align-items: center; gap: 4px; font-size: 0.85rem; }
 
-        /* Elementos del menú del móvil */
-        .menu-row { padding: 16px 20px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
-        .menu-row:hover { background: #f8f9fa; }
-        .menu-row span { font-size: 0.9rem; font-weight: 500; }
-        .menu-arrow { color: #ccc; font-size: 0.8rem; }
+        .screen-content { flex: 1; overflow-y: auto; position: relative; }
 
-        /* Guía de Pasos (Derecha) */
-        .guide-panel { background: white; padding: 2rem; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-        .step-box { background: #f1f5f9; padding: 15px; border-radius: 12px; margin-bottom: 15px; border-left: 5px solid var(--primary); animation: fadeIn 0.4s ease; }
-        .troubleshoot-badge { background: #fee2e2; color: #b91c1c; padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 800; }
+        /* Iconos Home Screen */
+        .home-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; padding: 20px; margin-top: auto; padding-bottom: 50px; }
+        .app-icon-wrap { display: flex; flex-direction: column; align-items: center; gap: 5px; cursor: pointer; }
+        .app-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .icon-call { background: #34c759; color: white; }
+        .icon-msg { background: #007aff; color: white; }
+        .icon-set { background: #8e8e93; color: white; }
+        .app-label { font-size: 0.6rem; font-weight: 700; color: #333; }
 
-        #network-status { margin-left: auto; font-size: 0.7rem; font-weight: 700; padding: 5px 12px; border-radius: 20px; display: flex; align-items: center; gap: 6px; }
-        .online { background: #dcfce7; color: #166534; }
-        .offline { background: #fee2e2; color: #991b1b; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
+        /* Filas de Menú Ajustes */
+        .menu-row { padding: 15px 20px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; cursor: pointer; background: white; }
+        .menu-row:hover { background: #f9f9f9; }
+        .menu-row span { font-size: 0.85rem; font-weight: 500; }
+
+        /* Barra Home Inferior */
+        .home-bar { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); width: 100px; height: 4px; background: #000; border-radius: 10px; cursor: pointer; opacity: 0.2; }
+
+        /* Panel de Guía */
+        .guide-panel { background: white; padding: 2rem; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); overflow-y: auto; max-height: 620px; }
+        .step-box { background: #f1f5f9; padding: 15px; border-radius: 12px; margin-bottom: 12px; border-left: 5px solid var(--primary); animation: slideIn 0.3s ease; }
+        .error-badge { background: #fee2e2; color: #b91c1c; padding: 2px 6px; border-radius: 4px; font-size: 0.65rem; font-weight: 800; margin-bottom: 5px; display: inline-block; }
+
+        @keyframes slideIn { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
 
         /* --- INDICADOR DE RED --- */
         .status-container {
@@ -137,148 +152,253 @@
     </nav>
 
     <div class="main-content">
-        <h1 style="color: var(--primary);">Simulador Soporte Técnico</h1>
-        <p>Selecciona la marca del terminal del cliente para iniciar la guía paso a paso.</p>
+        <h1 style="color: var(--primary); margin-bottom: 5px;">Simulador de Soporte Técnico</h1>
+        <p style="color: var(--secondary); margin-bottom: 25px;">Guía visual para ayudar al cliente paso a paso.</p>
 
         <div class="selector-grid">
-            <div class="brand-card active" onclick="selectBrand('ios')"> iPhone</div>
-            <div class="brand-card" onclick="selectBrand('samsung')">📱 Samsung</div>
-            <div class="brand-card" onclick="selectBrand('xiaomi')">🟠 Xiaomi</div>
-            <div class="brand-card" onclick="selectBrand('android')">🤖 Android Stock</div>
+            <div class="brand-card" id="card-ios" onclick="selectBrand('ios')"> iPhone</div>
+            <div class="brand-card" id="card-samsung" onclick="selectBrand('samsung')">📱 Samsung</div>
+            <div class="brand-card" id="card-xiaomi" onclick="selectBrand('xiaomi')">🟠 Xiaomi</div>
+            <div class="brand-card" id="card-android" onclick="selectBrand('android')">🤖 Android</div>
         </div>
 
         <div class="simulator-layout">
             <div class="phone-case">
-                <div class="phone-screen">
-                    <div class="status-bar">
-                        <span id="phone-time">12:00</span>
-                        <span>📶 🔋</span>
+                <div class="phone-screen" id="phone-screen">
+                    <div class="phone-header">
+                        <div id="back-nav" class="back-nav" onclick="goBack()">❮ Atrás</div>
+                        <div id="phone-time" style="margin-left: auto;">12:00</div>
                     </div>
-                    <div id="screen-title" style="padding: 15px 20px 5px; font-weight: 800; font-size: 1.2rem;">Menú</div>
-                    <div class="screen-content" id="phone-menu">
+                    
+                    <div class="screen-content" id="phone-display">
                         </div>
+
+                    <div class="home-bar" onclick="resetSim()"></div>
                 </div>
             </div>
 
             <div class="guide-panel">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <h3 style="margin:0">Guía de Resolución</h3>
+                    <h3 style="margin:0">Pasos de la Guía</h3>
                     <button onclick="resetSim()" style="background:none; border:1px solid #ccc; padding:5px 10px; border-radius:5px; cursor:pointer; font-size: 0.7rem;">🔄 Reiniciar</button>
                 </div>
                 <div id="guide-steps">
-                    <p style="color: #94a3b8;">Navega por el terminal de la izquierda para ver las instrucciones aquí.</p>
-                </div>
+                    </div>
             </div>
         </div>
     </div>
 
     <script>
         let currentBrand = 'ios';
-        
+        let navHistory = [];
+
         // BASE DE DATOS MULTIMARCA
         const db = {
             ios: {
-                start: [
-                    { label: "⚙️ Ajustes", next: "ajustes" },
-                    { label: "🆘 Guía de Errores", next: "errors", isError: true }
-                ],
                 ajustes: [
-                    { label: "📶 Datos móviles", next: "datos", step: "Dile al cliente que entre en 'Datos móviles'" },
-                    { label: "✈️ Modo Avión", toggle: true, step: "Pide que active y desactive el Modo Avión para refrescar red." }
+                    { label: "📶 Datos móviles", next: "datos", step: "Entra en 'Datos móviles'" },
+                    { label: "✈️ Modo Avión", toggle: true, step: "Verifica que el Modo Avión esté desactivado." },
+                    { label: "⚙️ General", next: "general" }
                 ],
                 datos: [
                     { label: "📍 Red de datos móviles", next: "apn", step: "Selecciona 'Red de datos móviles' para ver los APN" },
-                    { label: "Roaming de datos", toggle: true, step: "Asegúrate de que el Roaming esté ACTIVADO (en verde)." }
+                    { label: "Itinerancia de datos", toggle: true, step: "Activa la itinerancia si el cliente está fuera de España." }
                 ],
-                apn: [
-                    { label: "Punto de acceso: internet", final: true, step: "Verifica que en Punto de acceso ponga 'internet'." }
-                ]
+                apn: [{ label: "Punto de acceso: internet", final: true, step: "Escribe 'internet' en el campo Punto de Acceso." }],
+                errors: [
+                    { label: "❌ No tiene internet", next: "err_no_data", step: "Iniciando diagnóstico de datos móviles..." },
+                    { label: "❌ No puede llamar", step: "Comprueba si tiene activado el Modo Avión o el servicio restringido." }
+                ],
+                err_no_data: [{ label: "Revisar APN", next: "ajustes", step: "El primer paso es verificar la configuración del APN." }]
             },
             samsung: {
-                start: [{ label: "⚙️ Ajustes", next: "ajustes" }, { label: "🆘 Guía de Errores", next: "errors", isError: true }],
-                ajustes: [{ label: "🌐 Conexiones", next: "conexiones", step: "Entra en 'Conexiones' (primera opción)." }],
+                ajustes: [{ label: "🌐 Conexiones", next: "conexiones", step: "Entra en 'Conexiones'." }],
                 conexiones: [{ label: "📶 Redes móviles", next: "redes", step: "Selecciona 'Redes móviles'." }],
-                redes: [{ label: "📍 Nombres de punto de acceso", next: "apn", step: "Pulsa en 'Nombres de punto de acceso'." }],
-                apn: [{ label: "internet (VDF)", final: true, step: "Asegúrate de que el APN seleccionado sea 'internet'." }]
+                redes: [{ label: "📍 Nombres de punto de acceso", next: "apn", step: "Entra en 'Nombres de punto de acceso'." }],
+                apn: [{ label: "internet (VDF)", final: true, step: "Asegúrate de que 'internet' esté seleccionado." }],
+                errors: [{ label: "❌ Fallo Roaming", next: "conexiones", step: "Vamos a revisar la itinerancia en conexiones." }]
             },
             xiaomi: {
-                start: [{ label: "⚙️ Ajustes", next: "ajustes" }, { label: "🆘 Guía de Errores", next: "errors", isError: true }],
                 ajustes: [{ label: "📶 Tarjetas SIM y redes móviles", next: "redes", step: "Busca 'Tarjetas SIM y redes móviles'." }],
-                redes: [{ label: "SIM 1 (Layer4)", next: "sim", step: "Pulsa sobre la tarjeta SIM activa." }],
+                redes: [{ label: "SIM 1 (Layer4)", next: "sim", step: "Pulsa sobre la tarjeta SIM principal." }],
                 sim: [{ label: "📍 Nombres de puntos de acceso", next: "apn", step: "Entra en 'Nombres de puntos de acceso' (APN)." }],
-                apn: [{ label: "Nuevo APN (+)", final: true, step: "Si no aparece, dale a 'Nuevo APN' y escribe 'internet'." }]
+                apn: [{ label: "Nuevo APN (+)", final: true, step: "Crea un nuevo APN con el nombre 'internet'." }],
+                errors: [{ label: "❌ No datos", next: "ajustes", step: "Revisando configuración en MIUI..." }]
             },
-            errors: {
-                start: [
-                    { label: "❌ No tiene internet", next: "err_no_data", step: "Iniciando diagnóstico de datos..." },
-                    { label: "❌ No puede llamar", next: "err_no_voice", step: "Verificando estado de línea de voz..." },
-                    { label: "❌ Fallo en el Extranjero", next: "err_roaming", step: "Revisando configuración de Roaming..." }
-                ],
-                err_no_data: [
-                    { label: "Comprobar APN", next: "go_apn", step: "El primer paso es verificar si el APN es 'internet'." },
-                    { label: "Límite de datos", step: "Verifica en el terminal si tiene un límite de datos activado en Ajustes." }
-                ],
-                err_roaming: [
-                    { label: "Selección de Red", step: "Dile que desactive 'Selección automática' y elija un operador local manualmente." },
-                    { label: "Activar Itinerancia", step: "Crucial: El interruptor de 'Itinerancia de datos' debe estar encendido." }
-                ]
+            android: {
+                ajustes: [{ label: "📶 Redes e Internet", next: "redes", step: "Entra en 'Redes e Internet'." }],
+                redes: [{ label: "📱 Red móvil", next: "apn", step: "Selecciona 'Red móvil' y luego 'Avanzado' > 'APN'." }],
+                apn: [{ label: "internet", final: true, step: "Configura el APN como 'internet'." }]
             }
         };
 
+        // CORRECCIÓN: Función de selección robusta
         function selectBrand(brand) {
             currentBrand = brand;
-            document.querySelectorAll('.brand-card').forEach(c => c.classList.remove('active'));
-            event.currentTarget.classList.add('active');
+            // Limpiamos clases active de todas las cards
+            document.querySelectorAll('.brand-card').forEach(card => card.classList.remove('active'));
+            // Añadimos active a la seleccionada
+            document.getElementById('card-' + brand).classList.add('active');
             resetSim();
         }
 
         function resetSim() {
-            document.getElementById('guide-steps').innerHTML = '<p style="color: #94a3b8;">Iniciando guía...</p>';
-            renderMenu('start');
+            navHistory = [];
+            const screen = document.getElementById('phone-screen');
+            screen.style.backgroundImage = "url('logo_layer4.png')";
+            screen.style.backgroundColor = "white";
+            document.getElementById('back-nav').style.display = "none";
+            document.getElementById('guide-steps').innerHTML = '<p style="color: #94a3b8;">Indica al cliente que pulse sobre "Ajustes" ⚙️</p>';
+            renderHome();
+        }
+
+        function renderHome() {
+            const display = document.getElementById('phone-display');
+            display.innerHTML = `
+                <div class="home-grid">
+                    <div class="app-icon-wrap" onclick="addStep('Pide al cliente que abra la App de Teléfono.')">
+                        <div class="app-icon icon-call">📞</div>
+                        <span class="app-label">Teléfono</span>
+                    </div>
+                    <div class="app-icon-wrap" onclick="addStep('Pide al cliente que abra Mensajes.')">
+                        <div class="app-icon icon-msg">💬</div>
+                        <span class="app-label">Mensajes</span>
+                    </div>
+                    <div class="app-icon-wrap" onclick="startSettings()">
+                        <div class="app-icon icon-set">⚙️</div>
+                        <span class="app-label">Ajustes</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function startSettings() {
+            const screen = document.getElementById('phone-screen');
+            screen.style.backgroundImage = "none";
+            screen.style.backgroundColor = "#f2f2f7";
+            addStep("El cliente ha abierto 'Ajustes'.");
+            renderMenu('ajustes');
         }
 
         function renderMenu(key) {
-            // Si el key es de errores, usamos la DB de errores independientemente de la marca
-            const source = (key.startsWith('err_') || key === 'errors') ? db.errors : db[currentBrand];
-            const menu = source[key];
-            const container = document.getElementById('phone-menu');
-            container.innerHTML = "";
+            if (navHistory[navHistory.length - 1] !== key) navHistory.push(key);
+            document.getElementById('back-nav').style.display = "flex";
+
+            const menu = db[currentBrand][key] || [];
+            const display = document.getElementById('phone-display');
+            display.innerHTML = `<div style="padding:15px; font-weight:800; color:var(--primary); font-size:1rem;">${key.toUpperCase()}</div>`;
+
+            // Añadir botón de errores si estamos en el menú principal de ajustes
+            if (key === 'ajustes') {
+                const errDiv = document.createElement('div');
+                errDiv.className = "menu-row";
+                errDiv.innerHTML = `<span style="color: #b91c1c;">🆘 Guía de Errores</span> <span>❯</span>`;
+                errDiv.onclick = () => renderMenu('errors');
+                display.appendChild(errDiv);
+            }
 
             menu.forEach(item => {
                 const div = document.createElement('div');
                 div.className = "menu-row";
-                const icon = item.isError ? '⚠️ ' : '';
-                div.innerHTML = `<span>${icon}${item.label}</span> <span class="menu-arrow">${item.toggle ? '🔘' : '❯'}</span>`;
-                
+                div.innerHTML = `<span>${item.label}</span> <span>${item.toggle ? '🔘' : '❯'}</span>`;
                 div.onclick = () => {
-                    if (item.step) {
-                        const guide = document.getElementById('guide-steps');
-                        const isFirst = guide.innerText.includes('Iniciando');
-                        if (isFirst) guide.innerHTML = "";
-                        
-                        const badge = item.isError ? '<span class="troubleshoot-badge">ERROR</span> ' : '';
-                        guide.innerHTML += `<div class="step-box">${badge}${item.step}</div>`;
-                        guide.scrollTop = guide.scrollHeight;
-                    }
-                    if (item.next) {
-                        if (item.next === "go_apn") renderMenu("ajustes"); // Salto inteligente
-                        else renderMenu(item.next);
-                    }
+                    if (item.step) addStep(item.step, item.label.includes('❌'));
+                    if (item.next) renderMenu(item.next);
                 };
-                container.appendChild(div);
+                display.appendChild(div);
             });
         }
 
-        // Reloj en tiempo real para el móvil
+        function goBack() {
+            navHistory.pop(); 
+            if (navHistory.length === 0) {
+                resetSim();
+            } else {
+                const prevKey = navHistory[navHistory.length - 1];
+                navHistory.pop(); 
+                renderMenu(prevKey);
+                addStep("Retrocediendo al menú anterior...");
+            }
+        }
+
+        function addStep(msg, isError = false) {
+            const guide = document.getElementById('guide-steps');
+            if (guide.innerText.includes('Indica')) guide.innerHTML = "";
+            const badge = isError ? '<span class="error-badge">ERROR</span><br>' : '';
+            guide.innerHTML += `<div class="step-box">${badge}${msg}</div>`;
+            guide.scrollTop = guide.scrollHeight;
+        }
+
         setInterval(() => {
             const now = new Date();
-            document.getElementById('phone-time').innerText = now.getHours() + ":" + String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('phone-time').innerText = String(now.getHours()).padStart(2, '0') + ":" + String(now.getMinutes()).padStart(2, '0');
         }, 1000);
 
-        resetSim();
+        // Inicializar con iOS marcado
+        selectBrand('ios');
+
+        // --- LÓGICA PWA (Service Worker y Actualización) ---
+        let newWorker;
+
+        if ('serviceWorker' in navigator) {
+            // Registramos el sw sin timestamp para evitar bucles, el navegador ya gestiona el cambio de archivo
+            navigator.serviceWorker.register('sw.js').then(reg => {
+                
+                // Comprobamos si hay una actualización esperando de una sesión anterior
+                if (reg.waiting) {
+                    newWorker = reg.waiting;
+                    showUpdateToast();
+                }
+
+                reg.addEventListener('updatefound', () => {
+                    newWorker = reg.installing;
+                    newWorker.addEventListener('statechange', () => {
+                        // Solo mostramos el aviso cuando el nuevo SW está instalado
+                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                            showUpdateToast();
+                        }
+                    });
+                });
+            });
+
+            // Escuchar el cambio de controlador para recargar la página
+            let refreshing = false;
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                if (refreshing) return;
+                window.location.reload();
+                refreshing = true;
+            });
+        }
+
+        function showUpdateToast() {
+            document.getElementById('update-toast').style.display = 'flex';
+        }
+
+        function actualizarApp() {
+            if (newWorker) {
+                newWorker.postMessage({ action: 'skipWaiting' });
+            }
+        }
+
+        // --- LIMPIEZA MANUAL DE EMERGENCIA ---
+        async function limpiarCacheManual() {
+            if (confirm("Esta acción borrará todos los archivos guardados localmente y forzará la descarga de la última versión desde GitHub. ¿Continuar?")) {
+                try {
+                    const cacheNames = await caches.keys();
+                    await Promise.all(cacheNames.map(name => caches.delete(name)));
+                    
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    for (let registration of registrations) {
+                        await registration.unregister();
+                    }
+                    
+                    alert("Caché limpiada. La aplicación se reiniciará.");
+                    window.location.reload(true);
+                } catch (err) {
+                    alert("Error al limpiar la caché: " + err);
+                }
+            }
+        }
     </script>
 </body>
-
 </html>
-
-
