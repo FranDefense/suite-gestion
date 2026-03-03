@@ -1,4 +1,4 @@
-const CACHE_NAME = 'layer4-v2.1'; // Cambia esto para forzar actualización
+const CACHE_NAME = 'layer4-v2.2'; // Cambia esto para forzar actualización
 const assets = [
   'index.html',
   'atencion_cliente.html',
@@ -48,6 +48,7 @@ self.addEventListener('message', event => {
     self.skipWaiting();
   }
 });
+
 
 
 
