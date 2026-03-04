@@ -54,7 +54,7 @@ const BANCOS_DETALLE = {
     "DE10011001": { nombre: "N26 BANK AG", direccion: "KLOSTERSTRASSE 62", postal: "10179 BERLIN", bic: "N26EDEB1XXX", sepa: ["SCT", "SDD", "SCT Inst"] },
     "DE30020900": { nombre: "TARGOBANK AG", direccion: "KASERNENSTRASSE 10", postal: "40213 DÜSSELDORF", bic: "CMCIDEDDXXX", sepa: ["SCT", "SDD", "B2B", "SCT Inst"] },
     "DE47650130": { nombre: "SPARKASSE BIELEFELD", direccion: "SCHWERINER STRASSE 5", postal: "33605 BIELEFELD", bic: "WELADED1BIE", sepa: ["SCT", "SDD", "B2B", "SCT Inst"] },
-    "DE27020000": { nombre: "UNICREDIT BANK AG (HYPOVEREINSBANK)", direccion: "AM ZEUGHAUS 1-2", postal: "10117 BERLIN", bic: "HYVEDEMMXXX", sepa: ["SCT", "SDD", "B2B", "SCT Inst"] },
+    "DE27020001": { nombre: "UNICREDIT BANK AG (HYPOVEREINSBANK)", direccion: "AM ZEUGHAUS 1-2", postal: "10117 BERLIN", bic: "HYVEDEMMXXX", sepa: ["SCT", "SDD", "B2B", "SCT Inst"] },
     "DE36010043": { nombre: "POSTBANK (NIEDERLASSUNG DER DEUTSCHE BANK AG) - ESSEN", direccion: "MUNZSTRASSE 1", postal: "45127 ESSEN", bic: "PBNKDEFFXXX", sepa: ["SCT", "SDD", "B2B", "SCT Inst"] }
 };
 
@@ -180,4 +180,5 @@ function showToast(mensaje) {
         toast.className = toast.className.replace("show", ""); 
     }, 3000);
 }
+
 
