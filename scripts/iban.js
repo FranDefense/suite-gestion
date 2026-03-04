@@ -174,3 +174,36 @@ function enviarAportacion() {
     alert("¡Gracias! Se ha abierto tu correo para enviar los datos a programación.");
 
 }
+
+// Función actualizada para copiar texto con notificación
+function copyText(id) {
+    const text = document.getElementById(id).innerText;
+    
+    // Limpiamos espacios para el portapapeles
+    navigator.clipboard.writeText(text.replace(/\s/g, '')).then(() => {
+        showToast("¡Copiado al portapapeles!");
+    }).catch(err => {
+        console.error('Error al copiar: ', err);
+    });
+}
+
+// Función para mostrar el popup dinámico
+function showToast(mensaje) {
+    let toast = document.getElementById('copy-toast');
+    
+    // Si el elemento no existe en el HTML, lo creamos dinámicamente
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'copy-toast';
+        document.body.appendChild(toast);
+    }
+    
+    toast.innerText = mensaje;
+    toast.className = "show";
+    
+    // Lo ocultamos después de 3 segundos
+    setTimeout(() => { 
+        toast.className = toast.className.replace("show", ""); 
+    }, 3000);
+}
+
