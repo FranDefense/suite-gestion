@@ -54,9 +54,7 @@ const BANCOS_DETALLE = {
     "DE10011001": { nombre: "N26 BANK AG", direccion: "KLOSTERSTRASSE 62", postal: "10179 BERLIN", bic: "N26EDEB1XXX", sepa: ["SCT", "SDD", "SCT Inst"] },
     "DE30020900": { nombre: "TARGOBANK AG", direccion: "KASERNENSTRASSE 10", postal: "40213 DÜSSELDORF", bic: "CMCIDEDDXXX", sepa: ["SCT", "SDD", "B2B", "SCT Inst"] },
     "DE47650130": { nombre: "SPARKASSE BIELEFELD", direccion: "SCHWERINER STRASSE 5", postal: "33605 BIELEFELD", bic: "WELADED1BIE", sepa: ["SCT", "SDD", "B2B", "SCT Inst"] },
-    "DE12702000": { nombre: "UNICREDIT BANK AG (HYPOVEREINSBANK)", direccion: "AM ZEUGHAUS 1-2", postal: "10117 BERLIN", bic: "HYVEDEMMXXX", sepa: ["SCT", "SDD", "B2B", "SCT Inst"] },
-    "DE36010043": { nombre: "POSTBANK (NIEDERLASSUNG DER DEUTSCHE BANK AG) - ESSEN", direccion: "MUNZSTRASSE 1", postal: "45127 ESSEN", bic: "PBNKDEFFXXX", sepa: ["SCT", "SDD", "B2B", "SCT Inst"] },
-    "DE27020001": { nombre: "AUDI BANK ZNDL D VOLKSWAGEN BANK", direccion: "XXXX", postal: "38112 BRAUNSCHWEIG", bic: "AUDFDE21XXX", sepa: ["SCT","SDD","B2B","SCT Inst"] }
+    "DE36010043": { nombre: "POSTBANK (NIEDERLASSUNG DER DEUTSCHE BANK AG) - ESSEN", direccion: "MUNZSTRASSE 1", postal: "45127 ESSEN", bic: "PBNKDEFFXXX", sepa: ["SCT", "SDD", "B2B", "SCT Inst"] }
 };
 
 function validar() {
@@ -95,11 +93,11 @@ function validarMod97(iban) {
     return BigInt(numeric) % 97n === 1n;
 }
 
-/* --- ACTUALIZAR EN scripts/iban.js --- */
+/* --- ACTUALIZACIÓN EN scripts/iban.js --- */
 
 function renderResult(raw, isValid, banco) {
     const box = document.getElementById('box-result');
-    const notificarBox = document.getElementById('notificar-container'); // El nuevo contenedor
+    const formContrib = document.getElementById('form-contribucion');
     if(!box) return;
     
     box.style.display = 'block';
@@ -112,26 +110,20 @@ function renderResult(raw, isValid, banco) {
 
     document.getElementById('res-status').innerText = isValid ? '✓ IBAN VÁLIDO' : '✗ IBAN INVÁLIDO';
     document.getElementById('res-status').style.color = isValid ? "#166534" : "#991b1b";
-
-    // Mostrar IBAN sin espacios para copiar y pegar en facturación o bancos
-    document.getElementById('res-iban').innerText = raw;
-
-    // Mostrar IBAN con espacios cada 4 dígitos para mejor lectura
-    /*-- document.getElementById('res-iban').innerText = raw.replace(/(.{4})/g, '$1 ').trim(); --*/
-
-    document.getElementById('res-bic').innerText = banco ? banco.bic : "DESCONOCIDO";
     
+    document.getElementById('res-iban').innerText = raw; // Mostramos continuo para facturación
+    document.getElementById('res-bic').innerText = banco ? banco.bic : "DESCONOCIDO";
     document.getElementById('res-banco-nombre').innerText = banco ? banco.nombre : "Entidad no identificada";
     document.getElementById('res-banco-dir').innerText = banco ? banco.direccion : "Dirección no disponible";
     document.getElementById('res-banco-postal').innerText = banco ? banco.postal : "";
     document.getElementById('res-oficina').innerText = `Detalle cuenta: ${detailPart}`;
 
-    // LÓGICA DE NOTIFICACIÓN:
-    // Si el IBAN es válido pero NO hemos encontrado el banco en nuestra lista
+    // LÓGICA DE COLABORACIÓN:
+    // Si es válido pero no tenemos los datos del banco, mostramos el formulario
     if (isValid && !banco) {
-        notificarBox.style.display = 'block';
+        formContrib.style.display = 'block';
     } else {
-        notificarBox.style.display = 'none';
+        formContrib.style.display = 'none';
     }
 
     const sepaBox = document.getElementById('sepa-capabilities');
@@ -143,45 +135,40 @@ function renderResult(raw, isValid, banco) {
     }
 }
 
-// NUEVA FUNCIÓN PARA ENVIAR EL CORREO
-function notificarProgramacion() {
-    const ibanConsultado = document.getElementById('ibanInput').value.trim().toUpperCase();
-    const email = "fmaestre@layer4.es";
-    const subject = encodeURIComponent("NO APARECE INFORMACIÓN - VALIDADOR DE IBAN");
-    const body = encodeURIComponent(`El IBAN ${ibanConsultado} no aparece registrado en iban.js. Por favor, añade la información del banco correspondiente.`);
-    
-    window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
-}
+function enviarAportacion() {
+    const raw = document.getElementById('ibanInput').value.replace(/\s/g, '').toUpperCase();
+    const country = raw.substring(0, 2);
+    const config = IBAN_CONFIG[country];
+    if(!config) return;
 
-function copyText(id) {
-    const text = document.getElementById(id).innerText;
-    navigator.clipboard.writeText(text.replace(/\s/g, '')).then(() => {
-        showToast("¡Copiado al portapapeles!");
-    }).catch(err => {
-        console.error('Error al copiar: ', err);
-    });
-}
+    const bankCode = raw.substring(4, 4 + config.bankLen);
+    const fullKey = country + bankCode;
 
-// Función para mostrar el popup dinámico
-function showToast(mensaje) {
-    let toast = document.getElementById('copy-toast');
+    // Recoger datos del formulario
+    const nombre = document.getElementById('new-nombre').value.trim().toUpperCase();
+    const bic = document.getElementById('new-bic').value.trim().toUpperCase();
+    const dir = document.getElementById('new-dir').value.trim().toUpperCase();
+    const postal = document.getElementById('new-postal').value.trim().toUpperCase();
     
-    // Si el elemento no existe en el HTML, lo creamos dinámicamente
-    if (!toast) {
-        toast = document.createElement('div');
-        toast.id = 'copy-toast';
-        document.body.appendChild(toast);
+    const sepaArray = [];
+    document.querySelectorAll('.sepa-check:checked').forEach(el => sepaArray.push(el.value));
+
+    if (!nombre || !bic) {
+        alert("Por favor, introduce al menos el nombre del banco y el BIC.");
+        return;
     }
+
+    // GENERAR EL BLOQUE DE CÓDIGO JSON
+    const jsonBlock = `"${fullKey}": { nombre: "${nombre}", direccion: "${dir}", postal: "${postal}", bic: "${bic}", sepa: ${JSON.stringify(sepaArray)} },`;
+
+    // Preparar el correo
+    const email = "fmaestre@layer4.es";
+    const subject = encodeURIComponent(`NUEVA APORTACIÓN BANCARIA - ${nombre}`);
+    const body = encodeURIComponent(`Hola,\n\nSe ha generado un nuevo registro para el validador.\n\nIBAN Original: ${raw}\n\nCopia y pega este bloque en BANCOS_DETALLE:\n\n${jsonBlock}\n\nUn saludo.`);
+
+    window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
     
-    toast.innerText = mensaje;
-    toast.className = "show";
-    
-    // Lo ocultamos después de 3 segundos
-    setTimeout(() => { 
-        toast.className = toast.className.replace("show", ""); 
-    }, 3000);
+    // Limpiar formulario y ocultar
+    document.getElementById('form-contribucion').style.display = 'none';
+    alert("¡Gracias! Se ha abierto tu correo para enviar los datos a programación.");
 }
-
-
-
-

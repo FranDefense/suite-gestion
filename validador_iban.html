@@ -29,6 +29,30 @@
                         Notifica a programación
                     </button>
                 </div>
+
+                <div id="form-contribucion" class="card" style="display: none; margin-top: 20px; border: 2px solid var(--primary); background: #f0f7ff;">
+                    <h3 style="color: var(--primary); margin-top: 0;">🛠 Ayúdanos a mejorar</h3>
+                    <p style="font-size: 0.85rem; color: var(--secondary);">Hemos validado el IBAN pero no tenemos los datos del banco. Por favor, búscalos en el validador externo e introdúcelos aquí:</p>
+                    
+                    <div style="display: grid; gap: 10px; margin-bottom: 15px;">
+                        <input type="text" id="new-nombre" placeholder="Nombre completo del Banco" style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px;">
+                        <input type="text" id="new-bic" placeholder="Código BIC/SWIFT" style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px;">
+                        <input type="text" id="new-dir" placeholder="Dirección Social" style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px;">
+                        <input type="text" id="new-postal" placeholder="Código Postal y Ciudad" style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px;">
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <p style="font-size: 0.8rem; font-weight: 800; margin-bottom: 5px;">COMPATIBILIDAD SEPA:</p>
+                        <label style="font-size: 0.8rem; margin-right: 10px;"><input type="checkbox" class="sepa-check" value="SCT" checked> SCT</label>
+                        <label style="font-size: 0.8rem; margin-right: 10px;"><input type="checkbox" class="sepa-check" value="SDD" checked> SDD</label>
+                        <label style="font-size: 0.8rem; margin-right: 10px;"><input type="checkbox" class="sepa-check" value="B2B"> B2B</label>
+                        <label style="font-size: 0.8rem;"><input type="checkbox" class="sepa-check" value="SCT Inst"> SCT Inst</label>
+                    </div>
+
+                    <button onclick="enviarAportacion()" style="width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 800; cursor: pointer;">
+                        Enviar Aportación a Programación
+                    </button>
+                </div>
                 
                 <div class="info-row">
                     <span class="info-label">IBAN:</span>
