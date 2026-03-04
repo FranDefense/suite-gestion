@@ -2,7 +2,11 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Layer4 Solutions - Facturación</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Layer4 Solutions - Calculadoras</title>
+    <link rel="manifest" href="manifest.json">
+    
+    <link rel="stylesheet" href="style/style.css">
     <style>
         :root {
             --primary: #0b2187;
@@ -23,26 +27,6 @@
             min-height: 100vh;
             color: var(--text);
         }
-
-        /* --- Menú Superior --- */
-        nav {
-            background: #ffffff;
-            padding: 0 2rem;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .logo { font-weight: 800; color: var(--primary); font-size: 1.2rem; }
-
-        .menu-links { display: flex; gap: 2rem; }
-        .menu-links a { text-decoration: none; color: var(--secondary); font-weight: 600; font-size: 0.9rem; }
-        .menu-links a:hover, .menu-links a.active { color: var(--primary); }
 
         /* --- Tabs --- */
         .tabs-container {
@@ -148,16 +132,7 @@
 </head>
 <body>
 
-    <nav>
-        <div class="logo">LAYER4 <span style="font-weight: 300;">SOLUTIONS</span></div>
-        <div class="menu-links">
-            <a href="index.html">Inicio</a>
-            <a href="consumos_v3.html">Consumos</a>
-            <a href="vozydatos_exp.html">Voz y Datos</a>
-            <a href="#" class="active">Facturación</a>
-            <a href="changelog.html">Changelog</a>
-        </div>
-    </nav>
+    <div id="nav-placeholder"></div>
 
     <div class="tabs-container">
         <div class="tab-item active-imp" onclick="showTab('imp')" id="tabImp">Impuestos (IVA/IGIC)</div>
@@ -242,9 +217,14 @@
         </div>
     </div>
 
-    <footer>
-        <b>Fran Maestre</b> | Layer4 Solutions 2026
-    </footer>
+    <div id="footer-placeholder"></div>
+
+    <div id="update-toast">
+        <span>🚀 Nueva versión v2.5 disponible</span>
+        <button onclick="actualizarApp()" style="background:var(--accent); color:white; border:none; padding:5px 15px; border-radius:5px; cursor:pointer; font-weight:bold">Actualizar</button>
+    </div>
+
+    <script src="scripts/main.js" defer></script>
 
     <script>
         // --- LÓGICA DE NAVEGACIÓN ---

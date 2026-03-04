@@ -1,14 +1,38 @@
-const CACHE_NAME = 'layer4-v2.3'; // Cambia esto para forzar actualización
+const CACHE_NAME = 'layer4-v2.5'; // Cambia esto para forzar actualización
 const assets = [
+  '/',
   'index.html',
   'atencion_cliente.html',
   'guias_terminales.html',
+  'validador_iban.html',
   'consumos_v3.html',
   'vozydatos_exp.html',
   'calculadoras.html',
   'changelog.html',
   'manifest.json',
-  'https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js'
+  'https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js',
+
+  // COMPONENTES
+  'comp/nav.html',
+  'comp/footer.html',
+
+  // ESTILOS
+  'style/style.css',
+  'style/atencion_cliente.css',
+  'style/simulator.css',
+  'style/validador_iban.css',
+  'style/consumos.css',
+
+  // SCRIPTS
+  'scripts/main.js',
+  'scripts/atencion_cliente.js',
+  'scripts/simulator.js',
+  'scripts/iban.js',
+  'scripts/consumos.js',
+
+  // IMÁGENES
+  'logo_layer4.png',
+  'favicon.ico'
 ];
 
 // Instalación: Guarda los archivos en caché

@@ -1,0 +1,101 @@
+/* style/consumos.css */
+:root {
+    --vdf-color: #E60000;
+    --mvs-color: #019DF4;
+}
+
+.operator-tabs {
+    display: flex;
+    gap: 8px;
+}
+
+.tab {
+    padding: 12px 30px;
+    background: #e2e8f0;
+    border-radius: 12px 12px 0 0;
+    cursor: pointer;
+    font-weight: 800;
+    font-size: 0.75rem;
+    color: var(--secondary);
+    transition: 0.3s;
+}
+
+.tab.active {
+    background: var(--white);
+    color: var(--text-dark);
+}
+
+/* Bordes superiores de colores según el tab activo */
+#tab-vdf.active { border-top: 4px solid var(--vdf-color); color: var(--vdf-color); }
+#tab-mvs.active { border-top: 4px solid var(--mvs-color); color: var(--mvs-color); }
+
+.upload-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.upload-box {
+    background: #f8fafc;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+}
+
+.file-status {
+    margin-top: 10px;
+    font-size: 0.7rem;
+    font-style: italic;
+    color: var(--secondary);
+}
+
+.btn-process {
+    width: 100%;
+    background: var(--primary);
+    color: white;
+    padding: 16px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-process:hover {
+    filter: brightness(1.2);
+    transform: translateY(-2px);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.stat-card {
+    background: #f1f5f9;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+/* style/consumos.css */
+.row-alarm {
+    background-color: #fff5f5 !important;
+    border-left: 5px solid #E60000;
+}
+
+.alarm-badge {
+    background: #E60000;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: bold;
+}
+
+/* El resto de estilos de tablas y pestañas que ya tenías... */

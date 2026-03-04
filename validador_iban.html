@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Layer4 Solutions - Validador de IBAN</title>
+    <link rel="manifest" href="manifest.json">
+    
+    <link rel="stylesheet" href="style/style.css">
+    <style>
+        :root {
+            --primary: #0b2187;
+            --bg: #f8fafc;
+            --text: #2d3748;
+            --success: #10b981;
+            --error: #f56565;
+            --border: #e2e8f0;
+        }
+
+        body { font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; background: var(--bg); color: var(--text); display: flex; flex-direction: column; min-height: 100vh; }
+
+        /* --- NAVEGACIÓN v1.9 --- */
+        nav { background: var(--primary); color: white; height: 65px; display: flex; align-items: center; padding: 0 2rem; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .logo { font-weight: 800; font-size: 1.1rem; margin-right: 2.5rem; letter-spacing: 1px; }
+        .nav-links { display: flex; list-style: none; margin: 0; padding: 0; height: 100%; }
+        .nav-item { position: relative; height: 100%; display: flex; align-items: center; }
+        .nav-link { padding: 0 1.2rem; text-decoration: none; color: rgba(255,255,255,0.8); font-weight: 600; font-size: 0.85rem; height: 100%; display: flex; align-items: center; }
+        .nav-item:hover > .nav-link { color: white; background: rgba(255,255,255,0.1); }
+        .dropdown { position: absolute; top: 65px; left: 0; background: white; min-width: 200px; box-shadow: 0 8px 20px rgba(0,0,0,0.15); display: none; flex-direction: column; border: 1px solid #e2e8f0; border-radius: 0 0 8px 8px; }
+        .nav-item:hover .dropdown { display: flex; }
+        .dropdown-item { padding: 12px 20px; text-decoration: none; color: var(--text); font-size: 0.8rem; border-bottom: 1px solid #f1f5f9; }
+
+        /* --- CONTENIDO --- */
+        .container { flex: 1; padding: 2rem; max-width: 800px; margin: 0 auto; width: 100%; box-sizing: border-box; }
+        .card { background: white; padding: 2rem; border-radius: 16px; box-shadow: 0 4px 25px rgba(0,0,0,0.05); }
+        
+        input { width: 100%; padding: 15px; border-radius: 10px; border: 2px solid var(--border); font-size: 1.2rem; font-family: monospace; letter-spacing: 2px; box-sizing: border-box; margin: 20px 0; }
+        input:focus { border-color: var(--primary); outline: none; }
+
+        /* --- NUEVO CUADRO DE RESULTADOS DETALLADO --- */
+        .res-box { padding: 20px; border-radius: 12px; margin-top: 15px; border: 1px solid var(--border); display: none; }
+        .final-status { font-weight: 800; font-size: 1.1rem; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+        .valid { color: var(--success); }
+        .invalid { color: var(--error); }
+
+        .info-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; font-size: 0.95rem; }
+        .info-label { color: #64748b; font-weight: 500; min-width: 80px; }
+        .info-value { font-weight: 700; text-align: right; word-break: break-all; font-family: monospace; }
+        
+        .bank-details { margin: 15px 0; padding: 15px; background: #f8fafc; border-radius: 8px; line-height: 1.4; }
+        .sepa-list { margin-top: 15px; font-size: 0.85rem; color: #166534; }
+        .sepa-item { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+
+        .btn-copy-inline { background: #e2e8f0; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; cursor: pointer; margin-left: 10px; transition: 0.2s; }
+        .btn-copy-inline:hover { background: var(--primary); color: white; }
+
+        #network-status { margin-left: auto; font-size: 0.7rem; font-weight: 700; padding: 5px 12px; border-radius: 20px; display: flex; align-items: center; gap: 6px; }
+        .online { background: #dcfce7; color: #166534; }
+        .offline { background: #fee2e2; color: #991b1b; }
+    </style>
+</head>
+<body>
+
+    <div id="nav-placeholder"></div>
+
+    <div class="container">
+        <div class="card">
+            <h1 style="margin:0; font-size: 1.4rem; color: var(--primary);">Validador Bancario Avanzado</h1>
+            <input type="text" id="ibanInput" placeholder="Introduce IBAN aquí..." oninput="validar()">
+
+            <div id="box-result" class="res-box">
+                <div id="status-text-final" class="final-status"></div>
+                
+                <div class="info-row">
+                    <span class="info-label">IBAN:</span>
+                    <span class="info-value">
+                        <span id="res-iban"></span>
+                        <button class="btn-copy-inline" onclick="copyText('res-iban')">Copiar</button>
+                    </span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-label">BIC:</span>
+                    <span class="info-value">
+                        <span id="res-bic"></span>
+                        <button class="btn-copy-inline" onclick="copyText('res-bic')">Copiar</button>
+                    </span>
+                </div>
+
+                <div class="bank-details">
+                    <div id="res-banco-nombre" style="font-weight: 800; color: var(--primary);"></div>
+                    <div id="res-banco-dir"></div>
+                    <div id="res-banco-postal"></div>
+                    <div id="res-oficina" style="margin-top: 8px; font-size: 0.85rem; font-weight: bold;"></div>
+                </div>
+
+                <div class="sepa-list" id="sepa-capabilities">
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="footer-placeholder"></div>
+
+    <div id="update-toast">
+        <span>🚀 Nueva versión v2.5 disponible</span>
+        <button onclick="actualizarApp()" style="background:var(--accent); color:white; border:none; padding:5px 15px; border-radius:5px; cursor:pointer; font-weight:bold">Actualizar</button>
+    </div>
+
+    <script src="scripts/main.js" defer></script>
+
+<script>
+    const SEPA_DATA = { ES: 24, FR: 27, DE: 22, IT: 27, GB: 22, PT: 25 }; // Simplificado para el ejemplo
+
+    const BANCOS_DETALLE = {
+        "0049": {
+            nombre: "BANCO SANTANDER, S.A.",
+            direccion: "DE PEREDA 9-12",
+            postal: "39004 SANTANDER",
+            bic: "BSCHESMMXXX",
+            sepa: ["SCT", "SDD", "B2B", "SCT Inst"]
+        },
+        "0182": {
+            nombre: "BANCO BILBAO VIZCAYA ARGENTARIA, S.A. (BBVA)",
+            direccion: "PLAZA DE SAN NICOLÁS 4",
+            postal: "48005 BILBAO",
+            bic: "BBVAESMMXXX",
+            sepa: ["SCT", "SDD", "B2B", "SCT Inst"]
+        },
+        "2100": {
+            nombre: "CAIXABANK, S.A.",
+            direccion: "CALLE PINTOR SOROLLA 2-4",
+            postal: "46002 VALENCIA",
+            bic: "CAIXESBBXXX",
+            sepa: ["SCT", "SDD", "B2B", "SCT Inst"]
+        },
+        "3059": {
+            nombre: "CAJA RURAL DE ASTURIAS, S.C. DE CRÉDITO A GRUPO DE AHORRO ASTURIAS",
+            direccion: "CALLE PINTOR SOROLLA 2-4",
+            postal: "46002 VALENCIA",
+            bic: "BCOEESMM059",
+            sepa: ["SCT", "SDD", "B2B", "SCT Inst"]
+        }
+    };
+
+    function validar() {
+        let raw = document.getElementById('ibanInput').value.replace(/\s/g, '').toUpperCase();
+        if (raw.length < 15) { document.getElementById('box-result').style.display = 'none'; return; }
+
+        const country = raw.substring(0, 2);
+        const bankCode = raw.substring(4, 8);
+        const officeCode = raw.substring(8, 12);
+        
+        const isValid = validarMod97(raw);
+        const banco = BANCOS_DETALLE[bankCode];
+
+        renderResult(raw, isValid, banco, officeCode);
+    }
+
+    function validarMod97(iban) {
+        let rearranged = iban.substring(4) + iban.substring(0, 4);
+        let numeric = "";
+        for (let i = 0; i < rearranged.length; i++) {
+            let code = rearranged.charCodeAt(i);
+            if (code >= 65 && code <= 90) numeric += (code - 55);
+            else numeric += rearranged[i];
+        }
+        return BigInt(numeric) % 97n === 1n;
+    }
+
+    function renderResult(raw, isValid, banco, office) {
+        const box = document.getElementById('box-result');
+        const status = document.getElementById('status-text-final');
+        box.style.display = 'block';
+
+        if (isValid) {
+            status.innerText = "✓ Este IBAN es válido.";
+            status.className = "final-status valid";
+        } else {
+            status.innerText = "✗ Este IBAN es inválido.";
+            status.className = "final-status invalid";
+        }
+
+        document.getElementById('res-iban').innerText = raw.replace(/(.{4})/g, '$1 ').trim();
+        document.getElementById('res-bic').innerText = banco ? banco.bic : "DESCONOCIDO";
+        
+        // Banco e info extra
+        document.getElementById('res-banco-nombre').innerText = banco ? `Banco: ${banco.nombre}` : "Banco: No identificado";
+        document.getElementById('res-banco-dir').innerText = banco ? banco.direccion : "Dirección no disponible";
+        document.getElementById('res-banco-postal').innerText = banco ? banco.postal : "";
+        document.getElementById('res-oficina').innerText = `Oficina: ${office}`;
+
+        // SEPA
+        const sepaBox = document.getElementById('sepa-capabilities');
+        if (banco && banco.sepa) {
+            const labels = {
+                "SCT": "SEPA Credit Transfer es compatible.",
+                "SDD": "SEPA Direct Debit es compatible.",
+                "B2B": "B2B es compatible.",
+                "SCT Inst": "SEPA Instant Credit Transfer es compatible."
+            };
+            sepaBox.innerHTML = banco.sepa.map(s => `<div class="sepa-item">✅ ${labels[s]}</div>`).join('');
+        } else {
+            sepaBox.innerHTML = "<div style='color:#64748b'>Información SEPA no disponible para este banco.</div>";
+        }
+    }
+
+    function copyText(id) {
+        const text = document.getElementById(id).innerText;
+        navigator.clipboard.writeText(text.replace(/\s/g, ''));
+        alert("Copiado al portapapeles");
+    }
+
+    function updateOnlineStatus() {
+        const s = document.getElementById('network-status');
+        s.className = navigator.onLine ? 'online' : 'offline';
+        document.getElementById('status-text').innerText = navigator.onLine ? 'Online' : 'Offline';
+    }
+    window.addEventListener('online', updateOnlineStatus);
+    window.addEventListener('offline', updateOnlineStatus);
+</script>
+</body>
+</html>

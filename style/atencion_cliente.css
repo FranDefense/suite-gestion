@@ -1,0 +1,51 @@
+.card { background: white; padding: 2rem; border-radius: 16px; box-shadow: 0 4px 25px rgba(0,0,0,0.05); }
+.config-row { display: grid; grid-template-columns: 2fr 1fr; gap: 15px; margin-bottom: 20px; }
+.vars-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; background: #f1f5f9; padding: 15px; border-radius: 12px; }
+.preview-box { background: #fff; border: 1px solid var(--border); padding: 15px; border-radius: 8px; font-size: 0.9rem; line-height: 1.5; color: #1a202c; }
+.subject-box { background: #f8fafc; font-weight: 700; color: var(--primary); border-left: 4px solid var(--primary); }
+.body-box { white-space: pre-wrap; min-height: 120px; margin-bottom: 20px; }
+.actions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.btn-large { padding: 15px; border-radius: 10px; font-weight: 800; cursor: pointer; color: white; border: none; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.2s; }
+.btn-wa { background: #25D366; }
+.btn-mail { background: #EA4335; }
+
+/* style/atencion_cliente.css */
+
+.preview-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+    margin-top: 15px;
+}
+
+.label-mini {
+    font-size: 10px;
+    font-weight: 800;
+    color: var(--secondary);
+    letter-spacing: 1px;
+}
+
+.btn-copy-tiny {
+    background: #f1f5f9;
+    border: 1px solid var(--border);
+    color: var(--primary);
+    font-size: 9px;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-copy-tiny:hover {
+    background: var(--primary);
+    color: white;
+}
+
+/* Mejoramos el aspecto de las cajas al pasar el ratón */
+.subject-box:hover, .body-box:hover {
+    border-color: var(--primary);
+    background-color: #f0f4ff;
+    cursor: pointer;
+}

@@ -2,308 +2,73 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>At. Cliente - Layer4 Solutions v2.0</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>At. Cliente - Layer4 Solutions v2.5</title>
     <link rel="manifest" href="manifest.json">
-    <style>
-        :root {
-            --primary: #0b2187;
-            --primary-light: #1e3a8a;
-            --bg: #f8fafc;
-            --text-dark: #2d3748;
-            --secondary: #64748b;
-            --accent: #10b981;
-            --whatsapp: #25D366;
-            --email: #EA4335;
-        }
-
-        body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            margin: 0;
-            background: var(--bg);
-            color: var(--text-dark);
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-
-        /* --- NAVEGACIÓN SUPERIOR --- */
-        nav {
-            background: var(--primary);
-            color: white;
-            height: 65px;
-            display: flex;
-            align-items: center;
-            padding: 0 2rem;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-
-        .logo { font-weight: 800; font-size: 1.1rem; margin-right: 2.5rem; letter-spacing: 1px; }
-        .nav-links { display: flex; list-style: none; margin: 0; padding: 0; height: 100%; }
-        .nav-item { position: relative; height: 100%; display: flex; align-items: center; }
-        .nav-link { padding: 0 1.2rem; text-decoration: none; color: rgba(255,255,255,0.8); font-weight: 600; font-size: 0.85rem; height: 100%; display: flex; align-items: center; }
-        .nav-item:hover > .nav-link { color: white; background: rgba(255,255,255,0.1); }
-        .dropdown { position: absolute; top: 65px; left: 0; background: white; min-width: 200px; box-shadow: 0 8px 20px rgba(0,0,0,0.15); display: none; flex-direction: column; border: 1px solid #e2e8f0; border-radius: 0 0 8px 8px; }
-        .nav-item:hover .dropdown { display: flex; }
-        .dropdown-item { padding: 12px 20px; text-decoration: none; color: var(--text-dark); font-size: 0.8rem; border-bottom: 1px solid #f1f5f9; }
-        .dropdown-item:hover { background: #f8fafc; color: var(--primary); }
-
-        /* --- CONTENIDO --- */
-        .main-content { flex: 1; padding: 2rem; max-width: 900px; margin: 0 auto; width: 100%; box-sizing: border-box; }
-        .card { background: white; padding: 2rem; border-radius: 16px; box-shadow: 0 4px 25px rgba(0,0,0,0.05); }
-        
-        h1 { margin-top: 0; font-size: 1.5rem; border-left: 4px solid var(--primary); padding-left: 1rem; margin-bottom: 1.5rem; }
-
-        .config-row { display: grid; grid-template-columns: 2fr 1fr; gap: 15px; margin-bottom: 20px; }
-        label { display: block; font-weight: 700; margin-bottom: 5px; font-size: 0.85rem; color: var(--secondary); }
-        select, input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0; font-size: 0.95rem; box-sizing: border-box; }
-
-        .vars-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; background: #f1f5f9; padding: 15px; border-radius: 12px; }
-        
-        .preview-label { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; margin-bottom: 5px; }
-        .preview-box { background: #fff; border: 1px solid #e2e8f0; padding: 15px; border-radius: 8px; font-size: 0.9rem; line-height: 1.5; color: #1a202c; }
-        .subject-box { background: #f8fafc; font-weight: 700; color: var(--primary); border-left: 4px solid var(--primary); }
-        .body-box { white-space: pre-wrap; min-height: 120px; margin-bottom: 20px; }
-
-        .btn-small { padding: 5px 10px; font-size: 0.7rem; background: var(--secondary); border: none; color: white; border-radius: 4px; cursor: pointer; font-weight: 700; }
-        .actions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .btn-large { padding: 15px; border-radius: 10px; font-weight: 800; cursor: pointer; color: white; border: none; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.2s; }
-        .btn-wa { background: var(--whatsapp); }
-        .btn-mail { background: var(--email); }
-        .btn-large:hover { opacity: 0.9; transform: translateY(-2px); }
-
-        #network-status { margin-left: auto; font-size: 0.75rem; font-weight: 700; padding: 6px 14px; border-radius: 20px; display: flex; align-items: center; gap: 8px; }
-        .online { background: #dcfce7; color: #166534; }
-        .offline { background: #fee2e2; color: #991b1b; }
-
-        #update-toast { position: fixed; bottom: 20px; right: 20px; background: #2d3748; color: white; padding: 1rem; border-radius: 12px; display: none; align-items: center; gap: 15px; z-index: 10000; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-        footer { text-align: center; padding: 2rem; color: #a0aec0; font-size: 0.8rem; }
-    </style>
-</head>
+    
+    <link rel="stylesheet" href="style/style.css"> <link rel="stylesheet" href="style/atencion_cliente.css"> </head>
 <body>
 
-    <nav>
-        <div class="logo">LAYER4 <span style="font-weight: 300;">SOLUTIONS</span></div>
-        
-        <ul class="nav-links">
-            <li class="nav-item"><a href="index.html" class="nav-link">Inicio</a></li>
-            
-            <li class="nav-item">
-                <a href="#" class="nav-link">At. Cliente ▾</a>
-                <div class="dropdown">
-                    <a href="atencion_cliente.html" class="dropdown-item">Gestor y Correo</a>
-                    <a href="guias_terminales.html" class="dropdown-item">Conf. Terminales</a>
-                </div>
-            </li>
+    <div id="nav-placeholder"></div>
 
-            <li class="nav-item">
-                <a href="#" class="nav-link">Operaciones ▾</a>
-                <div class="dropdown">
-                    <a href="consumos_v3.html" class="dropdown-item">Consumos Roaming</a>
-                </div>
-            </li>
-
-            <li class="nav-item">
-                <a href="#" class="nav-link">Facturación ▾</a>
-                <div class="dropdown">
-                    <a href="vozydatos_exp.html" class="dropdown-item">Vodafone (PDF)</a>
-                    <a href="calculadoras.html" class="dropdown-item">Herramientas precios</a>
-                </div>
-            </li>
-
-            <li class="nav-item"><a href="changelog.html" class="nav-link">Changelog</a></li>
-        </ul>
-
-        <div class="status-container">
-            <div id="network-status" class="online">
-                <div class="status-dot"></div>
-                <span id="status-text">Online</span>
-            </div>
-        </div>
-    </nav>
-
-    <div class="main-content">
+    <main class="main-content">
         <div class="card">
-            <h1>Gestor de Comunicaciones Multilingüe</h1>
-            
+            <h1 style="color: var(--primary); margin-top: 0;">Gestor de Comunicaciones</h1>
+            <p style="color: var(--secondary); margin-bottom: 2rem;">Generador de plantillas multilingües para WhatsApp y Email.</p>
+
             <div class="config-row">
                 <div>
-                    <label>Tipo de Comunicación:</label>
-                    <select id="tplSelect" onchange="renderForm()">
-                        <option value="bienvenida">Bienvenida Nuevo Cliente</option>
-                        <option value="apn">Configuración APN (Internet)</option>
-                        <option value="roaming">Activación Roaming</option>
-                        <option value="incidencia">Resolución de Incidencia</option>
+                    <label style="font-size: 11px; font-weight: 800; color: var(--secondary);">PLANTILLA</label>
+                    <select id="tplSelect" onchange="renderForm()" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border);">
+                        <option value="bienvenida">Mensaje de Bienvenida</option>
+                        <option value="apn">Configuración de Internet (APN)</option>
+                        <option value="incidencianueva">Nueva Incidencia</option>
                     </select>
                 </div>
                 <div>
-                    <label>Idioma:</label>
-                    <select id="langSelect" onchange="updatePreview()">
-                        <option value="es">🇪🇸 Castellano</option>
-                        <option value="en">🇬🇧 Inglés</option>
-                        <option value="fr">🇫🇷 Francés</option>
-                        <option value="de">🇩🇪 Alemán</option>
-                        <option value="it">🇮🇹 Italiano</option>
-                        <option value="sv">🇸🇪 Sueco</option>
-                        <option value="fi">🇫🇮 Finlandés</option>
-                        <option value="no">🇳🇴 Noruego</option>
-                        <option value="da">🇩🇰 Danés</option>
+                    <label style="font-size: 11px; font-weight: 800; color: var(--secondary);">IDIOMA</label>
+                    <select id="langSelect" onchange="updatePreview()" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border);">
+                        <option value="es">Castellano</option>
+                        <option value="en">English</option>
+                        <option value="fr">Français</option>
+                        <option value="de">Deutsch</option>
+                        <option value="it">Italiano</option>
+                        <option value="pt">Português</option>
+                        <option value="ca">Català</option>
                     </select>
                 </div>
             </div>
 
             <div id="dynamic-vars" class="vars-grid"></div>
 
-            <div class="preview-label">
-                <label>Asunto del Correo:</label>
-                <button class="btn-small" onclick="copyField('preview-subject')">Copiar</button>
-            </div>
-            <div id="preview-subject" class="preview-box subject-box">Cargando...</div>
+            <div class="preview-box">
+                <div class="preview-header">
+                    <span class="label-mini">ASUNTO</span>
+                    <button class="btn-copy-tiny" onclick="copyField('preview-subject')">COPIAR ASUNTO</button>
+                </div>
+                <div id="preview-subject" class="subject-box" title="Clic para copiar"></div>
 
-            <div class="preview-label">
-                <label>Cuerpo del Mensaje:</label>
-                <button class="btn-small" onclick="copyField('preview-body')">Copiar</button>
-            </div>
-            <div id="preview-body" class="preview-box body-box">Cargando...</div>
+                <div class="preview-header">
+                    <span class="label-mini">CUERPO DEL MENSAJE</span>
+                    <button class="btn-copy-tiny" onclick="copyField('preview-body')">COPIAR CUERPO</button>
+                </div>
+                <div id="preview-body" class="body-box" title="Clic para copiar"></div>
 
-            <div class="actions-grid">
-                <button class="btn-large btn-wa" onclick="sendWA()">💬 WhatsApp</button>
-                <button class="btn-large btn-mail" onclick="sendMail()">📧 Redactar Email</button>
+                <div class="actions-grid">
+                    <button class="btn-large btn-wa" onclick="sendWA()">WHATSAPP</button>
+                    <button class="btn-large btn-mail" onclick="sendMail()">MAIL (SISTEMA)</button>
+        <!--            <button class="btn-large btn-o365" onclick="sendOutlookApp()">OUTLOOK APP</button> -->
+                </div>
             </div>
         </div>
-    </div>
+    </main>
 
-    <footer><b>Fran Maestre</b> | Layer4 Solutions 2026 | v2.0</footer>
+    <div id="footer-placeholder"></div>
 
     <div id="update-toast">
-        <span>🚀 Actualización v2.0 lista</span>
-        <button onclick="actualizarApp()" style="background:var(--accent); border:none; color:white; padding:8px 15px; border-radius:6px; cursor:pointer; font-weight:bold;">Actualizar</button>
+        <span>🚀 Nueva versión v2.5 disponible</span>
+        <button onclick="actualizarApp()">Actualizar</button>
     </div>
 
-<script>
-    // --- BASE DE DATOS MULTILINGÜE ---
-    const templates = {
-        bienvenida: {
-            fields: ["nombre", "telefono"],
-            es: { subject: "Bienvenido a Layer4 Solutions - Alta de línea {{telefono}}", text: "Hola {{nombre}},\n\n¡Bienvenido a Layer4 Solutions! Es un placer saludarte. Te confirmo que tu línea {{telefono}} ya está activa bajo nuestra gestión. \n\nCualquier duda, estamos a tu disposición.\nUn saludo." },
-            en: { subject: "Welcome to Layer4 Solutions - Line activation {{telefono}}", text: "Hello {{nombre}},\n\nWelcome to Layer4 Solutions! It is a pleasure to greet you. I confirm that your line {{telefono}} is now active under our management.\n\nShould you have any questions, we are at your disposal.\nBest regards." },
-            fr: { subject: "Bienvenue chez Layer4 Solutions - Activation de ligne {{telefono}}", text: "Bonjour {{nombre}},\n\nBienvenue chez Layer4 Solutions ! C'est un plaisir de vous saluer. Je vous confirme que votre ligne {{telefono}} est désormais active sous notre gestion.\n\nPour toute question, nous restons à votre disposition.\nCordialement." },
-            de: { subject: "Willkommen bei Layer4 Solutions - Leitungsfreischaltung {{telefono}}", text: "Hallo {{nombre}},\n\nWillkommen bei Layer4 Solutions! Es ist uns ein Vergnügen, Sie zu begrüßen. Ich bestätige, dass Ihre Leitung {{telefono}} nun unter unserer Verwaltung aktiv ist.\n\nFür Rückfragen stehen wir Ihnen gerne zur Verfügung.\nMit freundlichen Grüßen." },
-            it: { subject: "Benvenuto in Layer4 Solutions - Attivazione linea {{telefono}}", text: "Ciao {{nombre}},\n\nBenvenuto in Layer4 Solutions! È un piacere salutarti. Ti confermo che la tua linea {{telefono}} è ora attiva sotto la nostra gestione.\n\nPer qualsiasi dubbio, siamo a tua disposizione.\nUn cordiale saluto." },
-            sv: { subject: "Välkommen till Layer4 Solutions - Aktivering av linje {{telefono}}", text: "Hej {{nombre}},\n\nVälkommen till Layer4 Solutions! Det är ett nöje att hälsa på dig. Jag bekräftar att din linje {{telefono}} nu är aktiv under vår förvaltning.\n\nOm du har några frågor står vi till ditt förfogande.\nMed vänliga hälsningar." },
-            fi: { subject: "Tervetuloa Layer4 Solutionsiin - Liittymän aktivointi {{telefono}}", text: "Hei {{nombre}},\n\nTervetuloa Layer4 Solutionsiin! On ilo tervehtiä sinua. Vahvistan, että liittymäsi {{telefono}} on nyt aktiivinen hallinnassamme.\n\nJos sinulla on kysyttävää, olemme käytettävissäsi.\nYstävällisin terveisin." },
-            no: { subject: "Velkommen til Layer4 Solutions - Aktivering av linje {{telefono}}", text: "Hei {{nombre}},\n\nVelkommen til Layer4 Solutions! Det er en glede å hilse på deg. Jeg bekrefter at din linje {{telefono}} nå er aktiv under vår forvaltning.\n\nSkulle du ha spørsmål, står vi til din disposisjon.\nMed vennlig hilsen." },
-            da: { subject: "Velkommen til Layer4 Solutions - Aktivering af linje {{telefono}}", text: "Hej {{nombre}},\n\nVelkommen til Layer4 Solutions! Det er en fornøjelse at hilse på deg. Jeg bekræfter, at din linje {{telefono}} nu er aktiv under vores administration.\n\nHvis du har spørgsmål, står vi til din rådighed.\nMed venlig hilsen." }
-        },
-        apn: {
-            fields: ["telefono", "apn_valor"],
-            es: { subject: "Configuración de Internet (APN) - Línea {{telefono}}", text: "Estimado cliente,\n\nPara configurar el internet en su dispositivo con la línea {{telefono}}, por favor introduzca los siguientes datos en Ajustes > Redes Móviles > APN:\n\n- Nombre: Internet\n- APN: {{apn_valor}}\n- Usuario/Pass: (vacío)\n\nReinicie el terminal tras guardarlo." },
-            en: { subject: "Internet Configuration (APN) - Line {{telefono}}", text: "Dear customer,\n\nTo configure the internet on your device for the line {{telefono}}, please enter the following settings in Settings > Mobile Networks > APN:\n\n- Name: Internet\n- APN: {{apn_valor}}\n- User/Pass: (empty)\n\nPlease restart the device after saving." }
-            // [Nota: Para ahorrar espacio, he incluido ES y EN. Se pueden añadir los demás idiomas siguiendo el mismo patrón]
-        },
-        roaming: {
-            fields: ["nombre", "telefono"],
-            es: { subject: "Confirmación: Roaming Activado - {{telefono}}", text: "Hola {{nombre}},\n\nTe informamos que el servicio de Roaming para la línea {{telefono}} ha sido activado correctamente. Recuerda que en la Zona 1 (UE) el consumo de datos está incluido en tu tarifa nacional.\n\n¡Buen viaje!" },
-            en: { subject: "Confirmation: Roaming Activated - {{telefono}}", text: "Hello {{nombre}},\n\nWe inform you that the Roaming service for line {{telefono}} has been correctly activated. Remember that in Zone 1 (EU), data consumption is included in your national rate.\n\nHave a nice trip!" }
-        },
-        incidencia: {
-            fields: ["nombre", "telefono", "ticket"],
-            es: { subject: "Resolución Incidencia Técnica #{{ticket}}", text: "Hola {{nombre}},\n\nTe informamos que la incidencia registrada con número {{ticket}} sobre la línea {{telefono}} ha sido SOLUCIONADA por nuestro equipo técnico.\n\nGracias por tu paciencia." },
-            en: { subject: "Technical Issue Resolution #{{ticket}}", text: "Hello {{nombre}},\n\nWe inform you that the issue registered with ticket number {{ticket}} for line {{telefono}} has been SOLVED by our technical team.\n\nThank you for your patience." }
-        }
-    };
-
-    function renderForm() {
-        const key = document.getElementById('tplSelect').value;
-        const container = document.getElementById('dynamic-vars');
-        container.innerHTML = "";
-        templates[key].fields.forEach(f => {
-            const div = document.createElement('div');
-            div.innerHTML = `<label style="font-size:11px; text-transform:uppercase;">${f.replace('_',' ')}</label>
-                             <input type="text" id="field_${f}" oninput="updatePreview()" placeholder="Escribir...">`;
-            container.appendChild(div);
-        });
-        updatePreview();
-    }
-
-    function updatePreview() {
-        const key = document.getElementById('tplSelect').value;
-        const lang = document.getElementById('langSelect').value;
-        
-        // Si el idioma no está disponible para esa plantilla, usamos inglés por defecto
-        const tpl = templates[key][lang] || templates[key]['en'] || templates[key]['es'];
-        
-        let subject = tpl.subject;
-        let body = tpl.text;
-        
-        templates[key].fields.forEach(f => {
-            const val = document.getElementById('field_'+f).value || `[${f}]`;
-            subject = subject.replace(`{{${f}}}`, val);
-            body = body.replace(`{{${f}}}`, val);
-        });
-        
-        document.getElementById('preview-subject').innerText = subject;
-        document.getElementById('preview-body').innerText = body;
-    }
-
-    function copyField(id) {
-        const text = document.getElementById(id).innerText;
-        navigator.clipboard.writeText(text);
-        alert("Copiado: " + (id.includes('subject') ? "Asunto" : "Cuerpo"));
-    }
-
-    function sendWA() {
-        const text = encodeURIComponent(document.getElementById('preview-body').innerText);
-        window.open(`https://wa.me/?text=${text}`, '_blank');
-    }
-
-    function sendMail() {
-        const subject = encodeURIComponent(document.getElementById('preview-subject').innerText);
-        const body = encodeURIComponent(document.getElementById('preview-body').innerText);
-        window.location.href = `mailto:?subject=${subject}&body=${body}`;
-    }
-
-    // --- LOGICA PWA Y RED ---
-    function updateOnlineStatus() {
-        const s = document.getElementById('network-status');
-        const t = document.getElementById('status-text');
-        if (navigator.onLine) { s.className = 'online'; t.innerText = 'Online'; }
-        else { s.className = 'offline'; t.innerText = 'Modo Offline'; }
-    }
-    window.addEventListener('online', updateOnlineStatus);
-    window.addEventListener('offline', updateOnlineStatus);
-    updateOnlineStatus();
-
-    let newWorker;
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js').then(reg => {
-            if (reg.waiting) { newWorker = reg.waiting; showUpdateToast(); }
-            reg.addEventListener('updatefound', () => {
-                newWorker = reg.installing;
-                newWorker.addEventListener('statechange', () => {
-                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                        showUpdateToast();
-                    }
-                });
-            });
-        });
-    }
-
-    function showUpdateToast() { 
-        document.getElementById('update-toast').style.display = 'flex';
-        const notificationSound = new Audio('https://cdn.pixabay.com/audio/2022/03/15/audio_7838575c34.mp3');
-        notificationSound.volume = 0.3;
-        notificationSound.play().catch(e => console.log("Audio en espera"));
-    }
-
-    function actualizarApp() { if(newWorker) newWorker.postMessage({action:'skipWaiting'}); }
-
-    renderForm();
-</script>
-</body>
+    <script src="scripts/main.js" defer></script> <script src="scripts/atencion_cliente.js" defer></script> </body>
 </html>
-
-
-

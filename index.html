@@ -3,387 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Layer4 Solutions - Business Suite v1.9</title>
+    <title>Layer4 Solutions - Business Suite v2.5</title>
     <link rel="manifest" href="manifest.json">
-    <style>
-        :root {
-            --primary: #0b2187;
-            --primary-light: #1e3a8a;
-            --bg: #f8fafc;
-            --text-dark: #2d3748;
-            --secondary: #64748b;
-            --accent: #10b981;
-            --white: #ffffff;
-        }
-
-        body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            margin: 0;
-            background: var(--bg);
-            color: var(--text-dark);
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-
-        /* --- NAVEGACIÓN SUPERIOR --- */
-        nav {
-            background: var(--primary);
-            color: white;
-            height: 65px;
-            display: flex;
-            align-items: center;
-            padding: 0 2rem;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-
-        .logo {
-            font-weight: 800;
-            font-size: 1.2rem;
-            margin-right: 3rem;
-            letter-spacing: 1px;
-            cursor: default;
-        }
-
-        .nav-links {
-            display: flex;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            height: 100%;
-        }
-
-        .nav-item {
-            position: relative;
-            height: 100%;
-            display: flex;
-            align-items: center;
-        }
-
-        .nav-link {
-            padding: 0 1.2rem;
-            text-decoration: none;
-            color: rgba(255,255,255,0.8);
-            font-weight: 600;
-            font-size: 0.9rem;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            transition: 0.3s;
-        }
-
-        .nav-item:hover > .nav-link {
-            color: white;
-            background: rgba(255,255,255,0.1);
-        }
-
-        /* --- DESPLEGABLES (DROPDOWNS) --- */
-        .dropdown {
-            position: absolute;
-            top: 65px;
-            left: 0;
-            background: white;
-            min-width: 220px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-            border-radius: 0 0 8px 8px;
-            display: none;
-            flex-direction: column;
-            overflow: hidden;
-            border: 1px solid #e2e8f0;
-        }
-
-        .nav-item:hover .dropdown {
-            display: flex;
-            animation: fadeIn 0.2s ease-out;
-        }
-
-        .dropdown-item {
-            padding: 14px 20px;
-            text-decoration: none;
-            color: var(--text-dark);
-            font-size: 0.85rem;
-            font-weight: 500;
-            transition: 0.2s;
-            border-bottom: 1px solid #f1f5f9;
-        }
-
-        .dropdown-item:last-child { border-bottom: none; }
-
-        .dropdown-item:hover {
-            background: #f8fafc;
-            color: var(--primary);
-            padding-left: 25px;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* --- INDICADOR DE RED --- */
-        .status-container {
-            margin-left: auto;
-            display: flex;
-            align-items: center;
-        }
-
-        #network-status {
-            font-size: 0.75rem;
-            font-weight: 700;
-            padding: 6px 14px;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: 0.3s;
-        }
-        .online { background: #dcfce7; color: #166534; }
-        .offline { background: #fee2e2; color: #991b1b; }
-        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
-
-        /* --- CONTENIDO PRINCIPAL --- */
-        .container {
-            flex: 1;
-            padding: 3rem 2rem;
-            max-width: 1100px;
-            margin: 0 auto;
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        .welcome-card {
-            background: white;
-            padding: 3.5rem 2rem;
-            border-radius: 24px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.04);
-            text-align: center;
-            border: 1px solid #edf2f7;
-        }
-
-        h1 { font-size: 2.8rem; margin-top: 0; margin-bottom: 0.5rem; color: var(--primary); }
-        .subtitle { color: var(--secondary); font-size: 1.2rem; margin-bottom: 3rem; }
-
-        .grid-apps {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            text-align: left;
-        }
-
-        .app-card {
-            padding: 1.5rem;
-            background: #fff;
-            border-radius: 16px;
-            border: 1px solid #e2e8f0;
-            text-decoration: none;
-            color: inherit;
-            transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .app-card:hover {
-            border-color: var(--primary);
-            transform: translateY(-5px);
-            box-shadow: 0 12px 20px rgba(11, 33, 135, 0.08);
-        }
-
-        .app-card h3 { margin: 0; color: var(--primary); display: flex; align-items: center; gap: 10px; }
-        .app-card p { margin: 0; font-size: 0.9rem; color: var(--secondary); line-height: 1.4; }
-
-        /* --- FOOTER & MANTENIMIENTO --- */
-        footer { margin-top: auto; padding: 2rem; text-align: center; }
-        
-        .btn-clean {
-            background: white; border: 1px solid #cbd5e1;
-            color: #94a3b8; padding: 8px 16px; border-radius: 8px;
-            font-size: 0.75rem; cursor: pointer; transition: 0.3s;
-            font-weight: 600;
-        }
-        .btn-clean:hover { color: #f56565; border-color: #f56565; background: #fff5f5; }
-
-        /* --- POPUP ACTUALIZACIÓN --- */
-        #update-toast {
-            position: fixed; bottom: 30px; right: 30px; background: #1e293b; color: white;
-            padding: 1.2rem 1.8rem; border-radius: 16px; display: none; align-items: center; gap: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4); z-index: 10001;
-            animation: slideIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        @keyframes slideIn { from { transform: translateY(100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
-        .btn-update-now {
-            background: var(--accent); border: none; color: white; padding: 10px 20px;
-            border-radius: 8px; cursor: pointer; font-weight: 800; font-size: 0.9rem;
-        }
-    </style>
-</head>
+    
+    <link rel="stylesheet" href="style/style.css"> <link rel="stylesheet" href="style/index.css"> </head>
 <body>
 
-    <nav>
-        <div class="logo">LAYER4 <span style="font-weight: 300;">SOLUTIONS</span></div>
-        
-        <ul class="nav-links">
-            <li class="nav-item"><a href="index.html" class="nav-link">Inicio</a></li>
-            
-            <li class="nav-item">
-                <a href="#" class="nav-link">At. Cliente ▾</a>
-                <div class="dropdown">
-                    <a href="atencion_cliente.html" class="dropdown-item">Gestor y Correo</a>
-                    <a href="guias_terminales.html" class="dropdown-item">Conf. Terminales</a>
+    <div id="nav-placeholder"></div>
+
+    <main class="main-content">
+        <header style="margin-bottom: 2.5rem;">
+            <h1 style="font-size: 1.8rem; margin-bottom: 0.5rem; color: var(--primary);">Panel de Herramientas</h1>
+            <p style="color: var(--secondary);">Selecciona una utilidad para comenzar a trabajar.</p>
+        </header>
+
+        <div class="tool-grid">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-icon">🎧</span>
+                    <h3>Atención al Cliente</h3>
                 </div>
-            </li>
-
-            <li class="nav-item">
-                <a href="#" class="nav-link">Operaciones ▾</a>
-                <div class="dropdown">
-                    <a href="consumos_v3.html" class="dropdown-item">Consumos Roaming</a>
+                <p>Gestor de comunicaciones multilingüe y simulador de terminales para soporte técnico.</p>
+                <div class="btn-group">
+                    <a href="atencion_cliente.html" class="btn">Gestor Email</a>
+                    <a href="guias_terminales.html" class="btn btn-outline">Simulador Móvil</a>
                 </div>
-            </li>
-
-            <li class="nav-item">
-                <a href="#" class="nav-link">Facturación ▾</a>
-                <div class="dropdown">
-                    <a href="vozydatos_exp.html" class="dropdown-item">Vodafone (PDF)</a>
-                    <a href="calculadoras.html" class="dropdown-item">Herramientas precios</a>
-                </div>
-            </li>
-
-            <li class="nav-item"><a href="changelog.html" class="nav-link">Changelog</a></li>
-        </ul>
-
-        <div class="status-container">
-            <div id="network-status" class="online">
-                <div class="status-dot"></div>
-                <span id="status-text">Online</span>
-            </div>
-        </div>
-    </nav>
-
-    <main class="container">
-        <div class="welcome-card">
-            <h1>Hola</h1>
-            <p class="subtitle">Bienvenido a la Suite de Herramientas de Layer4 Solutions.</p>
-            
-            <div class="grid-apps">
-                <a href="atencion_cliente.html" class="app-card">
-                    <h3><span>📧</span> Gestor de Correo</h3>
-                    <p>Genera plantillas rápidas para WhatsApp y correos electrónicos con asuntos personalizados.</p>
-                </a>
-                <a href="consumos_v3.html" class="app-card">
-                    <h3><span>📶</span> Control de Consumos</h3>
-                    <p>Analizador masivo de tráfico para líneas Vodafone y Movistar.</p>
-                </a>
-                <a href="vozydatos_exp.html" class="app-card">
-                    <h3><span>📊</span> Extractor Factura VDF</h3>
-                    <p>Convierte desgloses de facturas PDF a formato Excel editable.</p>
-                </a>
             </div>
 
-            <div style="margin-top: 4rem;">
-                <button class="btn-clean" onclick="limpiarCacheManual()">⚙️ MANTENIMIENTO: LIMPIAR CACHÉ LOCAL</button>
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-icon">⚙️</span>
+                    <h3>Operaciones</h3>
+                </div>
+                <p>Cálculo de consumos en Roaming y gestión operativa de líneas.</p>
+                <div class="btn-group">
+                    <a href="consumos_v3.html" class="btn">Consumos Roaming</a>
+                </div>
             </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-icon">💳</span>
+                    <h3>Facturación</h3>
+                </div>
+                <p>Exportación de datos Vodafone, calculadoras de precios y validador de IBAN SEPA.</p>
+                <div class="btn-group">
+                    <a href="validador_iban.html" class="btn">Validador IBAN</a>
+                    <a href="vozydatos_exp.html" class="btn btn-outline">Exportar PDF</a>
+                </div>
+            </div>
+            <!--
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-icon">📋</span>
+                    <h3>Historial</h3>
+                </div>
+                <p>Registro de actualizaciones, correcciones de errores y nuevas funcionalidades.</p>
+                <div class="btn-group">
+                    <a href="changelog.html" class="btn">Ver Changelog</a>
+                </div>
+            </div> -->
         </div>
     </main>
 
-    <footer>
-        <div style="font-size: 0.8rem; color: #94a3b8;">
-            &copy; Fran Maestre | Layer4 Solutions 2026 | v2.0.0
-        </div>
-    </footer>
+    <div id="footer-placeholder"></div>
 
     <div id="update-toast">
-        <div style="display: flex; flex-direction: column; gap: 4px;">
-            <span style="font-weight: 800; font-size: 1rem;">🚀 Actualización disponible</span>
-            <span style="font-size: 0.8rem; opacity: 0.8;">Hay una nueva versión de la suite lista.</span>
-        </div>
-        <button class="btn-update-now" onclick="actualizarApp()">ACTUALIZAR</button>
+        <span>🚀 Actualización v2.5 disponible</span>
+        <button onclick="actualizarApp()">Actualizar</button>
     </div>
 
-    <script>
-        // --- GESTIÓN DE ESTADO DE RED ---
-        function updateOnlineStatus() {
-            const status = document.getElementById('network-status');
-            const text = document.getElementById('status-text');
-            if (navigator.onLine) {
-                status.className = 'online';
-                text.innerText = 'Online';
-            } else {
-                status.className = 'offline';
-                text.innerText = 'Modo Offline';
-            }
-        }
-        window.addEventListener('online', updateOnlineStatus);
-        window.addEventListener('offline', updateOnlineStatus);
-        updateOnlineStatus();
-
-        // --- LÓGICA PWA (Service Worker y Actualización) ---
-        let newWorker;
-
-        if ('serviceWorker' in navigator) {
-            // Registramos el sw sin timestamp para evitar bucles, el navegador ya gestiona el cambio de archivo
-            navigator.serviceWorker.register('sw.js').then(reg => {
-                
-                // Comprobamos si hay una actualización esperando de una sesión anterior
-                if (reg.waiting) {
-                    newWorker = reg.waiting;
-                    showUpdateToast();
-                }
-
-                reg.addEventListener('updatefound', () => {
-                    newWorker = reg.installing;
-                    newWorker.addEventListener('statechange', () => {
-                        // Solo mostramos el aviso cuando el nuevo SW está instalado
-                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                            showUpdateToast();
-                        }
-                    });
-                });
-            });
-
-            // Escuchar el cambio de controlador para recargar la página
-            let refreshing = false;
-            navigator.serviceWorker.addEventListener('controllerchange', () => {
-                if (refreshing) return;
-                window.location.reload();
-                refreshing = true;
-            });
-        }
-
-        function showUpdateToast() {
-            document.getElementById('update-toast').style.display = 'flex';
-        }
-
-        function actualizarApp() {
-            if (newWorker) {
-                newWorker.postMessage({ action: 'skipWaiting' });
-            }
-        }
-
-        // --- LIMPIEZA MANUAL DE EMERGENCIA ---
-        async function limpiarCacheManual() {
-            if (confirm("Esta acción borrará todos los archivos guardados localmente y forzará la descarga de la última versión desde GitHub. ¿Continuar?")) {
-                try {
-                    const cacheNames = await caches.keys();
-                    await Promise.all(cacheNames.map(name => caches.delete(name)));
-                    
-                    const registrations = await navigator.serviceWorker.getRegistrations();
-                    for (let registration of registrations) {
-                        await registration.unregister();
-                    }
-                    
-                    alert("Caché limpiada. La aplicación se reiniciará.");
-                    window.location.reload(true);
-                } catch (err) {
-                    alert("Error al limpiar la caché: " + err);
-                }
-            }
-        }
-    </script>
+    <script src="scripts/main.js" defer></script>
 </body>
-
 </html>
-

@@ -2,8 +2,13 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Layer4 Solutions - Gestión de Consumos</title>
+    <link rel="manifest" href="manifest.json">
     <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+    
+    <link rel="stylesheet" href="style/style.css">
+
     <style>
         :root {
             --primary: #0b2187;
@@ -24,81 +29,10 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-            color: var(--text);
+            color: var(--text-dark);
         }
 
-        /* --- NUEVA NAVEGACIÓN SUPERIOR v1.9 --- */
-        nav {
-            background: var(--primary);
-            color: white;
-            height: 65px;
-            display: flex;
-            align-items: center;
-            padding: 0 2rem;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-        
-        .logo { font-weight: 800; font-size: 1.1rem; margin-right: 2.5rem; letter-spacing: 1px; }
-        
-        .nav-links { display: flex; list-style: none; margin: 0; padding: 0; height: 100%; }
-        
-        .nav-item { position: relative; height: 100%; display: flex; align-items: center; }
-        
-        .nav-link {
-            padding: 0 1.2rem;
-            text-decoration: none;
-            color: rgba(255,255,255,0.8);
-            font-weight: 600;
-            font-size: 0.85rem;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            transition: 0.3s;
-        }
-        
-        .nav-item:hover > .nav-link { color: white; background: rgba(255,255,255,0.1); }
-        
-        /* --- DROPDOWNS --- */
-        .dropdown {
-            position: absolute;
-            top: 65px;
-            left: 0;
-            background: white !important;
-            min-width: 200px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-            border-radius: 0 0 8px 8px;
-            display: none;
-            flex-direction: column;
-            border: 1px solid #e2e8f0;
-        }
-        
-        .nav-item:hover .dropdown { display: flex; animation: fadeIn 0.2s ease-out; }
-        
-        .dropdown-item {
-            padding: 12px 20px;
-            text-decoration: none;
-            color: #2d3748 !important;
-            font-size: 0.8rem;
-            font-weight: 500;
-            border-bottom: 1px solid #f1f5f9;
-            transition: 0.2s;
-        }
-        
-        .dropdown-item:hover { background: #f8fafc !important; color: #0b2187 !important;; padding-left: 25px; }
-        
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-        
-        /* --- STATUS INDICATOR --- */
-        .status-container { margin-left: auto; display: flex; align-items: center; }
-        #network-status { font-size: 0.7rem; font-weight: 700; padding: 5px 12px; border-radius: 20px; display: flex; align-items: center; gap: 6px; }
-        .online { background: #dcfce7; color: #166534; }
-        .offline { background: #fee2e2; color: #991b1b; }
-        .status-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
-
-        .tabs-container {
+         .tabs-container {
             background: white;
             display: flex;
             justify-content: center;
@@ -208,42 +142,14 @@
         .row-alarm { background-color: #fff5f5; border-left: 5px solid red; }
         .alarm-badge { background: red; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; }
 
-        footer { background: #ffffff; padding: 1.5rem; text-align: center; border-top: 1px solid #edf2f7; font-size: 0.85rem; color: #a0aec0; margin-top: 3rem; }
+        
+        #update-toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1a202c; color: white; padding: 12px 24px; border-radius: 50px; display: none; align-items: center; gap: 15px; z-index: 3000; box-shadow: 0 10px 15px rgba(0,0,0,0.2); }
     </style>
 </head>
 <body>
 
-    <nav>
-        <div class="logo">LAYER4 <span style="font-weight: 300;">SOLUTIONS</span></div>
-        <ul class="nav-links">
-            <li class="nav-item"><a href="index.html" class="nav-link">Inicio</a></li>
-            <li class="nav-item">
-                <a href="#" class="nav-link">At. Cliente ▾</a>
-                <div class="dropdown">
-                    <a href="atencion_cliente.html" class="dropdown-item">Gestor y Correo</a>
-                </div>
-            </li>
-            <li class="nav-item">
-                <a href="#" class="nav-link">Operaciones ▾</a>
-                <div class="dropdown">
-                    <a href="consumos_v3.html" class="dropdown-item">Consumos Roaming</a>
-                </div>
-            </li>
-            <li class="nav-item">
-                <a href="#" class="nav-link">Facturación ▾</a>
-                <div class="dropdown">
-                    <a href="vozydatos_exp.html" class="dropdown-item">Vodafone (PDF)</a>
-                    <a href="calculadoras.html" class="dropdown-item">Herramientas precios</a>
-                </div>
-            </li>
-            <li class="nav-item"><a href="changelog.html" class="nav-link">Changelog</a></li>
-        </ul>
-        <div class="status-container">
-            <div id="network-status" class="online">
-                <div class="status-dot"></div><span id="status-text">Online</span>
-            </div>
-        </div>
-    </nav>
+    <div id="nav-placeholder"></div>
+
     <div class="tabs-container">
         <div class="tab-item active-vdf" onclick="showTab('vdf')" id="tabVdf">Vodafone (VDF)</div>
         <div class="tab-item" onclick="showTab('mvs')" id="tabMvs">Movistar (MVS)</div>
@@ -324,14 +230,17 @@
         </div>
 
     </div>
-    <div id="update-toast" style="display: none; position: fixed; bottom: 20px; right: 20px; background: #2d3748; color: white; padding: 1rem; border-radius: 12px; align-items: center; gap: 15px; z-index: 10000; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
-        <span>🚀 Nueva versión disponible</span>
-        <button onclick="actualizarApp()" style="background:var(--accent); border:none; color:white; padding:8px 15px; border-radius:6px; cursor:pointer; font-weight:bold;">Actualizar</button>
+
+    <div id="footer-placeholder"></div>
+
+    <div id="update-toast">
+        <span>🚀 Nueva versión v2.5 disponible</span>
+        <button onclick="actualizarApp()" style="background:var(--accent); color:white; border:none; padding:5px 15px; border-radius:5px; cursor:pointer; font-weight:bold">Actualizar</button>
     </div>
 
-    <footer><b>Fran Maestre</b> | Layer4 Solutions 2026</footer>
+    <script src="scripts/main.js" defer></script>
 
-<script>
+    <script>
     // --- LÓGICA DE AJUSTES DINÁMICOS ---
     let AJUSTES_USUARIO = {}; // Objeto que guardará { 'telefono': {n: GB, r: GB} }
 
@@ -573,47 +482,27 @@
         XLSX.writeFile(wb, `Reporte_${op}_Layer4.xlsx`);
     }
 
-        // --- LOGICA RED ---
-    function updateOnlineStatus() {
-        const s = document.getElementById('network-status');
-        const t = document.getElementById('status-text');
-        if (navigator.onLine) { s.className = 'online'; t.innerText = 'Online'; }
-        else { s.className = 'offline'; t.innerText = 'Modo Offline'; }
-    }
-    window.addEventListener('online', updateOnlineStatus);
-    window.addEventListener('offline', updateOnlineStatus);
-    updateOnlineStatus();
-    
-    // --- LOGICA PWA ---
-    let newWorker;
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js').then(reg => {
-            if (reg.waiting) { newWorker = reg.waiting; showUpdateToast(); }
-            reg.addEventListener('updatefound', () => {
-                newWorker = reg.installing;
-                newWorker.addEventListener('statechange', () => {
-                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                        showUpdateToast();
-                    }
-                });
+        // --- SOLUCIÓN ERROR CLASSNAME ---
+        function updateOnlineStatus() {
+            const s = document.getElementById('network-status');
+            const t = document.getElementById('status-text');
+            if (!s || !t) return; // Evita el error si el Nav no se ha cargado todavía
+            if (navigator.onLine) { s.className = 'online'; t.innerText = 'Online'; }
+            else { s.className = 'offline'; t.innerText = 'Modo Offline'; }
+        }
+        window.addEventListener('online', updateOnlineStatus);
+        window.addEventListener('offline', updateOnlineStatus);
+        setTimeout(updateOnlineStatus, 1000); // Intento de actualización tras carga de Nav
+
+        // --- SOLUCIÓN ERROR NEWWORKER ---
+        // Se elimina la declaración local de newWorker para usar la de main.js
+        function actualizarApp() { 
+            // Buscamos el worker en el registro global del navegador si main.js no lo expuso
+            navigator.serviceWorker.ready.then(reg => {
+                if(reg.waiting) reg.waiting.postMessage({ action: 'skipWaiting' });
+                else if(reg.installing) reg.installing.postMessage({ action: 'skipWaiting' });
             });
-        });
-        let refreshing = false;
-        navigator.serviceWorker.addEventListener('controllerchange', () => {
-            if (refreshing) return;
-            window.location.reload();
-            refreshing = true;
-        });
-    }
-    function showUpdateToast() { 
-        const toast = document.getElementById('update-toast');
-        if(toast) toast.style.display = 'flex'; 
-    }
-    function actualizarApp() { if (newWorker) newWorker.postMessage({ action: 'skipWaiting' }); }
+        }
     </script>
 </body>
-
 </html>
-
-
-

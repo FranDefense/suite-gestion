@@ -2,31 +2,13 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Simulador de Terminales - Layer4 v2.3</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Layer4 - Simulador de Terminales</title>
     <link rel="manifest" href="manifest.json">
+    
+    <link rel="stylesheet" href="style/style.css">
     <style>
-        :root {
-            --primary: #0b2187;
-            --bg: #f8fafc;
-            --text: #2d3748;
-            --accent: #10b981;
-            --white: #ffffff;
-        }
-
-        body { font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; background: var(--bg); display: flex; flex-direction: column; min-height: 100vh; color: var(--text); }
-
-        /* --- NAVEGACIÓN v1.9 --- */
-        nav { background: var(--primary); color: white; height: 65px; display: flex; align-items: center; padding: 0 2rem; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        .logo { font-weight: 800; font-size: 1.1rem; margin-right: 2.5rem; letter-spacing: 1px; }
-        .nav-links { display: flex; list-style: none; margin: 0; padding: 0; height: 100%; }
-        .nav-item { position: relative; height: 100%; display: flex; align-items: center; }
-        .nav-link { padding: 0 1.2rem; text-decoration: none; color: rgba(255,255,255,0.8); font-weight: 600; font-size: 0.85rem; height: 100%; display: flex; align-items: center; }
-        .nav-item:hover > .nav-link { color: white; background: rgba(255,255,255,0.1); }
-        .dropdown { position: absolute; top: 65px; left: 0; background: white; min-width: 200px; box-shadow: 0 8px 20px rgba(0,0,0,0.15); display: none; flex-direction: column; border: 1px solid #e2e8f0; border-radius: 0 0 8px 8px; }
-        .nav-item:hover .dropdown { display: flex; }
-        .dropdown-item { padding: 12px 20px; text-decoration: none; color: var(--text); font-size: 0.8rem; border-bottom: 1px solid #f1f5f9; }
-        .dropdown-item:hover { background: #f8fafc; color: var(--primary); }
-
+        
         /* --- CONTENIDO --- */
         .main-content { flex: 1; padding: 2rem; display: flex; flex-direction: column; align-items: center; }
         
@@ -87,69 +69,12 @@
 
         @keyframes slideIn { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
 
-        /* --- INDICADOR DE RED --- */
-        .status-container {
-            margin-left: auto;
-            display: flex;
-            align-items: center;
-        }
-
-        #network-status {
-            font-size: 0.75rem;
-            font-weight: 700;
-            padding: 6px 14px;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: 0.3s;
-        }
-        .online { background: #dcfce7; color: #166534; }
-        .offline { background: #fee2e2; color: #991b1b; }
-        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+        
     </style>
 </head>
 <body>
 
-    <nav>
-        <div class="logo">LAYER4 <span style="font-weight: 300;">SOLUTIONS</span></div>
-        
-        <ul class="nav-links">
-            <li class="nav-item"><a href="index.html" class="nav-link">Inicio</a></li>
-            
-            <li class="nav-item">
-                <a href="#" class="nav-link">At. Cliente ▾</a>
-                <div class="dropdown">
-                    <a href="atencion_cliente.html" class="dropdown-item">Gestor y Correo</a>
-                    <a href="guias_terminales.html" class="dropdown-item">Conf. Terminales</a>
-                </div>
-            </li>
-
-            <li class="nav-item">
-                <a href="#" class="nav-link">Operaciones ▾</a>
-                <div class="dropdown">
-                    <a href="consumos_v3.html" class="dropdown-item">Consumos Roaming</a>
-                </div>
-            </li>
-
-            <li class="nav-item">
-                <a href="#" class="nav-link">Facturación ▾</a>
-                <div class="dropdown">
-                    <a href="vozydatos_exp.html" class="dropdown-item">Vodafone (PDF)</a>
-                    <a href="calculadoras.html" class="dropdown-item">Herramientas precios</a>
-                </div>
-            </li>
-
-            <li class="nav-item"><a href="changelog.html" class="nav-link">Changelog</a></li>
-        </ul>
-
-        <div class="status-container">
-            <div id="network-status" class="online">
-                <div class="status-dot"></div>
-                <span id="status-text">Online</span>
-            </div>
-        </div>
-    </nav>
+    <div id="nav-placeholder"></div>
 
     <div class="main-content">
         <h1 style="color: var(--primary); margin-bottom: 5px;">Simulador de Soporte Técnico</h1>
@@ -188,19 +113,14 @@
         </div>
     </div>
 
-    <footer>
-        <div style="font-size: 0.8rem; color: #94a3b8;">
-            &copy; Fran Maestre | Layer4 Solutions 2026 | v2.0.0
-        </div>
-    </footer>
+    <div id="footer-placeholder"></div>
 
     <div id="update-toast">
-        <div style="display: flex; flex-direction: column; gap: 4px;">
-            <span style="font-weight: 800; font-size: 1rem;">🚀 Actualización disponible</span>
-            <span style="font-size: 0.8rem; opacity: 0.8;">Hay una nueva versión de la suite lista.</span>
-        </div>
-        <button class="btn-update-now" onclick="actualizarApp()">ACTUALIZAR</button>
+        <span>🚀 Nueva versión v2.5 disponible</span>
+        <button onclick="actualizarApp()" style="background:var(--accent); color:white; border:none; padding:5px 15px; border-radius:5px; cursor:pointer; font-weight:bold">Actualizar</button>
     </div>
+
+    <script src="scripts/main.js" defer></script>
 
     <script>
         let currentBrand = 'ios';
@@ -351,48 +271,7 @@
         // Inicializar con iOS marcado
         selectBrand('ios');
 
-        // --- LÓGICA PWA (Service Worker y Actualización) ---
-        let newWorker;
-
-        if ('serviceWorker' in navigator) {
-            // Registramos el sw sin timestamp para evitar bucles, el navegador ya gestiona el cambio de archivo
-            navigator.serviceWorker.register('sw.js').then(reg => {
-                
-                // Comprobamos si hay una actualización esperando de una sesión anterior
-                if (reg.waiting) {
-                    newWorker = reg.waiting;
-                    showUpdateToast();
-                }
-
-                reg.addEventListener('updatefound', () => {
-                    newWorker = reg.installing;
-                    newWorker.addEventListener('statechange', () => {
-                        // Solo mostramos el aviso cuando el nuevo SW está instalado
-                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                            showUpdateToast();
-                        }
-                    });
-                });
-            });
-
-            // Escuchar el cambio de controlador para recargar la página
-            let refreshing = false;
-            navigator.serviceWorker.addEventListener('controllerchange', () => {
-                if (refreshing) return;
-                window.location.reload();
-                refreshing = true;
-            });
-        }
-
-        function showUpdateToast() {
-            document.getElementById('update-toast').style.display = 'flex';
-        }
-
-        function actualizarApp() {
-            if (newWorker) {
-                newWorker.postMessage({ action: 'skipWaiting' });
-            }
-        }
+        
 
         // --- LIMPIEZA MANUAL DE EMERGENCIA ---
         async function limpiarCacheManual() {
