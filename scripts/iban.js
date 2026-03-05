@@ -54,13 +54,6 @@ const BANCOS_DETALLE = {
     "DE10011001": { nombre: "N26 BANK AG", direccion: "KLOSTERSTRASSE 62", postal: "10179 BERLIN", bic: "N26EDEB1XXX", sepa: ["SCT", "SDD", "SCT Inst"] },
     "DE30020900": { nombre: "TARGOBANK AG", direccion: "KASERNENSTRASSE 10", postal: "40213 DÜSSELDORF", bic: "CMCIDEDDXXX", sepa: ["SCT", "SDD", "B2B", "SCT Inst"] },
     "DE47650130": { nombre: "SPARKASSE BIELEFELD", direccion: "SCHWERINER STRASSE 5", postal: "33605 BIELEFELD", bic: "WELADED1BIE", sepa: ["SCT", "SDD", "B2B", "SCT Inst"] },
-    "DE27020001": { nombre: "AUDI BANK ZNDL D VOLKSWAGEN BANK", direccion: "GIFHORNER STRASSE 57", postal: "38112 BRAUNSCHWEIG", bic: "AUDFDE21XXX", sepa: ["SCT","SDD","B2B"] },
-    "DE28562716": { nombre: "RAIFFEISENBANK FLACHSMEER", direccion: "RAIFFEISENBANK FLACHSMEER EG PASTOR-KERSTEN-STRASSE 1", postal: "26810 WESTOVERLEDINGEN", bic: "GENODEF1WEF", sepa: ["SCT","SDD","B2B","SCT Inst"] },
-    "DE60350130": { nombre: "KREISSPARKASSE BÖBLINGEN", direccion: "KREISSPARKASSE BÖBLINGEN WOLFGANG-BRUMME-ALLEE 1", postal: "71034 BÖBLINGEN", bic: "BBKRDE6BXXX", sepa: ["SCT","SDD","B2B","SCT Inst"] },
-    "DE29151700": { nombre: "KREISSPARKASSE DIEPHOLZ", direccion: "", postal: "28846 SYKE", bic: "BRLADE21SYK", sepa: ["SCT","SDD","B2B","SCT Inst"] },
-    "DE12030000": { nombre: "DEUTSCHE KREDITBANK BERLIN", direccion: "", postal: "10117 BERLIN", bic: "BYLADEM1001", sepa: ["SCT","SDD","B2B","SCT Inst"] },
-    "DE70070024": { nombre: "DEUTSCHE BANK", direccion: "", postal: "80271 MÜNCHEN", bic: "DEUTDEDBMUC", sepa: ["SCT","SDD","B2B","SCT Inst"] },
-    "DE25193331": { nombre: "VOLKSBANK", direccion: "VOLKSBANK EG KENNEDYDAMM 10", postal: "31134 HILDESHEIM", bic: "GENODEF1PAT", sepa: ["SCT","SDD","B2B","SCT Inst"] },
     "DE36010043": { nombre: "POSTBANK (NIEDERLASSUNG DER DEUTSCHE BANK AG) - ESSEN", direccion: "MUNZSTRASSE 1", postal: "45127 ESSEN", bic: "PBNKDEFFXXX", sepa: ["SCT", "SDD", "B2B", "SCT Inst"] }
 };
 
@@ -178,39 +171,4 @@ function enviarAportacion() {
     // Limpiar formulario y ocultar
     document.getElementById('form-contribucion').style.display = 'none';
     alert("¡Gracias! Se ha abierto tu correo para enviar los datos a programación.");
-
 }
-
-// Función actualizada para copiar texto con notificación
-function copyText(id) {
-    const text = document.getElementById(id).innerText;
-    
-    // Limpiamos espacios para el portapapeles
-    navigator.clipboard.writeText(text.replace(/\s/g, '')).then(() => {
-        showToast("¡Copiado al portapapeles!");
-    }).catch(err => {
-        console.error('Error al copiar: ', err);
-    });
-}
-
-// Función para mostrar el popup dinámico
-function showToast(mensaje) {
-    let toast = document.getElementById('copy-toast');
-    
-    // Si el elemento no existe en el HTML, lo creamos dinámicamente
-    if (!toast) {
-        toast = document.createElement('div');
-        toast.id = 'copy-toast';
-        document.body.appendChild(toast);
-    }
-    
-    toast.innerText = mensaje;
-    toast.className = "show";
-    
-    // Lo ocultamos después de 3 segundos
-    setTimeout(() => { 
-        toast.className = toast.className.replace("show", ""); 
-    }, 3000);
-}
-
-

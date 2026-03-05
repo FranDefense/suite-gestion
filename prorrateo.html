@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Prorrateo - Layer4 Solutions v2.5</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="style/style.css">
+    <link rel="stylesheet" href="style/atencion_cliente.css">
+</head>
+<body>
+    <div id="nav-placeholder"></div>
+
+    <main class="main-content">
+        <div class="card">
+            <h1 style="color: var(--primary); margin-top: 0;">Calculadora de Prorrateo</h1>
+            <p style="color: var(--secondary); margin-bottom: 2rem;">Cálculo exacto según los días del mes seleccionado.</p>
+
+            <div class="config-row" style="grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));">
+                <div>
+                    <label style="font-size: 11px; font-weight: 800; color: var(--secondary);">NOMBRE DEL CLIENTE</label>
+                    <input type="text" id="clientName" placeholder="Ej: Juan Pérez" oninput="calcularProrrateo()" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border);">
+                </div>
+                <div>
+                    <label style="font-size: 11px; font-weight: 800; color: var(--secondary);">NÚMERO DE LÍNEA</label>
+                    <input type="text" id="lineNumber" placeholder="Ej: 600 000 000" oninput="calcularProrrateo()" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border);">
+                </div>
+                <div>
+                    <label style="font-size: 11px; font-weight: 800; color: var(--secondary);">PRECIO (€)</label>
+                    <input type="number" id="basePrice" value="20.00" step="0.01" oninput="calcularProrrateo()" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border);">
+                </div>
+                <div>
+                    <label style="font-size: 11px; font-weight: 800; color: var(--secondary);">MES DE ALTA</label>
+                    <select id="monthSelect" onchange="calcularProrrateo()" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border);">
+                        </select>
+                </div>
+                <div>
+                    <label style="font-size: 11px; font-weight: 800; color: var(--secondary);">DÍA DE ALTA</label>
+                    <input type="number" id="startDay" min="1" max="31" oninput="calcularProrrateo()" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border);">
+                </div>
+                <div>
+                    <label style="font-size: 11px; font-weight: 800; color: var(--secondary);">IDIOMA</label>
+                    <select id="langSelect" onchange="calcularProrrateo()" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border);">
+                        <option value="es">Español</option>
+                        <option value="en">Inglés</option>
+                        <option value="fr">Francés</option>
+                        <option value="de">Alemán</option>
+                        <option value="it">Italiano</option>
+                        <option value="fi">Finlandés</option>
+                        <option value="no">Noruego</option>
+                        <option value="da">Danés</option>
+                        <option value="sv">Sueco</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="preview-box" style="margin-top: 20px; border-top: 2px solid var(--primary); padding-top: 20px;">
+                <div style="text-align: center; margin-bottom: 15px;">
+                    <div id="monthInfo" style="font-size: 0.8rem; color: var(--secondary); margin-bottom: 5px; font-weight: bold; background: #e0f2fe; display: inline-block; padding: 4px 12px; border-radius: 20px;"></div>
+                    <br><br>
+                    <span style="font-size: 0.8rem; color: var(--secondary); font-weight: 800;">IMPORTE TOTAL PRIMERA FACTURA:</span>
+                    <div id="resultPrice" style="font-size: 3rem; font-weight: 900; color: var(--primary);">0.00€</div>
+                    <p style="font-size: 0.75rem; color: var(--secondary);">Emisión: Día 1 del mes siguiente</p>
+                </div>
+    
+
+                <div class="preview-header">
+                    <span class="label-mini">MENSAJE PARA EL CLIENTE</span>
+                    <button class="btn-copy-tiny" onclick="copyText('preview-body')">COPIAR</button>
+                </div>
+                <div id="preview-body" class="body-box" style="background: #f8fafc; min-height: 100px; font-size: 0.9rem;"></div>
+
+                <div class="actions-grid">
+                    <button class="btn-large btn-wa" onclick="sendWA()">WHATSAPP</button>
+                    <button class="btn-large btn-mail" onclick="sendMail()">EMAIL</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+    <script src="scripts/main.js" defer></script>
+    <script src="scripts/prorrateo.js" defer></script>
+</body>
+</html>
