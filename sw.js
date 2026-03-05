@@ -4,6 +4,7 @@ const assets = [
   'index.html',
   'atencion_cliente.html',
   'guias_terminales.html',
+  'prorrateo.html',
   'validador_iban.html',
   'consumos_v3.html',
   'vozydatos_exp.html',
@@ -29,6 +30,7 @@ const assets = [
   'scripts/simulator.js',
   'scripts/iban.js',
   'scripts/consumos.js',
+  'scripts/prorrateo.js',
 
   // IMÁGENES
   'logo_layer4.png',
@@ -72,6 +74,7 @@ self.addEventListener('message', event => {
     self.skipWaiting();
   }
 });
+
 
 
 
