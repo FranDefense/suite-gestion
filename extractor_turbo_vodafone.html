@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turbo Excel - Layer4 Solutions</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="style/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        .converter-container { max-width: 800px; margin: 0 auto; }
+        .drop-zone {
+            border: 2px dashed var(--primary);
+            padding: 3rem;
+            border-radius: 16px;
+            text-align: center;
+            background: var(--white);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+        }
+        .drop-zone:hover { background: #f0f4ff; border-style: solid; }
+        .drop-zone p { color: var(--secondary); font-weight: 600; }
+        
+        .progress-box {
+            display: none;
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+        .progress-bar-bg { background: #edf2f7; height: 12px; border-radius: 10px; overflow: hidden; margin: 10px 0; }
+        .progress-bar-fill { background: var(--accent); width: 0%; height: 100%; transition: width 0.2s; }
+        
+        .stats { display: flex; justify-content: space-around; font-size: 0.8rem; font-weight: 800; color: var(--primary); text-transform: uppercase; }
+        .btn-download {
+            display: none;
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 1.2rem;
+            border-radius: 10px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(11,33,135,0.2);
+        }
+    </style>
+</head>
+<body>
+    <div id="nav-placeholder"></div>
+
+    <main class="main-content">
+        <div class="converter-container">
+            <div class="card">
+                <h1>Turbo PDF to Excel <span class="badge-version">v2.6</span></h1>
+                <p style="margin-bottom: 2rem;">Motor optimizado para facturas pesadas (+40MB). Respeta tablas y columnas mediante mapeo espacial.</p>
+
+                <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+                    <p id="fileName">Arrastra tu factura Vodafone o haz clic para subir</p>
+                    <input type="file" id="fileInput" accept="application/pdf" style="display:none" onchange="iniciarTurboProcesado(this)">
+                </div>
+
+                <div class="progress-box" id="progressBox">
+                    <div style="display:flex; justify-content: space-between;">
+                        <label id="statusLabel">Analizando estructura...</label>
+                        <span id="percentLabel">0%</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" id="progressFill"></div>
+                    </div>
+                    <div class="stats">
+                        <span id="statPages">Páginas: 0</span>
+                        <span id="statRows">Registros: 0</span>
+                    </div>
+                </div>
+
+                <button id="btnDownload" class="btn-download" onclick="generarXlsx()">
+                    📥 DESCARGAR EXCEL (.XLSX)
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="scripts/main.js" defer></script>
+    <script src="scripts/turbo_engine.js" defer></script>
+</body>
+</html>
