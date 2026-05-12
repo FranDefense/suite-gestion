@@ -10,6 +10,7 @@ const assets = [
   'vozydatos_exp.html',
   'calculadoras.html',
   'changelog.html',
+  'extractor_turbo_vodafone.html',
   'manifest.json',
   'https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js',
 
@@ -31,6 +32,7 @@ const assets = [
   'scripts/iban.js',
   'scripts/consumos.js',
   'scripts/prorrateo.js',
+  'scripts/turbo_engine.js',
 
   // IMÁGENES
   'logo_layer4.png',
