@@ -1,4 +1,4 @@
-const CACHE_NAME = 'layer4-v2.5'; // Cambia esto para forzar actualización
+const CACHE_NAME = 'layer4-v2.6.1'; // Cambia esto para forzar actualización
 const assets = [
   '/',
   'index.html',
