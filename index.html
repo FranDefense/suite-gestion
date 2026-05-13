@@ -7,6 +7,35 @@
     <link rel="manifest" href="manifest.json">
     
     <link rel="stylesheet" href="style/style.css"> <link rel="stylesheet" href="style/index.css"> </head>
+    <style>
+        /* --- ESTILOS DE ETIQUETAS (CHANGELOG) --- */
+        .badge {
+            padding: 3px 8px;
+            border-radius: 4px;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-right: 10px;
+            display: inline-block;
+        }
+        
+        .new { background-color: var(--accent-new); }
+        .fix { background-color: var(--accent-fix); }
+        .upd { background-color: var(--accent-upd); }
+        
+        /* También asegúrate de que el historial tenga este estilo para que no se vea pegado */
+        .change-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .change-list li {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+        }
+    </style>
 <body>
 
     <div id="nav-placeholder"></div>
@@ -57,6 +86,7 @@
                 <div class="card-header">
                     <span class="card-icon">🚀</span>
                     <h3>Turbo PDF a Excel</h3>
+                    <li><span class="badge new">Nuevo</span>
                 </div>
                 <p>Convertidor de alto rendimiento para facturas PDF pesadas de Vodafone.</p>
                 <div class="btn-group">
