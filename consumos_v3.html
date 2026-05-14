@@ -362,7 +362,7 @@
             const tipo = r[keys.find(k => k.toLowerCase().includes("roaming"))];
             const vol = parseFloat(r[keys.find(k => k.toLowerCase().includes("vol"))]) || 0;
             if(!acc[tel]) acc[tel] = {n:0, r:0};
-            const gb = (vol/1024/1024)*1.10;
+            const gb = (vol/1024/1024)*1.50;
             if(tipo === "N") acc[tel].n += gb; else acc[tel].r += gb;
         });
 
