@@ -369,7 +369,7 @@
         resVDF = listaInv.map(t => {
             const c = acc[t] || {n:0, r:0};
             const aj = aplicarRestas(t, c.n, c.r);
-            return { Linea: t, ICCID: mapaIcc?.[t] || "---", Nacional: aj.n, Roaming: aj.r, Total: aj.n+aj.r, Alerta: aj.r > 77.35 };
+            return { Linea: t, ICCID: mapaIcc?.[t] || "---", Nacional: aj.n, Roaming: aj.r, Total: aj.n+aj.r, Alerta: aj.r > 80 };
         });
 
         dibujarTabla('VDF', !!mapaIcc);
