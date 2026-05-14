@@ -10,6 +10,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         .converter-container { max-width: 800px; margin: 0 auto; }
+        
         .drop-zone {
             border: 2px dashed var(--primary);
             padding: 3rem;
@@ -22,7 +23,7 @@
         }
         .drop-zone:hover { background: #f0f4ff; border-style: solid; }
         .drop-zone p { color: var(--secondary); font-weight: 600; }
-        
+
         .progress-box {
             display: none;
             background: var(--white);
@@ -32,9 +33,48 @@
             margin-bottom: 2rem;
         }
         .progress-bar-bg { background: #edf2f7; height: 12px; border-radius: 10px; overflow: hidden; margin: 10px 0; }
-        .progress-bar-fill { background: var(--accent); width: 0%; height: 100%; transition: width 0.2s; }
+        .progress-bar-fill { background: var(--accent); width: 0%; height: 100%; transition: width 0.1s; }
         
         .stats { display: flex; justify-content: space-around; font-size: 0.8rem; font-weight: 800; color: var(--primary); text-transform: uppercase; }
+
+        /* Estilos para los selectores de margen */
+        .margin-panel {
+            display: none;
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .margin-title {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 900;
+            color: var(--secondary);
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .margin-options {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+        }
+        .margin-check {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            color: var(--primary);
+            cursor: pointer;
+            padding: 10px 15px;
+            border-radius: 8px;
+            transition: 0.2s;
+        }
+        .margin-check:hover { background: #e2e8f0; }
+        .margin-check input { width: 18px; height: 18px; cursor: pointer; }
+
         .btn-download {
             display: none;
             width: 100%;
@@ -55,8 +95,8 @@
     <main class="main-content">
         <div class="converter-container">
             <div class="card">
-                <h1>Turbo PDF to Excel <span class="badge-version">v2.6</span></h1>
-                <p style="margin-bottom: 2rem;">Motor optimizado para facturas pesadas (+40MB). Respeta tablas y columnas mediante mapeo espacial.</p>
+                <h1>Turbo PDF to Excel <span class="badge-version">v2.6.2</span></h1>
+                <p style="margin-bottom: 2rem;">Motor optimizado para facturas pesadas. Sin márgenes para proveedores, con márgenes para clientes.</p>
 
                 <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
                     <p id="fileName">Arrastra tu factura Vodafone o haz clic para subir</p>
@@ -77,8 +117,21 @@
                     </div>
                 </div>
 
+                <div class="margin-panel" id="marginPanel">
+                    <span class="margin-title">Selección de margen para exportación</span>
+                    <div class="margin-options">
+                        <label class="margin-check">
+                            <input type="checkbox" id="check10" onclick="toggleMargin(10)"> +10% Margen
+                        </label>
+                        <label class="margin-check">
+                            <input type="checkbox" id="check20" onclick="toggleMargin(20)"> +20% Margen
+                        </label>
+                    </div>
+                    <p style="font-size: 0.7rem; color: var(--secondary); margin-top: 10px;">Si no marcas ninguno, se exportará el importe original del proveedor.</p>
+                </div>
+
                 <button id="btnDownload" class="btn-download" onclick="generarXlsx()">
-                    📥 DESCARGAR EXCEL (.XLSX)
+                    📥 GENERAR Y DESCARGAR EXCEL
                 </button>
             </div>
         </div>
