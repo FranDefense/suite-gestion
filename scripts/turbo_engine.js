@@ -136,3 +136,13 @@ function generarXlsx() {
     const nombreArchivo = `L4_Factura_Turbo_${new Date().getTime()}.xlsx`;
     XLSX.writeFile(wb, nombreArchivo);
 }
+
+// Al final de scripts/turbo_engine.js
+document.addEventListener('DOMContentLoaded', () => {
+    const fileInput = document.getElementById('fileInput');
+    if (fileInput) {
+        fileInput.addEventListener('change', function() {
+            iniciarTurboProcesado(this);
+        });
+    }
+});
