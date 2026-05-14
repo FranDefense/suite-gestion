@@ -11,7 +11,8 @@ function toggleMargin(val) {
 }
 
 async function iniciarTurboProcesado(input) {
-    const file = input.files[0];
+    // Acepta tanto un elemento input como directamente una lista de archivos arrastrados
+    const file = input.files ? input.files[0] : input;
     if (!file) return;
 
     // UI Reset
@@ -123,7 +124,6 @@ function generarXlsx() {
 
     const ws = XLSX.utils.json_to_sheet(dataFinal);
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Factura_Layer4");
     
     // Auto-ajuste de columnas
@@ -133,16 +133,47 @@ function generarXlsx() {
     XLSX.writeFile(wb, nombre);
 }
 
-    const nombreArchivo = `L4_Factura_Turbo_${new Date().getTime()}.xlsx`;
-    XLSX.writeFile(wb, nombreArchivo);
-}
-
-// Al final de scripts/turbo_engine.js
+// Escuchadores de eventos para carga por clic y soporte Drag & Drop real
 document.addEventListener('DOMContentLoaded', () => {
     const fileInput = document.getElementById('fileInput');
+    const dropZone = document.getElementById('dropZone');
+
     if (fileInput) {
         fileInput.addEventListener('change', function() {
             iniciarTurboProcesado(this);
         });
+    }
+
+    if (dropZone) {
+        // Prevenir la acción por defecto del navegador de abrir el PDF al soltarlo
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, e => e.preventDefault(), false);
+        });
+
+        // Efecto estético al pasar el archivo por encima
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => {
+                dropZone.style.background = '#f0f4ff';
+                dropZone.style.borderStyle = 'solid';
+            }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => {
+                dropZone.style.background = 'var(--white)';
+                dropZone.style.borderStyle = 'dashed';
+            }, false);
+        });
+
+        // Capturar archivo al soltarlo
+        dropZone.addEventListener('drop', e => {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            if (files.length > 0 && files[0].type === "application/pdf") {
+                iniciarTurboProcesado(files[0]);
+            } else {
+                alert("Por favor, sube un archivo con formato PDF válido.");
+            }
+        }, false);
     }
 });
